@@ -42,20 +42,19 @@
 	@include('Frontend.layouts.header')
 
 	<!-- Sidebar -->
-	@include('Frontend.layouts.sidebar')
+	@include('Frontend.components.sidebar')
 
 	<!-- Cart -->
-	@include('Frontend.layouts.cart')
+	@include('Frontend.components.cart')
 
 	<!-- Slider -->
 	{{--@include('Frontend.layouts.slider')--}}
 
 	<!-- Banner -->
-	@include('Frontend.layouts.banner')
+	@include('Frontend.layouts.banner2')
 
-
-	<!-- Product -->
-	@include('Frontend.layouts.product')
+    <!-- Content -->
+    @yield('content')
 
 	<!-- Footer -->
 	@include('Frontend.layouts.footer')

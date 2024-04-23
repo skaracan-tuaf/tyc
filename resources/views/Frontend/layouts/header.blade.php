@@ -5,40 +5,32 @@
             <nav class="limiter-menu-desktop p-l-45">
 
                 <!-- Logo desktop -->
-                <a href="#" class="logo">
-                    <img src="{{ asset('frontend_assets/images/icons/logo-01.png') }}" alt="IMG-LOGO">
+                <a href="{{ route('AnaSayfa') }}" class="logo">
+                    <img src="{{ asset('frontend_assets/images/icons/logo-03.png') }}" alt="IMG-LOGO">
                 </a>
 
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
-                            <a href="index.html">Home</a>
+                            <a href="{{ route('AnaSayfa') }}">Ana Sayfa</a>
+                        </li>
+
+                        <li>
+                            <a href="product.html">Mühimmatlar</a>
                             <ul class="sub-menu">
-                                <li><a href="index.html">Homepage 1</a></li>
-                                <li><a href="home-02.html">Homepage 2</a></li>
-                                <li><a href="home-03.html">Homepage 3</a></li>
+                                <li><a href="#">Hava Hava</a></li>
+                                <li><a href="#">Hava Yer</a></li>
+                                <li><a href="h#">Yer Yer</a></li>
                             </ul>
                         </li>
 
                         <li>
-                            <a href="product.html">Shop</a>
-                        </li>
-
-                        <li class="label1" data-label1="hot">
-                            <a href="shoping-cart.html">Features</a>
+                            <a href="about.html">Hakkımızda</a>
                         </li>
 
                         <li>
-                            <a href="blog.html">Blog</a>
-                        </li>
-
-                        <li>
-                            <a href="about.html">About</a>
-                        </li>
-
-                        <li>
-                            <a href="contact.html">Contact</a>
+                            <a href="contact.html">İletişim</a>
                         </li>
                     </ul>
                 </div>
