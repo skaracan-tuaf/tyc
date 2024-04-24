@@ -2,12 +2,30 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\BackendController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\MunitionController;
+use App\Http\Controllers\AttributeController;
+//use App\Http\Controllers\MunitionAttributeController;
+//use App\Http\Controllers\ImageController;
 
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
 
 Route::get('/', [FrontendController::class, 'index'])->name('AnaSayfa');
+Route::get('/yonetim', [BackendController::class, 'index'])->name('YoneticiAnaSayfa');
+
+Route::prefix('yonetim')->group(function () {
+    Route::resource('kategori', CategoryController::class);
+    Route::resource('muhimmat', MunitionController::class);
+    Route::resource('ozellik', AttributeController::class);
+
+    Route::put('/kategori/{id}/durum-degistir', [CategoryController::class, 'changeStatus'])->name('kategoriDurumunuDegistir');
+});
+
 
 Route::middleware([
     'auth:sanctum',

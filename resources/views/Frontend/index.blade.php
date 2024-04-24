@@ -51,7 +51,8 @@
 	{{--@include('Frontend.layouts.slider')--}}
 
 	<!-- Banner -->
-	@include('Frontend.layouts.banner2')
+    @include('Frontend.layouts.banner')
+	{{--@include('Frontend.layouts.banner2')--}}
 
     <!-- Content -->
     @yield('content')
