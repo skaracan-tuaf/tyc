@@ -135,6 +135,9 @@ class CategoryController extends Controller
         return view('Backend.pages.category_add_edit', compact('category', 'subCategories', 'categories'));
     }
 
+    /**
+     * Change status via button.
+     */
     public function changeStatus($id)
     {
         $category = Category::findOrFail($id);
@@ -214,18 +217,45 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
+{
+    // Kategoriyi bul
+    $category = Category::find($id);
+
+    // Kategori bulunamazsa geri dön
+    if (!$category) {
+        return redirect()->back()->with('error', 'Kategori bulunamadı.');
+    }
+
+    // Kategorinin alt kategorilerini silen yardımcı fonksiyon
+    function deleteSubCategories($category)
     {
-        $category = Category::find($id);
+        // Kategorinin alt kategorilerini al
+        $subCategories = $category->children()->get();
 
-        if (!$category) {
-            return redirect()->back()->with('error', 'Mesaj bulunamadı.');
-        }
+        // Alt kategorileri dolaş ve her birini sil
+        foreach ($subCategories as $subCategory) {
+            // Alt kategorinin alt kategorilerini sil (rekürsif olarak)
+            deleteSubCategories($subCategory);
 
-        if ($category->delete()) {
-            Storage::delete('public/' . $category->image);
-            return redirect()->route('kategori.index')->with('success', $category->name . ' başarıyla kategorilerden silindi.');
-        } else {
-            return redirect()->route('kategori.index')->with('fail', $category->name . 'kategorilerden silinirken bir hata oluştu.');
+            // Alt kategoriyi sil
+            $subCategory->delete();
+
+            // Alt kategorinin resmini de sil
+            Storage::delete('public/' . $subCategory->image);
         }
     }
+
+    // Alt kategorileri sil (gerekiyorsa)
+    deleteSubCategories($category);
+
+    // Ana kategoriyi sil
+    if ($category->delete()) {
+        // Ana kategorinin resmini de sil
+        Storage::delete('public/' . $category->image);
+        return redirect()->route('kategori.index')->with('success', $category->name . ' başarıyla kategorilerden silindi.');
+    } else {
+        return redirect()->route('kategori.index')->with('fail', $category->name . ' kategorilerden silinirken bir hata oluştu.');
+    }
+}
+
 }

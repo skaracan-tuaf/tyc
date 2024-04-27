@@ -51,7 +51,7 @@
                                             alt="{{ $category->name }} Resmi" width="40" height="40"
                                             style="border-radius: 50%;">
                                     @else
-                                        <img src="{{ asset('/asset-backend/static/images/logo/favicon.png') }}"
+                                        <img src="{{ asset('/backend_assets/static/images/logo/favicon.png') }}"
                                             width="40" height="40" alt="Varsayılan Resim">
                                     @endif
                                 </td>
@@ -129,7 +129,7 @@
 
                     Swal.fire({
                         title: 'Emin misiniz?',
-                        text: 'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?',
+                        text: 'Kategorinin alt kategorileri de silinecek. Bu işlemi gerçekleştirmek istediğinizden emin misiniz?',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
