@@ -5,13 +5,15 @@
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/simple-datatables/style.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/compiled/css/table-datatable.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.css') }}" />
 @endsection
 
 @section('page-title', 'Kategoriler')
 @section('page-subtitle', 'Mühimmat Kategorileri')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">DataTable</li>
+    <li class="breadcrumb-item active" aria-current="page">Kategoriler</li>
 @endsection
 
 @section('content')
@@ -25,15 +27,16 @@
                 </h5>
             </div>
             <div class="card-body">
-                <table class="table table-striped" id="table-category">
+                <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Resim</th>
                             <th>Adı</th>
                             <th>Üst Kategori</th>
                             <th>Slug</th>
+                            <th>Toplam Ürün</th>
                             <th>Durum</th>
-                            <th>Resim</th>
                             <th>Açıklama</th>
                             <th>İşlem</th>
                         </tr>
@@ -42,9 +45,31 @@
                         @foreach ($categories as $category)
                             <tr>
                                 <td>{{ $category->id }}</td>
+                                <td>
+                                    @if ($category->image)
+                                        <img src="{{ asset('storage/' . $category->image) }}"
+                                            alt="{{ $category->name }} Resmi" width="40" height="40"
+                                            style="border-radius: 50%;">
+                                    @else
+                                        <img src="{{ asset('/asset-backend/static/images/logo/favicon.png') }}"
+                                            width="40" height="40" alt="Varsayılan Resim">
+                                    @endif
+                                </td>
                                 <td>{{ $category->name }}</td>
-                                <td>{{ $category->parent ? $category->parent->name : 'Yok' }}</td>
+                                <!--td>{{ $category->parent ? $category->parent->name : '-' }}</td-->
+                                <td>
+                                    @php
+                                        $parentCategories = [];
+                                        $currentCategory = $category;
+                                        while ($currentCategory->parent) {
+                                            array_unshift($parentCategories, $currentCategory->parent->name);
+                                            $currentCategory = $currentCategory->parent;
+                                        }
+                                    @endphp
+                                    {{ implode('->', $parentCategories) ?: '-' }}
+                                </td>
                                 <td>{{ $category->slug }}</td>
+                                <td>Toplam Ürün</td>
                                 <td>
                                     <form action="{{ route('kategoriDurumunuDegistir', $category->id) }}" method="POST">
                                         @csrf
@@ -59,9 +84,7 @@
                                                 class="btn icon icon-left btn-warning me-2 text-nowrap">Beklemede</button>
                                         @endif
                                     </form>
-
                                 </td>
-                                <td>{{ $category->image }}</td>
                                 <td>{{ $category->description }}</td>
                                 <td>
                                     <div class="comment-actions">
@@ -94,4 +117,33 @@
 @section('scripts')
     <script src="{{ asset('backend_assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/pages/simple-datatables.js') }}"></script>
+
+    <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var allForms = document.querySelectorAll('.delete-form');
+
+            allForms.forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    Swal.fire({
+                        title: 'Emin misiniz?',
+                        text: 'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'SİL',
+                        cancelButtonText: 'İptal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Kullanıcı "Evet, sil!" butonuna tıkladı
+                            form.submit(); // Formu submit et
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 @endsection

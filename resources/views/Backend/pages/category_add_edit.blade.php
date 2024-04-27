@@ -3,13 +3,15 @@
 @section('title', 'Kategori')
 
 @section('stylesheet')
+    <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">
 @endsection
 
 @section('page-title', 'Kategoriler')
 @section('page-subtitle', 'Mühimmat Kategorisi Ekle')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">DataTable</li>
+    <li class="breadcrumb-item"><a href="{{ route('kategori.index') }}">Kategoriler</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ isset($category) ? 'Güncelle' : 'Ekle' }}</li>
 @endsection
 
 @section('content')
@@ -23,114 +25,106 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form" data-parsley-validate
-                                action="{{ isset($kategori) ? route('kategori.update', $kategori->id) : route('kategori.store') }}"
-                                method="POST">
+                            <form class="form"
+                                action="{{ isset($category) ? route('kategori.update', $category->id) : route('kategori.store') }}"
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
-                                @if (isset($kategori))
+                                @if (isset($category))
                                     @method('PUT')
                                 @endif
                                 <div class="row">
                                     <div class="col-md-6 col-12">
                                         <div class="form-group mandatory">
-                                            <label for="first-name-column" class="form-label">Kategori Adı</label>
-                                            <input type="text" id="first-name-column" class="form-control"
-                                                placeholder="Kategori Adı" name="fname-column"
-                                                value="{{ isset($kategori) ? $kategori->name : '' }}"
-                                                data-parsley-required="true" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="last-name-column" class="form-label">Last Name</label>
-                                            <input type="text" id="last-name-column" class="form-control"
-                                                placeholder="Last Name" name="lname-column" data-parsley-required="true" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="city-column" class="form-label">City</label>
-                                            <input type="text" id="city-column" class="form-control"
-                                                placeholder="Custom validation. Value has to be Jakarta." name="city-column"
-                                                data-parsley-restricted-city="Jakarta" data-parsley-required="true" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="country-floating" class="form-label">Country</label>
-                                            <input type="text" id="country-floating" class="form-control"
-                                                name="country-floating" placeholder="Country"
-                                                data-parsley-required="true" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="company-column" class="form-label">Company</label>
-                                            <input type="text" id="company-column" class="form-control"
-                                                name="company-column" placeholder="Company" data-parsley-required="true" />
+                                            <label for="category-name" class="form-label">Kategori Adı</label>
+                                            <input type="text" id="category-name" class="form-control"
+                                                placeholder="Kategori Adı" name="name"
+                                                value="{{ isset($category) ? $category->name : '' }}" required />
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group mandatory">
-                                            <label for="email-id-column" class="form-label">Email</label>
-                                            <input type="email" id="email-id-column" class="form-control"
-                                                name="email-id-column" placeholder="Email" data-parsley-required="true" />
+                                            <label for="parent-category" class="form-label">Üst Kategori</label>
+                                            <fieldset class="form-group">
+                                                <select class="form-select" name="parent" id="parent-category">
+                                                    <option value="">Üst Kategori</option>
+                                                    @foreach ($categories as $cat)
+                                                        <option value="{{ $cat->id }}"
+                                                            {{ ($category ?? null) && $category->id == $cat->id ? 'selected' : '' }}>
+                                                            @if (!$cat->parent)
+                                                                {{-- Üst kategori yoksa --}}
+                                                                {{ $cat->name }}
+                                                            @else
+                                                                {{-- Üst kategorisi olanlar --}}
+                                                                @php
+                                                                    $parentCategories = [];
+                                                                    $currentCategory = $cat;
+                                                                    while ($currentCategory->parent) {
+                                                                        array_unshift(
+                                                                            $parentCategories,
+                                                                            $currentCategory->parent->name,
+                                                                        );
+                                                                        $currentCategory = $currentCategory->parent;
+                                                                    }
+                                                                @endphp
+                                                                {{ implode('->', $parentCategories) . '->' . $cat->name }}
+                                                            @endif
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </fieldset>
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <div class="form-check mandatory">
-                                                <input type="checkbox" id="checkbox5" class="form-check-input" checked
-                                                    data-parsley-required="true"
-                                                    data-parsley-error-message="You have to accept our terms and conditions to proceed." />
-                                                <label for="checkbox5" class="form-check-label form-label">I accept these
-                                                    terms and conditions.</label>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group mandatory">
+                                            <label for="category-image" class="form-label">Resim</label>
+
+                                            <div id="resimEkleAlani">
+                                                <img id="image" src="" alt="">
+                                                <input type="hidden" id="croppedImage" name="croppedImage" required>
+                                                @if (isset($category) && !empty($category->image))
+                                                    <div id="previewImage" class="image-container"
+                                                        style="display: flex; justify-content: center; align-items: center;">
+                                                        <img src="{{ asset('storage/' . $category->image) }}" alt=""
+                                                            class="img-fluid mt-1">
+                                                    </div>
+                                                @endif
+                                                <div class="img-container mt-3" id="previewContainer"
+                                                    style="display: flex; justify-content: center; align-items: center;">
+                                                </div>
+                                                <input type="file" class="form-control" id="imageInput"
+                                                    name="categoryImage" accept="image/*"
+                                                    {{ isset($category) ? '' : 'required' }}>
                                             </div>
+
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-6 col-12">
-                                        <h6>Kategori</h6>
-                                        <fieldset class="form-group">
-                                            <select class="form-select" id="basicSelect">
-                                                <option selected="">Seçim yap...</option>
-                                                <option>Hava Hava</option>
-                                                <option>Hava Yer</option>
-                                                <option>Yer Yer</option>
-                                            </select>
-                                        </fieldset>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <h6>Alt Kategori</h6>
-                                        <fieldset class="form-group">
-                                            <select class="form-select" id="basicSelect2">
-                                                <option selected="">Seçim yap...</option>
-                                                <option>Hava Hava</option>
-                                                <option>Hava Yer</option>
-                                                <option>Yer Yer</option>
-                                            </select>
-                                        </fieldset>
+                                        <div class="form-group">
+                                            <label for="category-description" class="form-label">Açıklama</label>
+                                            <textarea class="form-control" id="category-description" rows="3" name="description" placeholder="Açıklama"
+                                                required>{{ isset($category) ? $category->description : '' }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group mandatory">
                                             <fieldset>
-                                                <label class="form-label"> Favourite Colour </label>
+                                                <label class="form-label"> Durum </label>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="flexRadioDefault" id="flexRadioDefault1"
-                                                        data-parsley-required="true" />
-                                                    <label class="form-check-label form-label" for="flexRadioDefault1">
-                                                        Red
+                                                    <input class="form-check-input" type="radio" name="status"
+                                                        id="category-status1" value="1" required
+                                                        @if (!isset($category) || (isset($category) && $category->status)) checked @endif />
+                                                    <label class="form-check-label form-label" for="category-status1">
+                                                        Aktif
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="flexRadioDefault" id="flexRadioDefault2" />
-                                                    <label class="form-check-label form-label" for="flexRadioDefault2">
-                                                        Blue
+                                                    <input class="form-check-input" type="radio" name="status"
+                                                        id="category-status2" value="0" required
+                                                        @if (isset($category) && !$category->status) checked @endif />
+                                                    <label class="form-check-label form-label" for="category-status2">
+                                                        Pasif
                                                     </label>
                                                 </div>
                                             </fieldset>
@@ -140,7 +134,7 @@
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary me-1 mb-1">
-                                            {{ isset($kategori) ? 'Güncelle' : 'Ekle' }}
+                                            {{ isset($category) ? 'Güncelle' : 'Ekle' }}
                                         </button>
                                         <button type="reset" class="btn btn-light-secondary me-1 mb-1">
                                             Temizle
@@ -159,6 +153,70 @@
 
 @section('scripts')
     <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('backend_assets/extensions/parsleyjs/parsley.min.js') }}"></script>
-    <script src="{{ asset('backend_assets/static/js/pages/parsley.js') }}"></script>
+
+    <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let imageInput = document.getElementById('imageInput');
+            let image = document.getElementById('image');
+            let previewContainer = document.getElementById('previewContainer');
+            let croppedImageInput = document.getElementById('croppedImage');
+            let previewImage = document.getElementById('previewImage');
+
+            let cropper;
+
+            const _aspectRatio = 16 / 9; // width="273" height="376"
+
+            imageInput.addEventListener('change', function() {
+                let file = this.files[0];
+
+                if (file) {
+                    let reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        // Eğer önceki cropper nesnesi varsa yok et
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+
+                        if (previewImage) {
+                            previewImage.remove();
+                        }
+
+                        // PreviewContainer'ı temizle
+                        previewContainer.innerHTML = '';
+
+                        // Resmi göster
+                        image.src = e.target.result;
+                        image.style.display = 'block';
+
+                        // Cropper nesnesini oluştur
+                        cropper = new Cropper(image, {
+                            aspectRatio: _aspectRatio,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            responsive: true
+                        });
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form submit event'i
+            let form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Eğer cropper nesnesi varsa kırpılmış resmi al
+                if (cropper) {
+                    let croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+                    croppedImageInput.value = croppedDataUrl;
+                }
+
+                // Formu gönder
+                this.submit();
+            });
+        });
+    </script>
 @endsection
