@@ -126,13 +126,10 @@ class CategoryController extends Controller
         // Düzenlenecek kategorinin bulunması
         $category = Category::findOrFail($id);
 
-        // Kategoriye ait tüm alt kategorilerin alınması
-        $subCategories = $category->children()->get();
-
         // Tüm kategorilerin alınması
         $categories = Category::all();
 
-        return view('Backend.pages.category_add_edit', compact('category', 'subCategories', 'categories'));
+        return view('Backend.pages.category_add_edit', compact('category', 'categories'));
     }
 
     /**
@@ -142,24 +139,32 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
-        // Seçilen kategoriye ait tüm alt kategorileri al
-        $subCategories = $category->children()->get();
+        // Kategorinin durumunu değiştir
+        $category->status = !$category->status;
+        $category->save();
 
-        // Seçilen kategorinin alt kategorisi varsa
-        if ($subCategories->isNotEmpty()) {
-            // Alt kategorilere ait status değerlerini güncelle
-            foreach ($subCategories as $subCategory) {
-                $subCategory->status = !$category->status; // Alt kategori status değerinin tam tersini yap
-                $subCategory->save(); // Değişiklikleri kaydet
+        // Rekürsif olarak alt kategorilerin durumunu değiştir
+        $this->changeStatusRecursive($category, $category->status);
+
+        return redirect()->route('kategori.index')->with('success', 'Kategori durumu başarıyla değiştirildi.');
+    }
+
+    public function changeStatusRecursive($category, $status)
+    {
+        // Kategorinin alt kategorilerini al
+        $subCategories = $category->children;
+
+        // Her alt kategori için işlemi tekrarla
+        foreach ($subCategories as $subCategory) {
+            // Alt kategorinin durumunu değiştir
+            $subCategory->status = $status;
+            $subCategory->save();
+
+            // Alt kategorinin alt kategorileri varsa işlemi tekrarla
+            if ($subCategory->children()->exists()) {
+                $this->changeStatusRecursive($subCategory, $status);
             }
         }
-
-        if ($category->update(['status' => !$category->status])) {
-            return redirect()->route('kategori.index')->with('success', 'Kategori durumu başarıyla değiştirildi.');
-        } else {
-            return redirect()->route('kategori.index')->with('fail', 'Kategori durumu değiştirilirken bir hata oluştu.');
-        }
-
     }
 
     /**
