@@ -48,27 +48,27 @@
                                                 <select class="form-select" name="parent" id="parent-category">
                                                     <option value="">Üst Kategori</option>
                                                     @foreach ($categories as $cat)
-                                                        <option value="{{ $cat->id }}"
-                                                            {{ ($category ?? null) && $category->id == $cat->id ? 'selected disabled' : '' }}>
-                                                            @if (!$cat->parent)
-                                                                {{-- Üst kategori yoksa --}}
-                                                                {{ $cat->name }}
-                                                            @else
-                                                                {{-- Üst kategorisi olanlar --}}
-                                                                @php
-                                                                    $parentCategories = [];
-                                                                    $currentCategory = $cat;
-                                                                    while ($currentCategory->parent) {
-                                                                        array_unshift(
-                                                                            $parentCategories,
-                                                                            $currentCategory->parent->name,
-                                                                        );
-                                                                        $currentCategory = $currentCategory->parent;
-                                                                    }
-                                                                @endphp
-                                                                {{ implode('->', $parentCategories) . '->' . $cat->name }}
-                                                            @endif
-                                                        </option>
+                                                        @php
+                                                            $catName = $cat->name;
+                                                            $parentCategories = [];
+
+                                                            // Kategorinin üst kategorilerini bul ve isimlerini bir diziye ekle
+                                                            $currentCategory = $cat;
+                                                            while ($currentCategory->parent) {
+                                                                array_unshift($parentCategories, $currentCategory->parent->name);
+                                                                $currentCategory = $currentCategory->parent;
+                                                            }
+
+                                                            // Kategori ismini, üst kategorilerle birleştir
+                                                            if (!empty($parentCategories)) {
+                                                                $catName = implode('->', $parentCategories) . '->' . $cat->name;
+                                                            }
+                                                        @endphp
+                                                        @if (!isset($category) || (isset($category) && $category->id != $cat->id))
+                                                            <option value="{{ $cat->id }}" {{ isset($category) && $category->parent_id == $cat->id ? 'selected' : '' }}>
+                                                                {{ $catName }}
+                                                            </option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </fieldset>
@@ -84,8 +84,8 @@
                                                 @if (isset($category) && !empty($category->image))
                                                     <div id="previewImage" class="image-container"
                                                         style="display: flex; justify-content: center; align-items: center;">
-                                                        <img src="{{ asset('storage/' . $category->image) }}" alt=""
-                                                            class="img-fluid mt-1">
+                                                        <img src="{{ asset('storage/' . $category->image) }}"
+                                                            alt="" class="img-fluid mt-1">
                                                     </div>
                                                 @endif
                                                 <div class="img-container mt-3" id="previewContainer"
