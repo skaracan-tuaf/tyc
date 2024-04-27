@@ -178,6 +178,11 @@ class CategoryController extends Controller
             'status' => $request->input('status') == '1' ? true : false,
         ];
 
+        // Kategori ile üst kategorisinin aynı olup olmadığının kontrolü
+        if ($data['parent'] == $category->id) {
+            return redirect()->route('kategori.edit', $id)->with('fail', 'Kategori, kendisi ile aynı bir üst kategori olarak güncellenemez.');
+        }
+
         // Doğrulama kurallarının belirlenmesi
         $rules = [
             'name' => 'required|string|max:255',
@@ -212,6 +217,7 @@ class CategoryController extends Controller
             return redirect()->route('kategori.edit', $id)->with('fail', $errorMessage);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

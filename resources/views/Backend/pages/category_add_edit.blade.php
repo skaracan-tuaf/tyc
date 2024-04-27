@@ -49,7 +49,7 @@
                                                     <option value="">Üst Kategori</option>
                                                     @foreach ($categories as $cat)
                                                         <option value="{{ $cat->id }}"
-                                                            {{ ($category ?? null) && $category->id == $cat->id ? 'selected' : '' }}>
+                                                            {{ ($category ?? null) && $category->id == $cat->id ? 'selected disabled' : '' }}>
                                                             @if (!$cat->parent)
                                                                 {{-- Üst kategori yoksa --}}
                                                                 {{ $cat->name }}

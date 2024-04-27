@@ -60,8 +60,6 @@
 
             @include('Backend.layouts.footer')
 
-
-
         </div>
     </div>
 
