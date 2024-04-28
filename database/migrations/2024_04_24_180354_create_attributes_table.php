@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,6 +13,9 @@ return new class extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->enum('option', ['Tam Sayı', 'Ondalık', 'Yazı', 'Doğrulama', 'Aralık', 'Renk', 'Resim', 'Buton', 'Liste']);
+            $table->text('description')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

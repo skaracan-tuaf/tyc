@@ -55,17 +55,24 @@
                                                             // Kategorinin üst kategorilerini bul ve isimlerini bir diziye ekle
                                                             $currentCategory = $cat;
                                                             while ($currentCategory->parent) {
-                                                                array_unshift($parentCategories, $currentCategory->parent->name);
+                                                                array_unshift(
+                                                                    $parentCategories,
+                                                                    $currentCategory->parent->name,
+                                                                );
                                                                 $currentCategory = $currentCategory->parent;
                                                             }
 
                                                             // Kategori ismini, üst kategorilerle birleştir
                                                             if (!empty($parentCategories)) {
-                                                                $catName = implode('->', $parentCategories) . '->' . $cat->name;
+                                                                $catName =
+                                                                    implode('->', $parentCategories) .
+                                                                    '->' .
+                                                                    $cat->name;
                                                             }
                                                         @endphp
                                                         @if (!isset($category) || (isset($category) && $category->id != $cat->id))
-                                                            <option value="{{ $cat->id }}" {{ isset($category) && $category->parent_id == $cat->id ? 'selected' : '' }}>
+                                                            <option value="{{ $cat->id }}"
+                                                                {{ isset($category) && $category->parent_id == $cat->id ? 'selected' : '' }}>
                                                                 {{ $catName }}
                                                             </option>
                                                         @endif
@@ -84,8 +91,8 @@
                                                 @if (isset($category) && !empty($category->image))
                                                     <div id="previewImage" class="image-container"
                                                         style="display: flex; justify-content: center; align-items: center;">
-                                                        <img src="{{ asset('storage/' . $category->image) }}"
-                                                            alt="" class="img-fluid mt-1">
+                                                        <img src="{{ asset('storage/' . $category->image) }}" alt=""
+                                                            class="img-fluid mt-1">
                                                     </div>
                                                 @endif
                                                 <div class="img-container mt-3" id="previewContainer"
@@ -101,8 +108,7 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="category-description" class="form-label">Açıklama</label>
-                                            <textarea class="form-control" id="category-description" rows="3" name="description" placeholder="Açıklama"
-                                                required>{{ isset($category) ? $category->description : '' }}</textarea>
+                                            <textarea class="form-control" id="category-description" rows="3" name="description" placeholder="Açıklama">{{ isset($category) ? $category->description : '' }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -131,6 +137,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary me-1 mb-1">

@@ -3,7 +3,7 @@
         <div class="sidebar-header position-relative">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
-                    <a href="index.html"><img src="{{ asset('backend_assets/compiled/svg/logo.svg') }}"
+                    <a href="{{ route('AnaSayfa') }}"><img src="{{ asset('backend_assets/compiled/svg/logo.svg') }}"
                             alt="Logo" srcset=""></a>
                 </div>
                 <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
@@ -44,7 +44,7 @@
         </div>
         <div class="sidebar-menu">
             <ul class="menu">
-                <li class="sidebar-title">Menu</li>
+                <li class="sidebar-title">Menü</li>
 
                 <li class="sidebar-item{{ request()->routeIs('YoneticiAnaSayfa') ? ' active' : '' }}">
                     <a href="{{ route('YoneticiAnaSayfa') }}" class='sidebar-link'>

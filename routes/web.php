@@ -24,6 +24,8 @@ Route::prefix('yonetim')->group(function () {
     Route::resource('ozellik', AttributeController::class);
 
     Route::put('/kategori/{id}/durum-degistir', [CategoryController::class, 'changeStatus'])->name('kategoriDurumunuDegistir');
+    Route::put('/ozellik/{id}/durum-degistir', [AttributeController::class, 'changeStatus'])->name('ozellikDurumunuDegistir');
+    Route::put('/muhimmat/{id}/durum-degistir', [MunitionController::class, 'changeStatus'])->name('muhimmatDurumunuDegistir');
 });
 
 

@@ -4,12 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Munition extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'name', 'slug', 'summary', 'description', 'price', 'status'];
+    protected $fillable = ['name', 'slug', 'category_id', 'origin', 'price', 'summary', 'description', 'status'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // Model oluşturulduğunda otomatik olarak slug oluştur
+        static::creating(function ($munition) {
+            $munition->slug = Str::slug($munition->name);
+        });
+    }
 
     public function category()
     {

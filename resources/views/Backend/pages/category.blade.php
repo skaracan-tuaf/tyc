@@ -36,8 +36,8 @@
                             <th>Üst Kategori</th>
                             <th>Slug</th>
                             <th>Toplam Ürün</th>
-                            <th>Durum</th>
                             <th>Açıklama</th>
+                            <th>Durum</th>
                             <th>İşlem</th>
                         </tr>
                     </thead>
@@ -70,6 +70,7 @@
                                 </td>
                                 <td>{{ $category->slug }}</td>
                                 <td>Toplam Ürün</td>
+                                <td>{{ $category->description }}</td>
                                 <td>
                                     <form action="{{ route('kategoriDurumunuDegistir', $category->id) }}" method="POST">
                                         @csrf
@@ -85,7 +86,6 @@
                                         @endif
                                     </form>
                                 </td>
-                                <td>{{ $category->description }}</td>
                                 <td>
                                     <div class="comment-actions">
                                         <button class="btn icon icon-left btn-primary me-2 text-nowrap">
@@ -129,7 +129,7 @@
 
                     Swal.fire({
                         title: 'Emin misiniz?',
-                        text: 'Kategorinin alt kategorileri de silinecek. Bu işlemi gerçekleştirmek istediğinizden emin misiniz?',
+                        text: 'Kategorinin alt kategorileri de silinecek. Silme işlemini gerçekleştirmek istediğinizden emin misiniz?',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',

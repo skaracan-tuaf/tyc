@@ -4,7 +4,7 @@
             <p>2024 &copy; HUGEM</p>
         </div>
         <div class="float-end">
-            <p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
+            <p>Made with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
                 by <a href="https://serkankaracan.com/">SKARACAN</a></p>
         </div>
     </div>
