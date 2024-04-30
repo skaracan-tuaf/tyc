@@ -48,9 +48,9 @@
                                                 <select class="form-select" name="option" id="option-type">
                                                     <option value="" disabled>Seçenek</option>
                                                     @foreach ($enumValues as $option)
-                                                        <option value="{{ $option }}"
-                                                            {{ $option === $attribute->option ? 'selected' : '' }}>
-                                                            {{ ucfirst($option) }}</option>
+                                                    <option value="{{ $option }}" {{ isset($attribute) && $option === $attribute->option ? 'selected' : '' }}>
+                                                        {{ ucfirst($option) }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </fieldset>

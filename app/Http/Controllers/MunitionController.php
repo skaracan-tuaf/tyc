@@ -41,7 +41,7 @@ class MunitionController extends Controller
             'name' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
-            'origin' => 'nullable|string',
+            'origin' => 'required|string',
             'summary' => 'nullable|string',
             'description' => 'nullable|string',
             'status' => 'boolean'

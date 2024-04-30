@@ -42,6 +42,40 @@
                             <th>İşlem</th>
                         </tr>
                     </thead>
+                    @php
+                        // Ülke kodlarını ve isimlerini içeren bir dizi oluştur
+                        $countries = [
+                            'TR' => 'Türkiye',
+                            'US' => 'A.B.D',
+                            'DE' => 'Almanya',
+                            'FR' => 'Fransa',
+                            'JP' => 'Japonya',
+                            'CN' => 'Çin',
+                            'IN' => 'Hindistan',
+                            'IL' => 'İsrail',
+                            'RU' => 'Rusya',
+                            'UA' => 'Ukrayna',
+                            'BR' => 'Brezilya',
+                            'GB' => 'İngiltere',
+                            'IT' => 'İtalya',
+                            'ES' => 'İspanya',
+                            'CA' => 'Kanada',
+                            'AU' => 'Avustralya',
+                            'NL' => 'Hollanda',
+                            'CH' => 'İsviçre',
+                            'SG' => 'Singapur',
+                            'SE' => 'İsveç',
+                            'BE' => 'Belçika',
+                            'AT' => 'Avusturya',
+                            'KR' => 'Güney Kore',
+                        ];
+
+                        // Verilen ülke kodunu isimle eşleştiren bir işlev oluştur
+                        function myGetCountryName($code, $countries)
+                        {
+                            return $countries[$code] ?? $code;
+                        }
+                    @endphp
                     <tbody>
                         @foreach ($munitions as $munition)
                             <tr>
@@ -49,43 +83,7 @@
                                 <td>{{ $munition->category->name ?? 'Belirtilmemiş' }}</td>
                                 <td>{{ $munition->name }}</td>
                                 <td>{{ $munition->slug }}</td>
-                                @php
-                                    // Ülke kodlarını ve isimlerini içeren bir dizi oluştur
-                                    $countries = [
-                                        'TR' => 'Türkiye',
-                                        'US' => 'A.B.D',
-                                        'DE' => 'Almanya',
-                                        'FR' => 'Fransa',
-                                        'JP' => 'Japonya',
-                                        'CN' => 'Çin',
-                                        'IN' => 'Hindistan',
-                                        'IL' => 'İsrail',
-                                        'RU' => 'Rusya',
-                                        'UA' => 'Ukrayna',
-                                        'BR' => 'Brezilya',
-                                        'GB' => 'İngiltere',
-                                        'IT' => 'İtalya',
-                                        'ES' => 'İspanya',
-                                        'CA' => 'Kanada',
-                                        'AU' => 'Avustralya',
-                                        'NL' => 'Hollanda',
-                                        'CH' => 'İsviçre',
-                                        'SG' => 'Singapur',
-                                        'SE' => 'İsveç',
-                                        'BE' => 'Belçika',
-                                        'AT' => 'Avusturya',
-                                        'KR' => 'Güney Kore',
-                                    ];
-
-                                    // Verilen ülke kodunu isimle eşleştiren bir işlev oluştur
-                                    function getCountryName($code, $countries)
-                                    {
-                                        return $countries[$code] ?? $code;
-                                    }
-                                @endphp
-
-                                <td>{{ getCountryName($munition->origin, $countries) }}</td>
-
+                                <td>{{ myGetCountryName($munition->origin, $countries) }}</td>
                                 <td>{{ $munition->price }}</td>
                                 <td>{{ $munition->summary ?? 'N/A' }}</td>
                                 <td>{{ $munition->description ?? 'N/A' }}</td>
@@ -94,11 +92,9 @@
                                         @csrf
                                         @method('PUT')
                                         @if ($munition->status)
-                                            <!--span class="badge bg-success">Active</span-->
                                             <button type="submit"
                                                 class="btn icon icon-left btn-success me-2 text-nowrap">Yayında</button>
                                         @else
-                                            <!--span class="badge bg-danger">Inactive</span-->
                                             <button type="submit"
                                                 class="btn icon icon-left btn-warning me-2 text-nowrap">Beklemede</button>
                                         @endif

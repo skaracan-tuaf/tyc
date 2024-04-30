@@ -58,31 +58,44 @@
                                                         <option value="" selected disabled>Kategori bulunamadı! Lütfen
                                                             kategori ekleyin.</option>
                                                     @else
-                                                        @if (isset($munition))
-                                                            @if (!$munition->category)
-                                                                <option value="" selected disabled>Kategori</option>
-                                                                @foreach ($categories as $cat)
-                                                                    <option value="{{ $cat->id }}">{{ $cat->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            @else
-                                                                @foreach ($categories as $cat)
-                                                                    <option value="{{ $cat->id }}"
-                                                                        {{ optional($munition->category)->id == $cat->id ? 'selected' : '' }}>
-                                                                        {{ $cat->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            @endif
-                                                        @else
-                                                            <option value="" selected disabled>Kategori</option>
-                                                            @foreach ($categories as $cat)
-                                                                <option value="{{ $cat->id }}">{{ $cat->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        @endif
+                                                        @php
+                                                            $selectedCategoryId = isset($munition)
+                                                                ? optional($munition->category)->id
+                                                                : null;
+                                                        @endphp
+                                                        <option value="" selected disabled>Kategori</option>
+                                                        @foreach ($categories as $cat)
+                                                            @php
+                                                                $categoryName = $cat->name;
+                                                                $parentCategories = [];
+
+                                                                // Kategorinin üst kategorilerini bul ve isimlerini bir diziye ekle
+                                                                $currentCategory = $cat;
+                                                                while ($currentCategory->parent) {
+                                                                    array_unshift(
+                                                                        $parentCategories,
+                                                                        $currentCategory->parent->name,
+                                                                    );
+                                                                    $currentCategory = $currentCategory->parent;
+                                                                }
+
+                                                                // Kategori ismini, üst kategorilerle birleştir
+                                                                if (!empty($parentCategories)) {
+                                                                    $categoryName =
+                                                                        implode('->', $parentCategories) .
+                                                                        '->' .
+                                                                        $cat->name;
+                                                                }
+                                                            @endphp
+                                                            <option value="{{ $cat->id }}"
+                                                                {{ $selectedCategoryId == $cat->id ? 'selected' : '' }}>
+                                                                {{ $categoryName }}
+                                                            </option>
+                                                        @endforeach
                                                     @endif
                                                 </select>
                                             </fieldset>
+
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
@@ -131,7 +144,7 @@
                                                     ];
                                                 @endphp
 
-                                                <select class="form-select" name="origin" id="munition-origin">
+                                                <select class="form-select" name="origin" id="munition-origin" required>
                                                     <option value="">Seçiniz...</option>
                                                     @foreach ($countries as $code => $name)
                                                         <option value="{{ $code }}"
@@ -249,6 +262,14 @@
                         reader.onload = function(e) {
                             image.src = e.target.result;
                             image.style.display = 'block';
+
+                            // Initialize Cropper for the image
+                            let cropper = new Cropper(image, {
+                                aspectRatio: aspectRatio,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                responsive: true
+                            });
                         };
                         reader.readAsDataURL(file);
                     }

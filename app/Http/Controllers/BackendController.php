@@ -16,9 +16,11 @@ class BackendController extends Controller
         $totalMunitions = Munition::count();
         $totalCategories = Category::count();
         $totalAttributes = Attribute::count();
-        $totalImages = Image::count();
+
+        $missileImages = Image::count();
+        $categoryImages = Category::count();
+        $totalImages = $missileImages + $categoryImages;
 
         return view('Backend.pages.home', compact('totalMunitions', 'totalCategories', 'totalAttributes', 'totalImages'));
     }
-
 }
