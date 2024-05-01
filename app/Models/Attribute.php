@@ -16,7 +16,6 @@ class Attribute extends Model
     {
         parent::boot();
 
-        // Model oluşturulduğunda otomatik olarak slug oluştur
         static::creating(function ($attribute) {
             $attribute->slug = Str::slug($attribute->name);
         });

@@ -16,7 +16,6 @@ class Category extends Model
     {
         parent::boot();
 
-        // Model oluşturulduğunda otomatik olarak slug oluştur
         static::creating(function ($category) {
             $category->slug = Str::slug($category->name);
         });
@@ -35,5 +34,10 @@ class Category extends Model
     public function munitions()
     {
         return $this->hasMany(Munition::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }

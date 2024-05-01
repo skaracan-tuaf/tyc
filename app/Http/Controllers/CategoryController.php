@@ -179,6 +179,7 @@ class CategoryController extends Controller
         $data = [
             'name' => $request->input('name'),
             'parent' => $request->has('parent') ? $request->input('parent') : null,
+            'image' => $request->hasFile('categoryImage') ? $request->file('categoryImage')->getClientOriginalName() : null,
             'description' => $request->input('description'),
             'status' => $request->input('status') == '1' ? true : false,
         ];
@@ -192,6 +193,7 @@ class CategoryController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'parent' => 'nullable|exists:categories,id',
+            'image' => 'required|string',
             'status' => 'required|boolean',
             'description' => 'nullable|string',
         ];
@@ -208,8 +210,33 @@ class CategoryController extends Controller
             $category->description = $data['description'];
             $category->status = $data['status'];
 
+            // Kullanıcı resim yüklediyse işlemler yapılır
+            if ($request->hasFile('categoryImage')) {
+
+                Storage::delete('public/' . $category->image);
+
+                // Resmin base64 verisi alınır ve resim dosyası oluşturulur
+                $croppedImageData = $request->input('croppedImage');
+                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
+
+                // Geçici bir dosya oluşturulur ve resim verisi yazılır
+                $tempFilePath = tempnam(sys_get_temp_dir(), 'category_image_');
+                file_put_contents($tempFilePath, $image);
+
+                // Resmin dosya bilgileri alınır ve dosya adı oluşturulur
+                $imageData = $request->file('categoryImage');
+                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
+                $imageExtension = $imageData->getClientOriginalExtension();
+                $fullImageName = $imageName . '.' . $imageExtension;
+
+                // Geçici dosya Storage'a yüklenir ve dosya yolu kaydedilir
+                $storagePath = Storage::putFileAs('public/category_images', new File($tempFilePath), $fullImageName);
+                $category->image = 'category_images/' . $fullImageName;
+
+            }
+
             // Kategori kaydedilir ve başarılı mesajı döndürülür
-            if ($category->save()) {
+            if ($category->update()) {
                 return redirect()->route('kategori.index')->with('success', $category->name . ' başarıyla güncellendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür

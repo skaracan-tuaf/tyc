@@ -16,7 +16,6 @@ class Munition extends Model
     {
         parent::boot();
 
-        // Model oluşturulduğunda otomatik olarak slug oluştur
         static::creating(function ($munition) {
             $munition->slug = Str::slug($munition->name);
         });
