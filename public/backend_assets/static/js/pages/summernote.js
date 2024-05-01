@@ -1,6 +1,6 @@
 $("#summernote").summernote({
   tabsize: 2,
-  height: 360,
+  height: 240,
   codemirror: {
     theme: 'monokai'
   }

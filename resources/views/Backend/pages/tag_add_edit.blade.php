@@ -10,7 +10,7 @@
 @section('page-subtitle', 'Etiket Ekle')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('ozellik.index') }}">Etiketler</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('etiket.index') }}">Etiketler</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ isset($tag) ? 'Güncelle' : 'Ekle' }}</li>
 @endsection
 
@@ -26,7 +26,7 @@
                     <div class="card-content">
                         <div class="card-body">
                             <form class="form"
-                                action="{{ isset($tag) ? route('ozellik.update', $tag->id) : route('ozellik.store') }}"
+                                action="{{ isset($tag) ? route('etiket.update', $tag->id) : route('etiket.store') }}"
                                 method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @if (isset($tag))
@@ -39,14 +39,6 @@
                                             <input type="text" id="tag-name" class="form-control"
                                                 placeholder="Etiket Adı" name="name"
                                                 value="{{ isset($tag) ? $tag->name : '' }}" required />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="tag-description" class="form-label">Açıklama</label>
-                                            <textarea class="form-control" id="tag-description" rows="2" name="description" placeholder="Açıklama">{{ isset($tag) ? $tag->description : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">

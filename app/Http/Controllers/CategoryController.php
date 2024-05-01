@@ -96,10 +96,10 @@ class CategoryController extends Controller
 
             // Kategori kaydedilir ve başarılı mesajı döndürülür
             if ($category->save()) {
-                return redirect()->route('kategori.index')->with('success', $category->name . ' başarıyla kategorilere eklendi.');
+                return redirect()->route('kategori.index')->with('success', $category->name . ' veritabanından eklendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür
-                return redirect()->route('kategori.index')->with('fail', 'Kategori eklenirken bir hata oluştu.');
+                return redirect()->route('kategori.index')->with('fail', $category->name . 'veritabanına eklenirken bir hata oluştu.');
             }
         } else {
             // Doğrulama başarısız olursa hatalar kullanıcıya gösterilir
@@ -146,7 +146,7 @@ class CategoryController extends Controller
         // Rekürsif olarak alt kategorilerin durumunu değiştir
         $this->changeStatusRecursive($category, $category->status);
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori durumu başarıyla değiştirildi.');
+        return redirect()->route('kategori.index')->with('success', ' durumu başarıyla değiştirildi.');
     }
 
     public function changeStatusRecursive($category, $status)
@@ -193,7 +193,7 @@ class CategoryController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'parent' => 'nullable|exists:categories,id',
-            'image' => 'required|string',
+            'image' => 'nullable|string',
             'status' => 'required|boolean',
             'description' => 'nullable|string',
         ];
@@ -232,15 +232,14 @@ class CategoryController extends Controller
                 // Geçici dosya Storage'a yüklenir ve dosya yolu kaydedilir
                 $storagePath = Storage::putFileAs('public/category_images', new File($tempFilePath), $fullImageName);
                 $category->image = 'category_images/' . $fullImageName;
-
             }
 
             // Kategori kaydedilir ve başarılı mesajı döndürülür
             if ($category->update()) {
-                return redirect()->route('kategori.index')->with('success', $category->name . ' başarıyla güncellendi.');
+                return redirect()->route('kategori.index')->with('success', $category->name . ' güncellendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür
-                return redirect()->route('kategori.index')->with('fail', 'Kategori güncellenirken bir hata oluştu.');
+                return redirect()->route('kategori.index')->with('fail', ' güncellenirken bir hata oluştu.');
             }
         } else {
             // Doğrulama başarısız olursa hatalar kullanıcıya gösterilir
@@ -290,10 +289,9 @@ class CategoryController extends Controller
         if ($category->delete()) {
             // Ana kategorinin resmini de sil
             Storage::delete('public/' . $category->image);
-            return redirect()->route('kategori.index')->with('success', $category->name . ' başarıyla kategorilerden silindi.');
+            return redirect()->route('kategori.index')->with('success', $category->name . ' veritabanından silindi.');
         } else {
-            return redirect()->route('kategori.index')->with('fail', $category->name . ' kategorilerden silinirken bir hata oluştu.');
+            return redirect()->route('kategori.index')->with('fail', $category->name . ' veritabanından silinirken bir hata oluştu.');
         }
     }
-
 }

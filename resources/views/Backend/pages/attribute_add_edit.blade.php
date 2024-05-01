@@ -45,7 +45,7 @@
                                         <div class="form-group mandatory">
                                             <label for="option-type" class="form-label">Tip</label>
                                             <fieldset class="form-group">
-                                                <select class="form-select" name="option" id="option-type">
+                                                <select class="form-select" name="option" id="option-type" required>
                                                     <option value="" disabled>Seçenek</option>
                                                     @foreach ($enumValues as $option)
                                                     <option value="{{ $option }}" {{ isset($attribute) && $option === $attribute->option ? 'selected' : '' }}>

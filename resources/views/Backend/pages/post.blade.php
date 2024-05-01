@@ -54,7 +54,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $post->title }}</td>
-                                <td>{{ $post->category->name }}</td>
+                                <td>{{ $post->category->name ?? 'Belirtilmemiş' }}</td>
                                 <td>{{ $post->slug }}</td>
                                 <td>{{ $post->summary }}</td>
                                 <td>

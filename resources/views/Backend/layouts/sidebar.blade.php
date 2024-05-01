@@ -3,7 +3,7 @@
         <div class="sidebar-header position-relative">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
-                    <a href="{{ route('AnaSayfa') }}"><img src="{{ asset('backend_assets/compiled/svg/logo.svg') }}"
+                    <a href="{{ route('AnaSayfa') }}"><img src="{{ asset('backend_assets/compiled/svg/logo2.png') }}"
                             alt="Logo" srcset=""></a>
                 </div>
                 <div class="theme-toggle d-flex gap-2  align-items-center mt-2">

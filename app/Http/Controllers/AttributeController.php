@@ -70,9 +70,9 @@ class AttributeController extends Controller
         $attribute = Attribute::create($validatedData);
 
         if ($attribute) {
-            return redirect()->route('ozellik.index')->with('success', $attribute->name . ' başarıyla veritabanına eklendi.');
+            return redirect()->route('ozellik.index')->with('success', $attribute->name . ' veritabanına eklendi.');
         } else {
-            return redirect()->route('ozellik.index')->with('fail', $attribute->name . ' özelliği eklenirken bir hata oluştu.');
+            return redirect()->route('ozellik.index')->with('fail', $attribute->name . ' veritabanına eklenirken bir hata oluştu.');
         }
     }
 
@@ -106,7 +106,7 @@ class AttributeController extends Controller
     {
         $attribute = Attribute::findOrFail($id);
         $attribute->update(['status' => !$attribute->status]);
-        return redirect()->route('ozellik.index')->with('success', $attribute->name . ' durumu başarıyla değiştirildi.');
+        return redirect()->route('ozellik.index')->with('success', $attribute->name . ' durumu değiştirildi.');
     }
 
     /**
@@ -146,11 +146,10 @@ class AttributeController extends Controller
         $attribute = Attribute::findOrFail($id);
 
         if ($attribute->update($validatedData)) {
-            return redirect()->route('ozellik.index')->with('success', $attribute->name . ' başarıyla güncellendi.');
+            return redirect()->route('ozellik.index')->with('success', $attribute->name . ' güncellendi.');
         } else {
-            return redirect()->route('ozellik.index')->with('fail', $attribute->name . ' özelliği güncellenirken bir hata oluştu.');
+            return redirect()->route('ozellik.index')->with('fail', $attribute->name . ' güncellenirken bir hata oluştu.');
         }
-
     }
 
     /**
@@ -164,9 +163,9 @@ class AttributeController extends Controller
         }
 
         if ($attribute->delete()) {
-            return redirect()->route('ozellik.index')->with('success', $attribute->name . ' başarıyla özelliklerden silindi.');
+            return redirect()->route('ozellik.index')->with('success', $attribute->name . ' veritabanından silindi.');
         } else {
-            return redirect()->route('ozellik.index')->with('fail', $attribute->name . ' özelliği silinirken bir hata oluştu.');
+            return redirect()->route('ozellik.index')->with('fail', $attribute->name . ' veritabanından silinirken bir hata oluştu.');
         }
     }
 }

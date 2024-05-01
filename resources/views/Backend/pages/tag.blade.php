@@ -32,9 +32,7 @@
                         <tr>
                             <th>#</th>
                             <th>Adı</th>
-                            <th>Tip</th>
                             <th>Slug</th>
-                            <th>Açıklama</th>
                             <th>Durum</th>
                             <th>İşlem</th>
                         </tr>
@@ -44,9 +42,7 @@
                             <tr>
                                 <td>{{ $tag->id }}</td>
                                 <td>{{ $tag->name }}</td>
-                                <td>{{ $tag->option }}</td>
                                 <td>{{ $tag->slug }}</td>
-                                <td>{{ $tag->description }}</td>
                                 <td>
                                     <form action="{{ route('etiketDurumunuDegistir', $tag->id) }}" method="POST">
                                         @csrf

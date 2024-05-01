@@ -10,5 +10,4 @@ class FrontendController extends Controller
     {
         return view('Frontend.pages.home');
     }
-
 }

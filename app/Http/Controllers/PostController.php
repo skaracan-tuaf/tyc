@@ -18,15 +18,15 @@ class PostController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $posts = Post::where('status', '!=' , -1)->get();
-        return view('Backend.pages.post', compact('categories','posts'));
+        $posts = Post::where('status', '!=', -1)->get();
+        return view('Backend.pages.post', compact('categories', 'posts'));
     }
 
     public function indexDeleted()
     {
         $categories = Category::all();
         $posts = Post::where('status', -1);
-        return view('Backend.pages.post', compact('categories','posts'));
+        return view('Backend.pages.post', compact('categories', 'posts'));
     }
 
     /**
@@ -100,10 +100,10 @@ class PostController extends Controller
 
             // Makale kaydedilir ve başarılı mesajı döndürülür
             if ($post->save()) {
-                return redirect()->route('makale.index')->with('success', $post->title . ' başarıyla makalelere eklendi.');
+                return redirect()->route('makale.index')->with('success', $post->title . ' veritabanına eklendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür
-                return redirect()->route('makale.index')->with('fail', 'Makale eklenirken bir hata oluştu.');
+                return redirect()->route('makale.index')->with('fail', $post->title . 'veritabanına eklenirken bir hata oluştu.');
             }
         } else {
             // Doğrulama başarısız olursa hatalar kullanıcıya gösterilir
@@ -111,7 +111,6 @@ class PostController extends Controller
             $errorMessage = implode("\n", $errors);
             return redirect()->route('makale.index')->with('fail', $errorMessage);
         }
-
     }
 
     /**
@@ -198,10 +197,10 @@ class PostController extends Controller
 
             // Makale kaydedilir ve başarılı mesajı döndürülür
             if ($post->update()) {
-                return redirect()->route('makale.index')->with('success', $post->title . ' başarıyla makalelere eklendi.');
+                return redirect()->route('makale.index')->with('success', $post->title . ' veritabanına eklendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür
-                return redirect()->route('makale.index')->with('fail', 'Makale eklenirken bir hata oluştu.');
+                return redirect()->route('makale.index')->with('fail', $post->title . ' veritabanına eklenirken bir hata oluştu.');
             }
         } else {
             // Doğrulama başarısız olursa hatalar kullanıcıya gösterilir
@@ -225,14 +224,14 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $post->update(['status' => -1]);
-        return redirect()->route('makale.index')->with('success', $post->title . ' makalesi başarıyla arşivlendi.');
+        return redirect()->route('makale.index')->with('success', $post->title . ' arşivlendi.');
     }
 
     public function restore($id)
     {
         $post = Post::findOrFail($id);
         $post->update(['status' => 1]);
-        return redirect()->route('makale.index')->with('success', $post->title . ' makalesi başarıyla kurtarıldı.');
+        return redirect()->route('makale.index')->with('success', $post->title . ' arşivden kurtarıldı.');
     }
 
 
@@ -247,9 +246,10 @@ class PostController extends Controller
         }
 
         if ($post->delete()) {
-            return redirect()->route('makale.index')->with('success', $post->title . ' başarıyla makalelerden silindi.');
+            Storage::delete('public/' . $post->image);
+            return redirect()->route('makale.index')->with('success', $post->title . ' veritabanından silindi.');
         } else {
-            return redirect()->route('makale.index')->with('fail', $post->title . ' makalesi silinirken bir hata oluştu.');
+            return redirect()->route('makale.index')->with('fail', $post->title . ' veritabanından silinirken bir hata oluştu.');
         }
     }
 }

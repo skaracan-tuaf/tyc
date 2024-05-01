@@ -62,16 +62,16 @@ class MunitionController extends Controller
         }
 
         // Redirect to index page with success message
-        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' mühimmatı başarıyla oluşturuldu.');
+        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına eklendi.');
     }
 
     private function processAndSaveImage($request, $munition, $imageName, $imagePath)
     {
         if ($request->hasFile($imageName)) {
             $file = $request->file($imageName);
-            $fileName = $this->generateUniqueFileName($file->getClientOriginalExtension());
+            $fileName = $file->getClientOriginalName(); // Orijinal dosya adını al
 
-            // Save the file to storage
+            // Save the file to storage with original name
             $file->storeAs('public/munition_images', $fileName);
 
             // Create and save image record
@@ -85,12 +85,30 @@ class MunitionController extends Controller
         }
     }
 
-    private function generateUniqueFileName($extension)
+    private function processAndUpdateImage($request, $munition, $imageName, $imagePath)
     {
-        // Generate a unique filename
-        $uniqueName = uniqid();
-        return 'munition_image_' . time() . '_' . $uniqueName . '.' . $extension;
+        if ($request->hasFile($imageName)) {
+            $file = $request->file($imageName);
+            $fileName = $file->getClientOriginalName(); // Orijinal dosya adını al
+
+            // Create and save image record
+            $munitionImage = Image::findOrFail($munition->id);
+            if ($munitionImage) {
+                $munitionImage->url = 'munition_images/' . $fileName;
+                $munitionImage->update();
+            } else {
+                $munitionImage = new Image();
+                $file->storeAs('public/munition_images', $fileName);
+                $munitionImage->munition_id = $munition->id;
+                $munitionImage->url = 'munition_images/' . $fileName;
+                $munitionImage->save();
+            }
+
+            // Set the image path in the request
+            $request->merge([$imagePath => 'munition_images/' . $fileName]);
+        }
     }
+
     /**
      * Display the specified resource.
      */
@@ -114,7 +132,7 @@ class MunitionController extends Controller
     {
         $munition = Munition::findOrFail($id);
         $munition->update(['status' => !$munition->status]);
-        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' durumu başarıyla değiştirildi.');
+        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' durumu değiştirildi.');
     }
 
     /**
@@ -122,27 +140,41 @@ class MunitionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Gelen isteği doğrula
+        // Validate the incoming request
         $validatedData = $request->validate([
             'name' => 'required|string',
-            'category_id' => 'nullable|exists:categories,id',
+            'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
-            'origin' => 'nullable|string',
+            'origin' => 'required|string',
             'summary' => 'nullable|string',
             'description' => 'nullable|string',
             'status' => 'boolean'
         ]);
 
-        // Slug oluştur
-        $slug = Str::slug($validatedData['name']);
-        $validatedData['slug'] = $slug;
-
-        // Mühimmatı güncelle
+        // Find the munition by its ID
         $munition = Munition::findOrFail($id);
-        $munition->update($validatedData);
 
-        // Başarıyla güncellendiğine dair mesajla birlikte index sayfasına yönlendir
-        return redirect()->route('muhimmat.index')->with('success', 'Mühimmat başarıyla güncellendi.');
+        // Update the munition data
+        $munition->name = $validatedData['name'];
+        $munition->category_id = $validatedData['category_id'];
+        $munition->price = $validatedData['price'];
+        $munition->origin = $validatedData['origin'];
+        $munition->summary = $validatedData['summary'];
+        $munition->description = $validatedData['description'];
+        $munition->status = $validatedData['status'];
+
+        // Save the updated munition data
+        $munition->save();
+
+        // Process and save images
+        for ($i = 1; $i <= 6; $i++) {
+            $imageName = 'munitionImage' . $i;
+            $imagePath = 'imagePath' . $i;
+            $this->processAndUpdateImage($request, $munition, $imageName, $imagePath);
+        }
+
+        // Redirect to index page with success message
+        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' güncellendi.');
     }
 
     /**
@@ -163,9 +195,9 @@ class MunitionController extends Controller
         }
 
         if ($munition->delete()) {
-            return redirect()->route('muhimmat.index')->with('success', $munition->name . ' başarıyla muhimmatlardan silindi.');
+            return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına silindi.');
         } else {
-            return redirect()->route('muhimmat.index')->with('fail', $munition->name . ' muhimmatı silinirken bir hata oluştu.');
+            return redirect()->route('muhimmat.index')->with('fail', $munition->name . ' veritabanından silinirken bir hata oluştu.');
         }
     }
 }

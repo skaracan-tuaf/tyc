@@ -31,6 +31,7 @@ Route::prefix('yonetim')->group(function () {
     Route::put('/kategori/{id}/durum-degistir', [CategoryController::class, 'changeStatus'])->name('kategoriDurumunuDegistir');
     Route::put('/ozellik/{id}/durum-degistir', [AttributeController::class, 'changeStatus'])->name('ozellikDurumunuDegistir');
     Route::put('/muhimmat/{id}/durum-degistir', [MunitionController::class, 'changeStatus'])->name('muhimmatDurumunuDegistir');
+    Route::put('/etiket/{id}/durum-degistir', [TagController::class, 'changeStatus'])->name('etiketDurumunuDegistir');
     Route::put('/makale/{id}/durum-degistir', [PostController::class, 'changeStatus'])->name('makaleDurumunuDegistir');
     Route::put('/makale/{id}/arsivle', [PostController::class, 'remove'])->name('makaleyiArsivle');
     Route::get('/makale/arsiv', [PostController::class, 'indexDeleted'])->name('arsiviGoster');

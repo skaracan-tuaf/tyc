@@ -87,7 +87,7 @@
 
                                             <div id="resimEkleAlani">
                                                 <img id="image" src="" alt="">
-                                                <input type="hidden" id="croppedImage" name="croppedImage" required>
+                                                <input type="hidden" id="croppedImage" name="croppedImage" {{ isset($category) ? '' : 'required' }}>
                                                 @if (isset($category) && !empty($category->image))
                                                     <div id="previewImage" class="image-container"
                                                         style="display: flex; justify-content: center; align-items: center;">

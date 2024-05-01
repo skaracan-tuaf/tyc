@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/summernote/summernote-lite.css') }}">
 
     <link rel="stylesheet" href="{{ asset('backend_assets/compiled/css/form-editor-summernote.css') }}">
+
+    <style>
+        .note-editor.note-frame .note-editing-area .note-editable {
+            background-color: #ffffff;
+        }
+    </style>
 @endsection
 
 @section('page-title', 'Makaleler')
@@ -30,146 +36,106 @@
                             @method('PUT')
                         @endif
                         <div class="card-header">
-                            <h4 class="card-title">
-                                <label for="previewImage" class="form-label">Resim</label>
-                            </h4>
-
+                            <label for="previewImage" class="form-label">Resim</label>
                             <div id="resimEkleAlani">
                                 <img id="image" src="" alt="">
                                 <input type="hidden" id="croppedImage" name="croppedImage" required>
                                 @if (isset($post) && !empty($post->image))
-                                    <div id="previewImage" class="image-container"
-                                        style="display: flex; justify-content: center; align-items: center;">
+                                    <div id="previewImage" class="image-container">
                                         <img src="{{ asset('storage/' . $post->image) }}" alt=""
                                             class="img-fluid mt-1">
                                     </div>
                                 @endif
-                                <div class="img-container mt-3" id="previewContainer"
-                                    style="display: flex; justify-content: center; align-items: center;">
-                                </div>
+                                <div class="img-container mt-3" id="previewContainer"></div>
                                 <input type="file" class="form-control" id="imageInput" name="postImage" accept="image/*"
                                     {{ isset($post) ? '' : 'required' }}>
                             </div>
                         </div>
-
-
-
                         <div class="card-body">
-
-                            <h4 class="card-title">
-                                <label for="post-title" class="form-label">Kategori</label>
-                                <div class="form-label">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="category" class="form-label">Kategori</label>
+                                </div>
+                                <div class="col-6 text-end">
                                     <a href="{{ route('kategori.create') }}">Yeni kategori
                                         ekle</a>
                                 </div>
-                                <fieldset class="form-group">
-                                    <select class="form-select" name="category_id" id="category">
-                                        @if ($categories->isEmpty())
-                                            <option value="" selected disabled>Kategori bulunamadı! Lütfen
-                                                kategori ekleyin.</option>
-                                        @else
+                            </div>
+                            <fieldset class="form-group">
+                                <select class="form-select" name="category_id" id="category" required>
+                                    @if ($categories->isEmpty())
+                                        <option value="" selected disabled>Kategori bulunamadı! Lütfen kategori
+                                            ekleyin.</option>
+                                    @else
+                                        @php
+                                            $selectedCategoryId = isset($post) ? optional($post->category)->id : null;
+                                        @endphp
+                                        <option value="" selected disabled>Kategori</option>
+                                        @foreach ($categories as $cat)
                                             @php
-                                                $selectedCategoryId = isset($munition)
-                                                    ? optional($munition->category)->id
-                                                    : null;
+                                                $categoryName = $cat->name;
+                                                $parentCategories = [];
+
+                                                $currentCategory = $cat;
+                                                while ($currentCategory->parent) {
+                                                    array_unshift($parentCategories, $currentCategory->parent->name);
+                                                    $currentCategory = $currentCategory->parent;
+                                                }
+
+                                                if (!empty($parentCategories)) {
+                                                    $categoryName =
+                                                        implode('->', $parentCategories) . '->' . $cat->name;
+                                                }
                                             @endphp
-                                            <option value="" selected disabled>Kategori</option>
-                                            @foreach ($categories as $cat)
-                                                @php
-                                                    $categoryName = $cat->name;
-                                                    $parentCategories = [];
-
-                                                    // Kategorinin üst kategorilerini bul ve isimlerini bir diziye ekle
-                                                    $currentCategory = $cat;
-                                                    while ($currentCategory->parent) {
-                                                        array_unshift(
-                                                            $parentCategories,
-                                                            $currentCategory->parent->name,
-                                                        );
-                                                        $currentCategory = $currentCategory->parent;
-                                                    }
-
-                                                    // Kategori ismini, üst kategorilerle birleştir
-                                                    if (!empty($parentCategories)) {
-                                                        $categoryName =
-                                                            implode('->', $parentCategories) .
-                                                            '->' .
-                                                            $cat->name;
-                                                    }
-                                                @endphp
-                                                <option value="{{ $cat->id }}"
-                                                    {{ $selectedCategoryId == $cat->id ? 'selected' : '' }}>
-                                                    {{ $categoryName }}
-                                                </option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </fieldset>
-                            </h4>
-
+                                            <option value="{{ $cat->id }}"
+                                                {{ $selectedCategoryId == $cat->id ? 'selected' : '' }}>
+                                                {{ $categoryName }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </fieldset>
                         </div>
-
                         <div class="card-body">
-                            <h4 class="card-title">
-                                <label for="post-title" class="form-label">Başlık</label>
-                                <input type="text" id="post-title" class="form-control" placeholder="Makale  Başlığı"
-                                    name="title" value="{{ isset($post) ? $post->title : '' }}" required />
-                            </h4>
+                            <label for="post-title" class="form-label">Başlık</label>
+                            <input type="text" id="post-title" class="form-control" placeholder="Makale Başlığı"
+                                name="title" value="{{ isset($post) ? $post->title : '' }}" required />
                         </div>
-
                         <div class="card-body">
-                            <h4 class="card-title">
-                                <label for="post-summary" class="form-label">Özet</label>
-                                <textarea class="form-control" id="post-summary" rows="3" name="summary" placeholder="Özet" required>{{ isset($post) ? $post->summary : '' }}</textarea>
-                            </h4>
+                            <label for="post-summary" class="form-label">Özet</label>
+                            <textarea class="form-control" id="post-summary" rows="3" name="summary" placeholder="Özet" required>{{ isset($post) ? $post->summary : '' }}</textarea>
                         </div>
-
                         <div class="card-body">
-                            <h4 class="card-title">
-                                <label for="summernote" class="form-label">İçerik</label>
-                            </h4>
-                            <!--div id="summernote" name='content'></div-->
-
+                            <label for="summernote" class="form-label">İçerik</label>
                             <textarea id="summernote" name='content'>{{ isset($post) ? $post->content : '' }}</textarea>
                         </div>
-
                         <div class="card-body">
                             <fieldset>
-                                <h4 class="card-title">
-                                    <label for="post-status" class="form-label">Durum</label>
-                                </h4>
+                                <label for="post-status" class="form-label">Durum</label>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" id="post-status1"
                                         value="1" required @if (!isset($post) || (isset($post) && $post->status)) checked @endif />
-                                    <label class="form-check-label form-label" for="post-status1">
-                                        Aktif
-                                    </label>
+                                    <label class="form-check-label form-label" for="post-status1">Aktif</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" id="post-status2"
                                         value="0" required @if (isset($post) && !$post->status) checked @endif />
-                                    <label class="form-check-label form-label" for="post-status2">
-                                        Pasif
-                                    </label>
+                                    <label class="form-check-label form-label" for="post-status2">Pasif</label>
                                 </div>
                             </fieldset>
                         </div>
-
                         <hr>
-
                         <div class="col-12 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary me-1 mb-1">
-                                {{ isset($post) ? 'Güncelle' : 'Ekle' }}
-                            </button>
-                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">
-                                Temizle
-                            </button>
+                            <button type="submit"
+                                class="btn btn-primary me-1 mb-1">{{ isset($post) ? 'Güncelle' : 'Ekle' }}</button>
+                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Temizle</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </section>
+
 @endsection
 
 @section('scripts')
