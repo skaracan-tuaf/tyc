@@ -34,7 +34,6 @@ Route::prefix('yonetim')->group(function () {
     Route::put('/etiket/{id}/durum-degistir', [TagController::class, 'changeStatus'])->name('etiketDurumunuDegistir');
     Route::put('/makale/{id}/durum-degistir', [PostController::class, 'changeStatus'])->name('makaleDurumunuDegistir');
     Route::put('/makale/{id}/arsivle', [PostController::class, 'remove'])->name('makaleyiArsivle');
-    Route::get('/makale/arsiv', [PostController::class, 'indexDeleted'])->name('arsiviGoster');
 });
 
 

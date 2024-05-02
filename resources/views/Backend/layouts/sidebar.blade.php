@@ -90,11 +90,11 @@
                         <li class="submenu-item{{ request()->routeIs('makale.index') ? ' active' : '' }}  ">
                             <a href="{{ route('makale.index') }}" class="submenu-link">Makaleler</a>
                         </li>
-                        <li class="submenu-item{{ request()->routeIs('makale.index') ? ' active' : '' }}  ">
-                            <a href="{{ route('makale.index') }}" class="submenu-link">Yorumlar</a>
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link">Yorumlar</a>
                         </li>
-                        <li class="submenu-item{{ request()->routeIs('arsiviGoster') ? ' active' : '' }}">
-                            <a href="{{ route('arsiviGoster') }}" class="submenu-link">Arşiv</a>
+                        <li class="submenu-item{{-- request()->routeIs('arsiviGoster') ? ' active' : '' --}}">
+                            <a href="{{-- route('arsiviGoster') --}}" class="submenu-link">Arşiv</a>
                         </li>
                     </ul>
                 </li>

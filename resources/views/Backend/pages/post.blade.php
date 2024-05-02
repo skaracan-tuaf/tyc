@@ -86,11 +86,8 @@
                                         <form action="{{ route('makaleyiArsivle', $post->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
-                                            <button class="btn icon icon-left btn-dark me-2 text-nowrap">
-                                                <a href="{{ route('makaleyiArsivle', $post->id) }}"
-                                                    style="color: white; text-decoration: none;">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
+                                            <button type="submit" class="btn icon icon-left btn-dark me-2 text-nowrap">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                         <form id="deleteForm" action="{{ route('makale.destroy', $post->id) }}"

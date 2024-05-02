@@ -171,6 +171,63 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <br>
+                                <hr><br>
+
+                                <div class="row">
+                                    @foreach ($attributes as $attribute)
+                                        <div class="form-group">
+                                            <label for="{{ $attribute->slug }}">{{ $attribute->name }}</label>
+                                            @if ($attribute->option === 'Tam Sayı')
+                                                <input type="number" class="form-control" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}]">
+                                            @elseif($attribute->option === 'Ondalık')
+                                                <input type="number" class="form-control" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}]" min="0" step="0.01">
+                                            @elseif($attribute->option === 'Yazı')
+                                                <input type="text" class="form-control" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}]">
+                                            @elseif($attribute->option === 'Doğrulama')
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}][value]" value="1">
+                                                    <label class="form-check-label" for="{{ $attribute->slug }}">
+                                                        {{ $attribute->name }}
+                                                    </label>
+                                                </div>
+                                            @elseif($attribute->option === 'Aralık')
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Min</span>
+                                                    </div>
+                                                    <input type="number" class="form-control"
+                                                        id="{{ $attribute->slug }}_min"
+                                                        name="attributes[{{ $attribute->id }}][min]">
+                                                    &nbsp;&emsp;
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Max</span>
+                                                    </div>
+                                                    <input type="number" class="form-control"
+                                                        id="{{ $attribute->slug }}_max"
+                                                        name="attributes[{{ $attribute->id }}][max]">
+                                                </div>
+                                            @elseif($attribute->option === 'Renk')
+                                                <input type="color" class="form-control" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}]">
+                                            @elseif($attribute->option === 'Resim')
+                                                <!-- Resim için gerekli alanlar -->
+                                            @elseif($attribute->option === 'Buton')
+                                                <!-- Buton için gerekli alanlar -->
+                                            @elseif($attribute->option === 'Liste')
+                                                <!-- Liste için gerekli alanlar -->
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <br>
+                                <hr><br>
                                 <div class="row" id="resimEkleAlani">
                                     @for ($i = 1; $i <= 6; $i++)
                                         <div class="col-12 col-xl-6">

@@ -23,13 +23,6 @@ class PostController extends Controller
         return view('Backend.pages.post', compact('categories', 'posts'));
     }
 
-    public function indexDeleted()
-    {
-        $categories = Category::all();
-        $posts = Post::where('status', -1);
-        return view('Backend.pages.post', compact('categories', 'posts'));
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -45,75 +38,52 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $data = [
-            'title' => $request->input('title'),
-            'category_id' => $request->input('category_id'),
-            'image' => $request->hasFile('postImage') ? $request->file('postImage')->getClientOriginalName() : null,
-            'summary' => $request->input('summary'),
-            'content' => $request->input('content'),
-            'status' => $request->input('status'),
-        ];
-
         // Doğrulama kurallarının belirlenmesi
-        $rules = [
+        $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'required|string',
+            'postImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'summary' => 'nullable|string',
             'content' => 'nullable|string',
-            'status' => 'required|string',
-        ];
-
-        // Veri doğrulamasının yapılması
-        $validator = Validator::make($data, $rules);
+            'status' => 'required|integer',
+            'tags' => 'nullable|array',
+        ]);
 
         // Verinin doğrulamasının geçip geçmediğinin kontrol edilmesi
-        if ($validator->passes()) {
-            // Kategori modelinin oluşturulması
-            $post = new Post();
-            $post->title = $data['title'];
-            $post->slug = Str::slug($data['title']);
-            $post->category_id = $data['category_id'];
-            $post->summary = $data['summary'];
-            $post->content = $data['content'];
-            $post->status = $data['status'];
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-            // Kullanıcı resim yüklediyse işlemler yapılır
-            if ($request->hasFile('postImage')) {
-                // Resmin base64 verisi alınır ve resim dosyası oluşturulur
-                $croppedImageData = $request->input('croppedImage');
-                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
+        // Kategori modelinin oluşturulması
+        $post = new Post();
+        $post->title = $request->input('title');
+        $post->slug = Str::slug($request->input('title'));
+        $post->category_id = $request->input('category_id');
+        $post->summary = $request->input('summary');
+        $post->content = $request->input('content');
+        $post->status = $request->input('status');
 
-                // Geçici bir dosya oluşturulur ve resim verisi yazılır
-                $tempFilePath = tempnam(sys_get_temp_dir(), 'post_image_');
-                file_put_contents($tempFilePath, $image);
+        // Kullanıcı resim yüklediyse işlemler yapılır
+        if ($request->hasFile('postImage')) {
+            $image = $request->file('postImage');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/post_images', $imageName);
+            $post->image = 'post_images/' . $imageName;
+        }
 
-                // Resmin dosya bilgileri alınır ve dosya adı oluşturulur
-                $imageData = $request->file('postImage');
-                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
-                $imageExtension = $imageData->getClientOriginalExtension();
-                $fullImageName = $imageName . '.' . $imageExtension;
-
-                // Geçici dosya Storage'a yüklenir ve dosya yolu kaydedilir
-                $storagePath = Storage::putFileAs('public/post_images', new File($tempFilePath), $fullImageName);
-                $post->image = 'post_images/' . $fullImageName;
+        // Makale kaydedilir ve başarılı mesajı döndürülür
+        if ($post->save()) {
+            if ($request->has('tags')) {
+                $tags = Tag::find($request->input('tags'));
+                $post->tags()->attach($tags);
             }
-
-
-            // Makale kaydedilir ve başarılı mesajı döndürülür
-            if ($post->save()) {
-                return redirect()->route('makale.index')->with('success', $post->title . ' veritabanına eklendi.');
-            } else {
-                // Kayıt başarısız olursa hata mesajı döndürülür
-                return redirect()->route('makale.index')->with('fail', $post->title . 'veritabanına eklenirken bir hata oluştu.');
-            }
+            return redirect()->route('makale.index')->with('success', $post->title . ' veritabanına eklendi.');
         } else {
-            // Doğrulama başarısız olursa hatalar kullanıcıya gösterilir
-            $errors = $validator->errors()->all();
-            $errorMessage = implode("\n", $errors);
-            return redirect()->route('makale.index')->with('fail', $errorMessage);
+            // Kayıt başarısız olursa hata mesajı döndürülür
+            return redirect()->route('makale.index')->with('fail', $post->title . 'veritabanına eklenirken bir hata oluştu.');
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -130,8 +100,9 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('Backend.pages.post_add_edit', compact('post', 'categories'));
+        return view('Backend.pages.post_add_edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -154,7 +125,7 @@ class PostController extends Controller
         $rules = [
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'required|string',
+            'image' => 'nullable|string',
             'summary' => 'nullable|string',
             'content' => 'nullable|string',
             'status' => 'required|string',
@@ -199,7 +170,10 @@ class PostController extends Controller
 
             // Makale kaydedilir ve başarılı mesajı döndürülür
             if ($post->update()) {
-                return redirect()->route('makale.index')->with('success', $post->title . ' veritabanına eklendi.');
+                if ($request->has('tags')) {
+                    $post->tags()->sync($request->input('tags'));
+                }
+                return redirect()->route('makale.index')->with('success', $post->title . ' güncellendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür
                 return redirect()->route('makale.index')->with('fail', $post->title . ' veritabanına eklenirken bir hata oluştu.');

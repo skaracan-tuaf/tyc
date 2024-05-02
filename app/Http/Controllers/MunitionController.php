@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Attribute;
 use App\Models\Munition;
 use App\Models\Image;
 use Illuminate\Http\Request;
@@ -28,7 +29,8 @@ class MunitionController extends Controller
     {
         $categories = Category::all();
         $munitions = Munition::all();
-        return view('Backend.pages.munition_add_edit', compact('categories', 'munitions'));
+        $attributes = Attribute::all();
+        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munitions'));
     }
 
     /**
@@ -69,7 +71,8 @@ class MunitionController extends Controller
     {
         if ($request->hasFile($imageName)) {
             $file = $request->file($imageName);
-            $fileName = $file->getClientOriginalName(); // Orijinal dosya adını al
+            //$fileName = $file->getClientOriginalName(); // Orijinal dosya adını al
+            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalName();
 
             // Save the file to storage with original name
             $file->storeAs('public/munition_images', $fileName);
@@ -123,9 +126,10 @@ class MunitionController extends Controller
     public function edit($id)
     {
         $categories = Category::all();
+        $attributes = Attribute::all();
         $munition = Munition::findOrFail($id);
 
-        return view('Backend.pages.munition_add_edit', compact('categories', 'munition'));
+        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes','munition'));
     }
 
     public function changeStatus($id)

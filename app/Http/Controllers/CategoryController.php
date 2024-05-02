@@ -96,7 +96,7 @@ class CategoryController extends Controller
 
             // Kategori kaydedilir ve başarılı mesajı döndürülür
             if ($category->save()) {
-                return redirect()->route('kategori.index')->with('success', $category->name . ' veritabanından eklendi.');
+                return redirect()->route('kategori.index')->with('success', $category->name . ' veritabanına eklendi.');
             } else {
                 // Kayıt başarısız olursa hata mesajı döndürülür
                 return redirect()->route('kategori.index')->with('fail', $category->name . 'veritabanına eklenirken bir hata oluştu.');

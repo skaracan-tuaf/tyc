@@ -132,13 +132,17 @@
                                 <div class="col-6">
                                     <h6>Etiket seçimi</h6>
                                     <p>Birden fazla etiket seçilebilir ve <code>X</code> tuşu ile etiket kaldırılabilir.</p>
-                                        <div class="form-group">
-                                            <select class="choices form-select multiple-remove" multiple="multiple" name="tags[]">
-                                                @foreach($tags as $tag)
-                                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    <div class="form-group">
+                                        <select class="choices form-select multiple-remove" multiple="multiple"
+                                            name="tags[]">
+                                            @foreach ($tags as $tag)
+                                                <option value="{{ $tag->id }}"
+                                                    {{ isset($post) && $post->tags->contains($tag->id) ? 'selected' : '' }}>
+                                                    {{ $tag->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="card-body">
