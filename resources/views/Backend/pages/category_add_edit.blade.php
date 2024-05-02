@@ -85,14 +85,35 @@
                                         <div class="form-group mandatory">
                                             <label for="category-image" class="form-label">Resim</label>
 
+                                            <div class="col-12">
+                                                <div class="form-group row align-items-center">
+                                                    <div class="row" style="display: flex; align-items: center;">
+                                                        <div class="col-2">
+                                                            <label class="col-form-label" for="first-name">En / Boy
+                                                                Oranı</label>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <input type="number" id="input-width" class="form-control"
+                                                                name="iwidth" placeholder="Genişlik" min="1">
+                                                        </div>
+                                                        <span class="col-1 text-center">/</span>
+                                                        <div class="col-4">
+                                                            <input type="number" id="input-length" class="form-control"
+                                                                name="ilength" placeholder="Yükseklik" min="1">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div id="resimEkleAlani">
-                                                <img id="image" src="" alt="">
-                                                <input type="hidden" id="croppedImage" name="croppedImage" {{ isset($category) ? '' : 'required' }}>
+                                                <img id="image" src="" alt="" class="col-3">
+                                                <input type="hidden" id="croppedImage" name="croppedImage"
+                                                    {{ isset($category) ? '' : 'required' }}>
                                                 @if (isset($category) && !empty($category->image))
                                                     <div id="previewImage" class="image-container"
                                                         style="display: flex; justify-content: center; align-items: center;">
                                                         <img src="{{ asset('storage/' . $category->image) }}" alt=""
-                                                            class="img-fluid mt-1">
+                                                            class="img-fluid">
                                                     </div>
                                                 @endif
                                                 <div class="img-container mt-3" id="previewContainer"
@@ -160,7 +181,6 @@
 
 @section('scripts')
     <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
-
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -171,8 +191,6 @@
             let previewImage = document.getElementById('previewImage');
 
             let cropper;
-
-            const _aspectRatio = 16 / 9; // width="273" height="376"
 
             imageInput.addEventListener('change', function() {
                 let file = this.files[0];
@@ -199,7 +217,9 @@
 
                         // Cropper nesnesini oluştur
                         cropper = new Cropper(image, {
-                            aspectRatio: _aspectRatio,
+                            aspectRatio: parseInt(document.getElementById('input-width')
+                                .value) / parseInt(document.getElementById('input-length')
+                                    .value), ///_aspectRatio,
                             viewMode: 1,
                             autoCropArea: 1,
                             responsive: true

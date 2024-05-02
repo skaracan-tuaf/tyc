@@ -37,8 +37,27 @@
                         @endif
                         <div class="card-header">
                             <label for="previewImage" class="form-label">Resim</label>
+                            <div class="col-12">
+                                <div class="form-group row align-items-center">
+                                    <div class="row" style="display: flex; align-items: center;">
+                                        <div class="col-2">
+                                            <label class="form-label" for="width-length">En / Boy
+                                                Oranı</label>
+                                        </div>
+                                        <div class="col-4" id="width-length">
+                                            <input type="number" id="input-width" class="form-control" name="iwidth"
+                                                placeholder="Genişlik" min="1">
+                                        </div>
+                                        <span class="col-1 text-center">/</span>
+                                        <div class="col-4">
+                                            <input type="number" id="input-length" class="form-control" name="ilength"
+                                                placeholder="Yükseklik" min="1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div id="resimEkleAlani">
-                                <img id="image" src="" alt="">
+                                <img id="image" src="" alt="" class="col-3">
                                 <input type="hidden" id="croppedImage" name="croppedImage" required>
                                 @if (isset($post) && !empty($post->image))
                                     <div id="previewImage" class="image-container">
@@ -154,8 +173,6 @@
 
             let cropper;
 
-            const _aspectRatio = 16 / 9; // width="273" height="376"
-
             imageInput.addEventListener('change', function() {
                 let file = this.files[0];
 
@@ -181,7 +198,9 @@
 
                         // Cropper nesnesini oluştur
                         cropper = new Cropper(image, {
-                            aspectRatio: _aspectRatio,
+                            aspectRatio: parseInt(document.getElementById('input-width')
+                                .value) / parseInt(document.getElementById('input-length')
+                                .value), ///_aspectRatio,
                             viewMode: 1,
                             autoCropArea: 1,
                             responsive: true
