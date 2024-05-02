@@ -4,10 +4,9 @@
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend_assets/extensions/choices.js/public/assets/styles/choices.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/summernote/summernote-lite.css') }}">
-
     <link rel="stylesheet" href="{{ asset('backend_assets/compiled/css/form-editor-summernote.css') }}">
-
     <style>
         .note-editor.note-frame .note-editing-area .note-editable {
             background-color: #ffffff;
@@ -129,19 +128,40 @@
                             <textarea id="summernote" name='content'>{{ isset($post) ? $post->content : '' }}</textarea>
                         </div>
                         <div class="card-body">
-                            <fieldset>
-                                <label for="post-status" class="form-label">Durum</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="post-status1"
-                                        value="1" required @if (!isset($post) || (isset($post) && $post->status)) checked @endif />
-                                    <label class="form-check-label form-label" for="post-status1">Aktif</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6>Etiket seçimi</h6>
+                                    <p>Birden fazla etiket seçilebilir ve <code>X</code> tuşu ile etiket kaldırılabilir.</p>
+                                        <div class="form-group">
+                                            <select class="choices form-select multiple-remove" multiple="multiple" name="tags[]">
+                                                @foreach($tags as $tag)
+                                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="post-status2"
-                                        value="0" required @if (isset($post) && !$post->status) checked @endif />
-                                    <label class="form-check-label form-label" for="post-status2">Pasif</label>
+                                <div class="col-6">
+                                    <div class="card-body">
+                                        <fieldset>
+                                            <label for="post-status" class="form-label">Durum</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="status"
+                                                    id="post-status1" value="1" required
+                                                    @if (!isset($post) || (isset($post) && $post->status)) checked @endif />
+                                                <label class="form-check-label form-label"
+                                                    for="post-status1">Aktif</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="status"
+                                                    id="post-status2" value="0" required
+                                                    @if (isset($post) && !$post->status) checked @endif />
+                                                <label class="form-check-label form-label"
+                                                    for="post-status2">Pasif</label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
                                 </div>
-                            </fieldset>
+                            </div>
                         </div>
                         <hr>
                         <div class="col-12 d-flex justify-content-end">
@@ -161,7 +181,8 @@
     <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/summernote/summernote-lite.min.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/pages/summernote.js') }}"></script>
-
+    <script src="{{ asset('backend_assets/extensions/choices.js/public/assets/scripts/choices.js') }}"></script>
+    <script src="{{ asset('backend_assets/static/js/pages/form-element-select.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

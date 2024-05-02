@@ -35,7 +35,8 @@
                             <th>Adı</th>
                             <th>Üst Kategori</th>
                             <th>Slug</th>
-                            <th>Toplam Ürün</th>
+                            <th>Mühimmat</th>
+                            <th>Makale</th>
                             <th>Açıklama</th>
                             <th>Durum</th>
                             <th>İşlem</th>
@@ -69,7 +70,8 @@
                                     {{ implode('->', $parentCategories) ?: '-' }}
                                 </td>
                                 <td>{{ $category->slug }}</td>
-                                <td>Toplam Ürün</td>
+                                <td>{{ $category->getTotalMunitionsCount() }}</td>
+                                <td>{{ $category->posts->count() }}</td>
                                 <td>{{ $category->description }}</td>
                                 <td>
                                     <form action="{{ route('kategoriDurumunuDegistir', $category->id) }}" method="POST">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -35,7 +36,8 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('Backend.pages.post_add_edit', compact('categories'));
+        $tags = Tag::all();
+        return view('Backend.pages.post_add_edit', compact('categories', 'tags'));
     }
 
     /**

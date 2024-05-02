@@ -36,6 +36,23 @@ class Category extends Model
         return $this->hasMany(Munition::class);
     }
 
+    public function getTotalMunitionsCount()
+    {
+        $total = $this->munitions()->count();
+
+        foreach ($this->children as $child) {
+            $total += $child->munitions()->count(); // Alt kategorinin mühimmat sayısını ekle
+
+            // Alt kategorinin alt kategorilerinin mühimmat sayısını eklemek için recursive olarak getTotalMunitionsCount çağır
+            // eğer ortadaki kategoriye ait mühimmat yoksa hesap hatalı çıkıyor.
+            foreach ($child->children as $grandChild) {
+                $total += $grandChild->getTotalMunitionsCount();
+            }
+        }
+
+        return $total;
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
