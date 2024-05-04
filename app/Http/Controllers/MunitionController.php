@@ -38,7 +38,7 @@ class MunitionController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the incoming request
+        // Gelen isteği doğrula
         $validatedData = $request->validate([
             'name' => 'required|string',
             'category_id' => 'required|exists:categories,id',
@@ -46,70 +46,56 @@ class MunitionController extends Controller
             'origin' => 'required|string',
             'summary' => 'nullable|string',
             'description' => 'nullable|string',
-            'status' => 'boolean'
+            'status' => 'boolean',
+            'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        // Create a slug
+        // Slug oluştur
         $slug = Str::slug($validatedData['name']);
         $validatedData['slug'] = $slug;
 
-        // Create the munition
+        // Mühimmatı oluştur
         $munition = Munition::create($validatedData);
 
-        // Process and save images
         for ($i = 1; $i <= 6; $i++) {
-            $imageName = 'munitionImage' . $i;
-            $imagePath = 'imagePath' . $i;
-            $this->processAndSaveImage($request, $munition, $imageName, $imagePath);
-        }
+            $imageInputName = 'imageInput' . $i;
+            $croppedImageName = 'croppedImage' . $i;
 
-        // Redirect to index page with success message
-        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına eklendi.');
-    }
+            if ($request->has($imageInputName)) {
+                // Get base64 image data
+                $croppedImageData = $request->input($croppedImageName);
 
-    private function processAndSaveImage($request, $munition, $imageName, $imagePath)
-    {
-        if ($request->hasFile($imageName)) {
-            $file = $request->file($imageName);
-            //$fileName = $file->getClientOriginalName(); // Orijinal dosya adını al
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalName();
+                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
 
-            // Save the file to storage with original name
-            $file->storeAs('public/munition_images', $fileName);
+                // Base64 kodunu dosyaya yaz
+                $tempImagePath = tempnam(sys_get_temp_dir(), 'cropped_image');
+                file_put_contents($tempImagePath, $image);
 
-            // Create and save image record
-            $munitionImage = new Image();
-            $munitionImage->munition_id = $munition->id;
-            $munitionImage->url = 'munition_images/' . $fileName;
-            $munitionImage->save();
+                $imageData = $request->file($imageInputName);
+                // Generate unique image name
+                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
+                $imageExtension = $imageData->getClientOriginalExtension();
+                $fullImageName = $imageName . '.' . $imageExtension;
 
-            // Set the image path in the request
-            $request->merge([$imagePath => 'munition_images/' . $fileName]);
-        }
-    }
+                //$imagePath = $imageData->storeAs('public/munition_images', $fullImageName);
 
-    private function processAndUpdateImage($request, $munition, $imageName, $imagePath)
-    {
-        if ($request->hasFile($imageName)) {
-            $file = $request->file($imageName);
-            $fileName = $file->getClientOriginalName(); // Orijinal dosya adını al
+                // Save image to storage
+                $storagePath = Storage::putFileAs('public/munition_images', new File($tempImagePath), $fullImageName);
 
-            // Create and save image record
-            $munitionImage = Image::findOrFail($munition->id);
-            if ($munitionImage) {
-                $munitionImage->url = 'munition_images/' . $fileName;
-                $munitionImage->update();
-            } else {
+                // Dosyayı sildikten sonra
+                //unlink($tempImagePath);
+
+                // Create and save image record in database
                 $munitionImage = new Image();
-                $file->storeAs('public/munition_images', $fileName);
+                $munitionImage->url = 'munition_images/' . $fullImageName;
                 $munitionImage->munition_id = $munition->id;
-                $munitionImage->url = 'munition_images/' . $fileName;
                 $munitionImage->save();
             }
-
-            // Set the image path in the request
-            $request->merge([$imagePath => 'munition_images/' . $fileName]);
         }
+
+        // Başarıyla tamamlandı mesajı ile birlikte index sayfasına yönlendir
+        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına eklendi.');
     }
 
     /**
@@ -129,7 +115,7 @@ class MunitionController extends Controller
         $attributes = Attribute::all();
         $munition = Munition::findOrFail($id);
 
-        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes','munition'));
+        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munition'));
     }
 
     public function changeStatus($id)
@@ -142,9 +128,9 @@ class MunitionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Munition $munition)
     {
-        // Validate the incoming request
+        // Gelen isteği doğrula
         $validatedData = $request->validate([
             'name' => 'required|string',
             'category_id' => 'required|exists:categories,id',
@@ -152,34 +138,58 @@ class MunitionController extends Controller
             'origin' => 'required|string',
             'summary' => 'nullable|string',
             'description' => 'nullable|string',
-            'status' => 'boolean'
+            'status' => 'boolean',
+            'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        // Find the munition by its ID
-        $munition = Munition::findOrFail($id);
+        // Slug oluştur
+        $slug = Str::slug($validatedData['name']);
+        $validatedData['slug'] = $slug;
 
-        // Update the munition data
-        $munition->name = $validatedData['name'];
-        $munition->category_id = $validatedData['category_id'];
-        $munition->price = $validatedData['price'];
-        $munition->origin = $validatedData['origin'];
-        $munition->summary = $validatedData['summary'];
-        $munition->description = $validatedData['description'];
-        $munition->status = $validatedData['status'];
+        // Mühimmatı güncelle
+        $munition->update($validatedData);
 
-        // Save the updated munition data
-        $munition->save();
+        // Mühimmatın eski resimlerini sil
+        $munition->images()->delete();
 
-        // Process and save images
+        // Yeni resimleri kaydet
+
         for ($i = 1; $i <= 6; $i++) {
-            $imageName = 'munitionImage' . $i;
-            $imagePath = 'imagePath' . $i;
-            $this->processAndUpdateImage($request, $munition, $imageName, $imagePath);
+            $imageInputName = 'imageInput' . $i;
+            $croppedImageName = 'croppedImage' . $i;
+
+            if ($request->has($imageInputName)) {
+                // Get base64 image data
+                $croppedImageData = $request->input($croppedImageName);
+
+                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
+
+                // Base64 kodunu dosyaya yaz
+                $tempImagePath = tempnam(sys_get_temp_dir(), 'cropped_image');
+                file_put_contents($tempImagePath, $image);
+
+                $imageData = $request->file($imageInputName);
+                // Generate unique image name
+                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
+                $imageExtension = $imageData->getClientOriginalExtension();
+                $fullImageName = $imageName . '.' . $imageExtension;
+
+                // Save image to storage
+                $storagePath = Storage::putFileAs('public/munition_images', new File($tempImagePath), $fullImageName);
+
+                // Create and save image record in database
+                $munitionImage = new Image();
+                $munitionImage->url = 'munition_images/' . $fullImageName;
+                $munitionImage->munition_id = $munition->id;
+                $munitionImage->save();
+            }
         }
 
-        // Redirect to index page with success message
-        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' güncellendi.');
+        // Başarıyla tamamlandı mesajı ile birlikte index sayfasına yönlendir
+        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanında güncellendi.');
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -229,23 +229,34 @@
                                 <br>
                                 <hr><br>
                                 <div class="row" id="resimEkleAlani">
+                                    <div class="col-12">
+                                        <div class="form-group row align-items-center">
+                                            <label class="col-2 col-form-label" for="first-name">En / Boy Oranı</label>
+                                            <div class="col-10 d-flex align-items-center">
+                                                <input type="number" id="input-width" class="form-control mr-2" name="iwidth" placeholder="Genişlik" min="1">
+                                                <span class="text-center mr-2">&nbsp;/&nbsp;</span>
+                                                <input type="number" id="input-length" class="form-control ml-2" name="ilength" placeholder="Yükseklik" min="1">
+                                                <div class="d-flex justify-content-end">
+                                                    &nbsp;<a href="#" class="btn btn-outline-primary">+</a>
+                                                    &nbsp;<a href="#" class="btn btn-outline-primary">-</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     @for ($i = 1; $i <= 6; $i++)
                                         <div class="col-12 col-xl-6">
                                             <div class="form-group">
-                                                <label for="imageInput{{ $i }}">Resim
-                                                    {{ $i }}</label>
-                                                <img id="image{{ $i }}" src="" alt=""
-                                                    class="img-fluid mt-3" style="max-width: 100%; height: auto;">
-                                                <input type="hidden" id="imagePath{{ $i }}"
-                                                    name="imagePath{{ $i }}">
-                                                @if (isset($munition) && isset($munition->images[$i - 1]))
-                                                    <img src="{{ asset('storage/' . $munition->images[$i - 1]->url) }}"
-                                                        alt="" class="img-fluid mt-3"
-                                                        style="max-width: 100%; height: auto;">
-                                                @endif
-                                                <input type="file" class="form-control"
-                                                    id="imageInput{{ $i }}"
-                                                    name="munitionImage{{ $i }}" accept="image/*">
+                                                <label for="imageInput{{ $i }}">Resim {{ $i }}<span style="color:red;"> *</span></label>
+                                                <img id="image{{ $i }}" src="" alt="" class="img-fluid mt-3" style="max-width: 100%; height: auto;">
+                                                <input type="hidden" id="croppedImage{{ $i }}" name="croppedImage{{ $i }}" required>
+                                                <div class="img-container mt-1 mb-3" id="previewContainer{{ $i }}" style="max-width: 100%; height: auto; overflow: hidden;">
+                                                    @if (isset($munition) && count($munition->images) >= $i && isset($munition->images[$i - 1]))
+                                                        <div id="previewImage{{ $i }}" class="image-container" style="position: relative; display: inline-block;">
+                                                            <img src="{{ asset('storage/' . $munition->images[$i - 1]->url) }}" alt="" class="img-fluid" style="max-width: 100%; height: auto;">
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <input type="file" class="form-control" id="imageInput{{ $i }}" name="imageInput{{ $i }}" accept="image/*">
                                                 <br>
                                             </div>
                                         </div>
@@ -302,37 +313,75 @@
 
 @section('scripts')
     <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
-
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const aspectRatio = 9 / 16;
+            let croppers = []; // Cropper nesnelerini saklayacak dizi
 
             for (let i = 1; i <= 6; i++) {
                 let imageInput = document.getElementById('imageInput' + i);
                 let image = document.getElementById('image' + i);
+                let previewContainer = document.getElementById('previewContainer' + i);
+                let croppedImageInput = document.getElementById('croppedImage' + i);
+                let previewImage = document.getElementById('previewImage' + i);
+                let cropper;
 
                 imageInput.addEventListener('change', function() {
                     let file = this.files[0];
                     if (file) {
                         let reader = new FileReader();
+
                         reader.onload = function(e) {
+                            if (cropper) {
+                                cropper.destroy();
+                            }
+
+                            if (previewImage) {
+                                previewImage.remove();
+                            }
+
+                            previewContainer.innerHTML = '';
+
                             image.src = e.target.result;
                             image.style.display = 'block';
 
-                            // Initialize Cropper for the image
-                            let cropper = new Cropper(image, {
-                                aspectRatio: aspectRatio,
+                            cropper = new Cropper(image, {
+                                aspectRatio: parseInt(document.getElementById('input-width')
+                                .value) / parseInt(document.getElementById('input-length')
+                                    .value), ///_aspectRatio,
                                 viewMode: 1,
                                 autoCropArea: 1,
                                 responsive: true
                             });
+
+                            // Cropper nesnesini diziye ekle
+                            croppers[i - 1] = cropper;
+
                         };
                         reader.readAsDataURL(file);
                     }
                 });
             }
+
+            let form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                for (let i = 1; i <= 6; i++) {
+                    let cropper = croppers[i - 1];
+
+                    if (cropper) {
+                        let croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+                        let croppedImageInput = document.getElementById('croppedImage' + i);
+                        croppedImageInput.value = croppedDataUrl;
+                        console.log(croppedImageInput.value);
+                    } else {
+                        console.log("hata var.");
+                    }
+                }
+
+                this.submit();
+            });
         });
     </script>
-
 @endsection

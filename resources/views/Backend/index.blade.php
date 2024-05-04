@@ -25,9 +25,33 @@
 
         <div id="main">
             <header class="mb-3">
-                <a href="#" class="burger-btn d-block d-xl-none">
-                    <i class="bi bi-justify fs-3"></i>
-                </a>
+                <div class="row">
+                    <div class="col-6">
+                        <a href="#" class="burger-btn d-block d-xl-none">
+                            <i class="bi bi-justify fs-3"></i>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <div class="dropdown float-end">
+                            <a href="#" id="topbarUserDropdown" class="user-dropdown d-flex align-items-center dropend dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="avatar avatar-md2">
+                                    <img src="{{ asset('backend_assets/compiled/jpg/2.jpg') }}" alt="Avatar">
+                                </div>
+                                <div class="text">
+                                    <h6 class="user-dropdown-name">Serkan KARACAN</h6>
+                                    <p class="user-dropdown-status text-sm text-muted">Yönetici</p>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="topbarUserDropdown">
+                                <li><a class="dropdown-item" href="#">Hesabım</a></li>
+                                <li><a class="dropdown-item" href="#">Ayarlar</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Oturumu Kapat</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </header>
 
             <div class="page-heading">
@@ -38,7 +62,7 @@
                             <p class="text-subtitle text-muted">@yield('page-subtitle')</p>
                         </div>
                         <div class="col-12 col-md-6 order-md-2 order-first">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header float-end">
                                 <ol class="breadcrumb">
 
                                     <li class="breadcrumb-item"><a href="{{ route('YoneticiAnaSayfa') }}">Dashboard</a>
