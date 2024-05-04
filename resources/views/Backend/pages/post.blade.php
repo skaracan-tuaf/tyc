@@ -1,6 +1,6 @@
 @extends('Backend.index')
 
-@section('title', 'Makale')
+@section('title', '| Makaleler')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/simple-datatables/style.css') }}">
@@ -34,8 +34,7 @@
                             <th>Resim</th>
                             <th>Başlık</th>
                             <th>Kategori</th>
-                            <th>Slug</th>
-                            <th>Açıklama</th>
+                            <th>Özet</th>
                             <th>Durum</th>
                             <th>İşlem</th>
                         </tr>
@@ -53,10 +52,9 @@
                                             width="40" height="40" alt="Varsayılan Resim">
                                     @endif
                                 </td>
-                                <td>{{ $post->title }}</td>
+                                <td style="word-wrap: break-word;">{{ $post->title }}</td>
                                 <td>{{ $post->category->name ?? 'Belirtilmemiş' }}</td>
-                                <td>{{ $post->slug }}</td>
-                                <td>{{ $post->summary }}</td>
+                                <td style="word-wrap: break-word;">{{ $post->summary }}</td>
                                 <td>
                                     <form action="{{ route('makaleDurumunuDegistir', $post->id) }}" method="POST">
                                         @csrf
@@ -76,8 +74,8 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <div class="comment-actions">
-                                        <button class="btn icon icon-left btn-primary me-2 text-nowrap">
+                                    <div class="buttons">
+                                        <button class="btn icon btn-primary">
                                             <a href="{{ route('makale.edit', $post->id) }}"
                                                 style="color: white; text-decoration: none;">
                                                 <i class="bi bi-pencil-square"></i>
@@ -86,7 +84,7 @@
                                         <form action="{{ route('makaleyiArsivle', $post->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
-                                            <button type="submit" class="btn icon icon-left btn-dark me-2 text-nowrap">
+                                            <button type="submit" class="btn icon btn-dark">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -94,7 +92,7 @@
                                             method="POST" class="delete-form d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn icon icon-left btn-danger me-2 text-nowrap">
+                                            <button type="submit" class="btn icon btn-danger">
                                                 <i class="bi bi-x-circle"></i>
                                             </button>
                                         </form>

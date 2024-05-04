@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->tinyInteger('status')->default(1); // -1 -> silinmis, 0 -> pasif, 1 -> aktif
             $table->string('image');
+            $table->timestamp('published_at')->nullable();
+            $table->timestamp('expired_at')->nullable();
             $table->timestamps();
         });
     }

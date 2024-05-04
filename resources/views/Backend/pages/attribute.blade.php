@@ -1,6 +1,6 @@
 @extends('Backend.index')
 
-@section('title', 'Özellik')
+@section('title', '| Özellikler')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/simple-datatables/style.css') }}">

@@ -1,6 +1,6 @@
 @extends('Backend.index')
 
-@section('title', 'Mühimmat')
+@section('title', '| Mühimmatlar')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/simple-datatables/style.css') }}">
@@ -33,11 +33,8 @@
                             <th>#</th>
                             <th>Kategori</th>
                             <th>Adı</th>
-                            <th>Slug</th>
                             <th>Ülke</th>
                             <th>Fiyat</th>
-                            <th>Özet</th>
-                            <th>Açıklama</th>
                             <th>Durum</th>
                             <th>İşlem</th>
                         </tr>
@@ -82,11 +79,8 @@
                                 <td>{{ $munition->id }}</td>
                                 <td>{{ $munition->category->name ?? 'Belirtilmemiş' }}</td>
                                 <td>{{ $munition->name }}</td>
-                                <td>{{ $munition->slug }}</td>
                                 <td>{{ myGetCountryName($munition->origin, $countries) }}</td>
                                 <td>{{ $munition->price }}</td>
-                                <td>{{ $munition->summary ?? 'N/A' }}</td>
-                                <td>{{ $munition->description ?? 'N/A' }}</td>
                                 <td>
                                     <form action="{{ route('muhimmatDurumunuDegistir', $munition->id) }}" method="POST">
                                         @csrf

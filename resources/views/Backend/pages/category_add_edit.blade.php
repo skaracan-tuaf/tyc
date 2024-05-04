@@ -1,6 +1,6 @@
 @extends('Backend.index')
 
-@section('title', 'Kategori')
+@section('title', '| Kategoriler')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">

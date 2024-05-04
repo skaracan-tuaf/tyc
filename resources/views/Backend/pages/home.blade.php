@@ -1,6 +1,6 @@
 @extends('Backend.index')
 
-@section('title', 'Ana Sayfa')
+@section('title', '| Ana Sayfa')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/compiled/css/iconly.css') }}">

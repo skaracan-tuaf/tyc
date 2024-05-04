@@ -1,10 +1,11 @@
 @extends('Backend.index')
 
-@section('title', 'Makale')
+@section('title', '| Makaleler')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/choices.js/public/assets/styles/choices.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend_assets/extensions/flatpickr/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/summernote/summernote-lite.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/compiled/css/form-editor-summernote.css') }}">
     <style>
@@ -55,18 +56,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="resimEkleAlani">
-                                <img id="image" src="" alt="" class="col-3">
-                                <input type="hidden" id="croppedImage" name="croppedImage" required>
-                                @if (isset($post) && !empty($post->image))
-                                    <div id="previewImage" class="image-container">
-                                        <img src="{{ asset('storage/' . $post->image) }}" alt=""
-                                            class="img-fluid mt-1">
+                            <div class="col-12">
+                                <div class="row justify-content-center">
+                                    <div class="col-6">
+                                        <div id="resimEkleAlani">
+                                            <img id="image" src="" alt="">
+                                            <input type="hidden" id="croppedImage" name="croppedImage" required>
+                                            @if (isset($post) && !empty($post->image))
+                                                <div id="previewImage" class="image-container">
+                                                    <img src="{{ asset('storage/' . $post->image) }}" alt=""
+                                                        class="img-fluid mt-1">
+                                                </div>
+                                            @endif
+                                            <div class="img-container mt-3" id="previewContainer"></div>
+                                            <input type="file" class="form-control" id="imageInput" name="postImage"
+                                                accept="image/*" {{ isset($post) ? '' : 'required' }}>
+                                        </div>
                                     </div>
-                                @endif
-                                <div class="img-container mt-3" id="previewContainer"></div>
-                                <input type="file" class="form-control" id="imageInput" name="postImage" accept="image/*"
-                                    {{ isset($post) ? '' : 'required' }}>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -114,6 +121,24 @@
                                 </select>
                             </fieldset>
                         </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <p>Yayımlama Tarihi</p>
+                                    <input type="date" name="published" class="form-control mb-3 flatpickr-no-config"
+                                        placeholder="Başlangıç tarihi..">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <p>Yayından Çıkarma Tarihi</p>
+                                    <input type="date" name="expired" class="form-control mb-3 flatpickr-no-config"
+                                        placeholder="Bitiş tarihi..">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="card-body">
                             <label for="post-title" class="form-label">Başlık</label>
                             <input type="text" id="post-title" class="form-control" placeholder="Makale Başlığı"
@@ -131,7 +156,8 @@
                             <div class="row">
                                 <div class="col-6">
                                     <h6>Etiket seçimi</h6>
-                                    <p>Birden fazla etiket seçilebilir ve <code>X</code> tuşu ile etiket kaldırılabilir.</p>
+                                    <p>Birden fazla etiket seçilebilir ve <code>X</code> tuşu ile etiket kaldırılabilir.
+                                    </p>
                                     <div class="form-group">
                                         <select class="choices form-select multiple-remove" multiple="multiple"
                                             name="tags[]">
@@ -187,6 +213,8 @@
     <script src="{{ asset('backend_assets/static/js/pages/summernote.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/choices.js/public/assets/scripts/choices.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/pages/form-element-select.js') }}"></script>
+    <script src="{{ asset('backend_assets/extensions/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('backend_assets/static/js/pages/date-picker.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

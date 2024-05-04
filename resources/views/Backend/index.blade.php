@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ env('APP_LOCALE') }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>{{ env('APP_NAME') }} @yield('title')</title>
 
     <link rel="shortcut icon" href="{{ asset('backend_assets/compiled/svg/favicon.svg') }}" type="image/x-icon">
     <link rel="shortcut icon"
