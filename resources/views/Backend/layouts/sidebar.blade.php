@@ -54,34 +54,34 @@
                 <li class="sidebar-item{{ request()->routeIs('kategori.*') ? ' active' : '' }}">
                     <a href="{{ route('kategori.index') }}" class='sidebar-link'>
                         <i class="bi bi-filter-square-fill"></i>
-                        <span>Kategori</span>
+                        <span>Kategoriler</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item{{ request()->routeIs('ozellik.*') ? ' active' : '' }}">
                     <a href="{{ route('ozellik.index') }}" class='sidebar-link'>
                         <i class="bi bi-collection-fill"></i>
-                        <span>Özellik</span>
+                        <span>Özellikler</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item{{ request()->routeIs('etiket.*') ? ' active' : '' }}">
                     <a href="{{ route('etiket.index') }}" class='sidebar-link'>
                         <i class="bi bi-tags-fill"></i>
-                        <span>Etiket</span>
+                        <span>Etiketler</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item{{ request()->routeIs('muhimmat.*') ? ' active' : '' }}">
                     <a href="{{ route('muhimmat.index') }}" class='sidebar-link'>
                         <i class="bi bi-rocket-fill"></i>
-                        <span>Mühimmat</span>
+                        <span>Mühimmatlar</span>
                     </a>
                 </li>
                 <li class="sidebar-item{{ request()->routeIs('makale.*') ? ' active' : '' }}  has-sub">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-pen-fill"></i>
-                        <span>Makale</span>
+                        <span>Makaleler</span>
                     </a>
                     <ul class="submenu submenu-closed" style="--submenu-height: 172px;">
                         <li class="submenu-item{{ request()->routeIs('makale.create') ? ' active' : '' }}  ">
