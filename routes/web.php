@@ -8,8 +8,6 @@ use App\Http\Controllers\MunitionController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
-//use App\Http\Controllers\MunitionAttributeController;
-//use App\Http\Controllers\ImageController;
 
 /*
 Route::get('/', function () {
@@ -31,6 +29,7 @@ Route::prefix('yonetim')->group(function () {
     Route::put('/kategori/{id}/durum-degistir', [CategoryController::class, 'changeStatus'])->name('kategoriDurumunuDegistir');
     Route::put('/ozellik/{id}/durum-degistir', [AttributeController::class, 'changeStatus'])->name('ozellikDurumunuDegistir');
     Route::put('/muhimmat/{id}/durum-degistir', [MunitionController::class, 'changeStatus'])->name('muhimmatDurumunuDegistir');
+    Route::delete('/muhimmat/images/{id}', [MunitionController::class, 'deleteImage'])->name('muhimmatResminiSil');
     Route::put('/etiket/{id}/durum-degistir', [TagController::class, 'changeStatus'])->name('etiketDurumunuDegistir');
     Route::put('/makale/{id}/durum-degistir', [PostController::class, 'changeStatus'])->name('makaleDurumunuDegistir');
     Route::put('/makale/{id}/arsivle', [PostController::class, 'remove'])->name('makaleyiArsivle');

@@ -208,6 +208,21 @@ class MunitionController extends Controller
         return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanında güncellendi.');
     }
 
+    public function deleteImage($id)
+    {
+        // Resmi bul
+        $image = Image::findOrFail($id);
+
+        // Storage'den resmi sil
+        Storage::delete('public/' . $image->url);
+
+        // Veritabanından resmi sil
+        $image->delete();
+
+        // Başarılı yanıt döndür
+        return response()->json(['message' => 'Resim başarıyla silindi.'], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

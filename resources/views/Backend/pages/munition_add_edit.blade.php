@@ -4,6 +4,7 @@
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.css') }}" />
 @endsection
 
 @section('page-title', 'Mühimmatlar')
@@ -184,7 +185,8 @@
                                                     name="attributes[{{ $attribute->id }}]">
                                             @elseif($attribute->option === 'Ondalık')
                                                 <input type="number" class="form-control" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]" min="0" step="0.01">
+                                                    name="attributes[{{ $attribute->id }}]" min="0"
+                                                    step="0.01">
                                             @elseif($attribute->option === 'Yazı')
                                                 <input type="text" class="form-control" id="{{ $attribute->slug }}"
                                                     name="attributes[{{ $attribute->id }}]">
@@ -233,9 +235,11 @@
                                         <div class="form-group row align-items-center">
                                             <label class="col-2 col-form-label" for="first-name">En / Boy Oranı</label>
                                             <div class="col-10 d-flex align-items-center">
-                                                <input type="number" id="input-width" class="form-control mr-2" name="iwidth" placeholder="Genişlik" min="1">
+                                                <input type="number" id="input-width" class="form-control mr-2"
+                                                    name="iwidth" placeholder="Genişlik" min="1">
                                                 <span class="text-center mr-2">&nbsp;/&nbsp;</span>
-                                                <input type="number" id="input-length" class="form-control ml-2" name="ilength" placeholder="Yükseklik" min="1">
+                                                <input type="number" id="input-length" class="form-control ml-2"
+                                                    name="ilength" placeholder="Yükseklik" min="1">
                                                 <div class="d-flex justify-content-end">
                                                     &nbsp;<a href="#" class="btn btn-outline-primary">+</a>
                                                     &nbsp;<a href="#" class="btn btn-outline-primary">-</a>
@@ -244,25 +248,39 @@
                                         </div>
                                     </div>
                                     @for ($i = 1; $i <= 6; $i++)
-                                        <div class="col-12 col-xl-6">
-                                            <div class="form-group">
-                                                <label for="imageInput{{ $i }}">Resim {{ $i }}<span style="color:red;"> *</span></label>
-                                                <img id="image{{ $i }}" src="" alt="" class="img-fluid mt-3" style="max-width: 100%; height: auto;">
-                                                <input type="hidden" id="croppedImage{{ $i }}" name="croppedImage{{ $i }}" required>
-                                                <div class="img-container mt-1 mb-3" id="previewContainer{{ $i }}" style="max-width: 100%; height: auto; overflow: hidden;">
+                                        <div class="col-12 col-xl-6 col-lg-6 col-md-6">
+                                            <div class="form-group text-center">
+                                                <label for="imageInput{{ $i }}">Resim {{ $i }}<span
+                                                        style="color:red;"> *</span></label>
+                                                <img id="image{{ $i }}" src="" alt=""
+                                                    class="img-fluid mt-3" style="max-width: 100%; height: auto;">
+                                                <input type="hidden" id="croppedImage{{ $i }}"
+                                                    name="croppedImage{{ $i }}" required>
+                                                <div class="img-container mt-1 mb-3"
+                                                    id="previewContainer{{ $i }}"
+                                                    style="max-width: 100%; height: auto; overflow: hidden;">
                                                     @if (isset($munition) && count($munition->images) >= $i && isset($munition->images[$i - 1]))
-                                                        <div id="previewImage{{ $i }}" class="image-container" style="position: relative; display: inline-block;">
-                                                            <img src="{{ asset('storage/' . $munition->images[$i - 1]->url) }}" alt="" class="img-fluid" style="max-width: 100%; height: auto;">
+                                                        <div id="previewImage{{ $i }}" class="image-container"
+                                                            style="position: relative; display: inline-block;">
+                                                            <img src="{{ asset('storage/' . $munition->images[$i - 1]->url) }}"
+                                                                alt="" class="img-fluid"
+                                                                style="max-width: 100%; height: auto;">
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                                                                onclick="deleteImage({{ $munition->images[$i - 1]->id }}, '{{ $i }}')">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <input type="file" class="form-control" id="imageInput{{ $i }}" name="imageInput{{ $i }}" accept="image/*">
+                                                <input type="file" class="form-control"
+                                                    id="imageInput{{ $i }}"
+                                                    name="imageInput{{ $i }}" accept="image/*">
                                                 <br>
                                             </div>
                                         </div>
                                     @endfor
                                 </div>
-
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group mandatory">
@@ -314,6 +332,61 @@
 @section('scripts')
     <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
+    <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        function deleteImage(imageId, previewId) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: 'Bu resmi silmek istediğinizden emin misiniz?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı "Evet, sil!" butonuna tıkladı
+                    // AJAX isteği göndererek resmi sil
+                    fetch(`/yonetim/muhimmat/images/${imageId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Resmi HTML'den kaldır
+                                document.getElementById('previewImage' + previewId).remove();
+                                // Başarı mesajı göster
+                                Swal.fire(
+                                    'Silindi!',
+                                    'Resim başarıyla silindi.',
+                                    'success'
+                                );
+                            } else {
+                                // Hata mesajı göster
+                                Swal.fire(
+                                    'Hata!',
+                                    'Resim silinirken bir hata oluştu.',
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Hata mesajı göster
+                            Swal.fire(
+                                'Hata!',
+                                'Resim silinirken bir hata oluştu.',
+                                'error'
+                            );
+                        });
+                }
+            });
+        }
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let croppers = []; // Cropper nesnelerini saklayacak dizi
@@ -347,7 +420,8 @@
 
                             cropper = new Cropper(image, {
                                 aspectRatio: parseInt(document.getElementById('input-width')
-                                .value) / parseInt(document.getElementById('input-length')
+                                    .value) / parseInt(document.getElementById(
+                                        'input-length')
                                     .value), ///_aspectRatio,
                                 viewMode: 1,
                                 autoCropArea: 1,
