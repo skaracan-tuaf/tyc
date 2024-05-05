@@ -15,6 +15,12 @@ Route::get('/', function () {
 });
 */
 
+//olmayan sayfalar için
+Route::fallback(function () {
+    return app(BackendController::class)->PageNotFound();
+});
+
+
 Route::get('/', [FrontendController::class, 'index'])->name('AnaSayfa');
 Route::get('/yonetim', [BackendController::class, 'index'])->name('YoneticiAnaSayfa');
 

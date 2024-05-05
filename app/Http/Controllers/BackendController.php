@@ -23,4 +23,9 @@ class BackendController extends Controller
 
         return view('Backend.pages.home', compact('totalMunitions', 'totalCategories', 'totalAttributes', 'totalImages'));
     }
+
+    public function PageNotFound()
+    {
+        return view('Backend.pages.404');
+    }
 }
