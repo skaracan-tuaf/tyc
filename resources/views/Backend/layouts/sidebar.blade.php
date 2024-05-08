@@ -65,6 +65,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item{{ request()->routeIs('varyant.*') ? ' active' : '' }}">
+                    <a href="{{ route('varyant.index') }}" class='sidebar-link'>
+                        <i class="bi bi-collection-fill"></i>
+                        <span>Varyantlar</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item{{ request()->routeIs('etiket.*') ? ' active' : '' }}">
                     <a href="{{ route('etiket.index') }}" class='sidebar-link'>
                         <i class="bi bi-tags-fill"></i>

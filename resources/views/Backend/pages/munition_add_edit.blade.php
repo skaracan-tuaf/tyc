@@ -4,6 +4,7 @@
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend_assets/extensions/choices.js/public/assets/styles/choices.css') }}">
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.css') }}" />
 @endsection
 
@@ -112,39 +113,39 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    @php
+                                        $countries = [
+                                            'TR' => 'Türkiye',
+                                            'US' => 'A.B.D',
+                                            'DE' => 'Almanya',
+                                            'FR' => 'Fransa',
+                                            'JP' => 'Japonya',
+                                            'CN' => 'Çin',
+                                            'IN' => 'Hindistan',
+                                            'IL' => 'İsrail',
+                                            'RU' => 'Rusya',
+                                            'UA' => 'Ukrayna',
+                                            'BR' => 'Brezilya',
+                                            'GB' => 'İngiltere',
+                                            'IT' => 'İtalya',
+                                            'ES' => 'İspanya',
+                                            'CA' => 'Kanada',
+                                            'AU' => 'Avustralya',
+                                            'NL' => 'Hollanda',
+                                            'CH' => 'İsviçre',
+                                            'SG' => 'Singapur',
+                                            'SE' => 'İsveç',
+                                            'BE' => 'Belçika',
+                                            'AT' => 'Avusturya',
+                                            'KR' => 'Güney Kore',
+                                        ];
+                                    @endphp
+
                                     <div class="col-md-6 col-12">
                                         <div class="form-group mandatory">
                                             <label for="munition-origin" class="form-label">Ülke</label>
                                             <fieldset class="form-group">
-                                                @php
-                                                    // Ülkelerin kodlarını ve isimlerini içeren bir dizi oluştur
-                                                    $countries = [
-                                                        'TR' => 'Türkiye',
-                                                        'US' => 'A.B.D',
-                                                        'DE' => 'Almanya',
-                                                        'FR' => 'Fransa',
-                                                        'JP' => 'Japonya',
-                                                        'CN' => 'Çin',
-                                                        'IN' => 'Hindistan',
-                                                        'IL' => 'İsrail',
-                                                        'RU' => 'Rusya',
-                                                        'UA' => 'Ukrayna',
-                                                        'BR' => 'Brezilya',
-                                                        'GB' => 'İngiltere',
-                                                        'IT' => 'İtalya',
-                                                        'ES' => 'İspanya',
-                                                        'CA' => 'Kanada',
-                                                        'AU' => 'Avustralya',
-                                                        'NL' => 'Hollanda',
-                                                        'CH' => 'İsviçre',
-                                                        'SG' => 'Singapur',
-                                                        'SE' => 'İsveç',
-                                                        'BE' => 'Belçika',
-                                                        'AT' => 'Avusturya',
-                                                        'KR' => 'Güney Kore',
-                                                    ];
-                                                @endphp
-
                                                 <select class="form-select" name="origin" id="munition-origin" required>
                                                     <option value="">Seçiniz...</option>
                                                     @foreach ($countries as $code => $name)
@@ -161,14 +162,13 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="munition-summary" class="form-label">Özet</label>
-                                            <textarea class="form-control" id="munition-summary" rows="3" name="summary" placeholder="Özet" required>{{ isset($munition) ? $munition->summary : '' }}</textarea>
+                                            <textarea class="form-control" id="munition-summary" rows="3" name="summary" placeholder="Özet">{{ isset($munition) ? $munition->summary : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="munition-description" class="form-label">Açıklama</label>
-                                            <textarea class="form-control" id="munition-description" rows="6" name="description" placeholder="Açıklama"
-                                                required>{{ isset($munition) ? $munition->description : '' }}</textarea>
+                                            <textarea class="form-control" id="munition-description" rows="6" name="description" placeholder="Açıklama">{{ isset($munition) ? $munition->description : '' }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -177,59 +177,121 @@
                                 <hr><br>
 
                                 <div class="row">
+                                    <div class="ol-12">
+                                        <div class="form-group">
+                                            <label for="variants" class="form-label">Varyantlar</label>
+                                            <select class="choices form-select multiple-remove" multiple="multiple"
+                                                name="variants[]" id="variant-select">
+                                                @foreach ($variants as $variant)
+                                                    <option value="{{ $variant->id }}">{{ $variant->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table" style="display: none;">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Varyantlar</th>
+                                                    <th>Fiyat</th>
+                                                    <th>Stok</th>
+                                                    <th>Durum</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="combinations-table-body">
+                                                <!-- Bu kısım JavaScript ile oluşturulacak -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                @php
+                                    //$variantsJson = json_encode($variants);
+                                    /*
+                                     * bütün işlemler Controller'dan yapmak daha mantıklı olabilir.
+                                     */
+                                @endphp
+
+                                <br>
+
+                                <div class="row">
                                     @foreach ($attributes as $attribute)
                                         <div class="form-group">
-                                            <label for="{{ $attribute->slug }}">{{ $attribute->name }}</label>
-                                            @if ($attribute->option === 'Tam Sayı')
-                                                <input type="number" class="form-control" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]">
+                                            <label for="{{ $attribute->slug }}">{{ $attribute->name }}:</label>
+                                            @if ($attribute->option === 'Yazı')
+                                                <input type="text" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control">
+                                            @elseif($attribute->option === 'Tam Sayı')
+                                                <input type="text" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control">
                                             @elseif($attribute->option === 'Ondalık')
-                                                <input type="number" class="form-control" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]" min="0"
+                                                <input type="number" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control"
                                                     step="0.01">
-                                            @elseif($attribute->option === 'Yazı')
-                                                <input type="text" class="form-control" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]">
                                             @elseif($attribute->option === 'Doğrulama')
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        id="{{ $attribute->slug }}"
-                                                        name="attributes[{{ $attribute->id }}][value]" value="1">
-                                                    <label class="form-check-label" for="{{ $attribute->slug }}">
-                                                        {{ $attribute->name }}
-                                                    </label>
+                                                    <input type="radio" id="{{ $attribute->slug }}_1"
+                                                        name="attributes[{{ $attribute->id }}][value]" value="1"
+                                                        class="form-check-input">
+                                                    <label for="{{ $attribute->slug }}_1"
+                                                        class="form-check-label">Var</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="radio" id="{{ $attribute->slug }}_0"
+                                                        name="attributes[{{ $attribute->id }}][value]" value="0"
+                                                        class="form-check-input">
+                                                    <label for="{{ $attribute->slug }}_0"
+                                                        class="form-check-label">Yok</label>
                                                 </div>
                                             @elseif($attribute->option === 'Aralık')
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Min</span>
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <input type="number" id="{{ $attribute->slug }}_min"
+                                                                name="attributes[{{ $attribute->id }}][min]"
+                                                                class="form-control" placeholder="asgari" step="0.01">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" id="{{ $attribute->slug }}_max"
+                                                                name="attributes[{{ $attribute->id }}][max]"
+                                                                class="form-control" placeholder="azami" step="0.01">
+                                                        </div>
                                                     </div>
-                                                    <input type="number" class="form-control"
-                                                        id="{{ $attribute->slug }}_min"
-                                                        name="attributes[{{ $attribute->id }}][min]">
-                                                    &nbsp;&emsp;
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Max</span>
-                                                    </div>
-                                                    <input type="number" class="form-control"
-                                                        id="{{ $attribute->slug }}_max"
-                                                        name="attributes[{{ $attribute->id }}][max]">
                                                 </div>
                                             @elseif($attribute->option === 'Renk')
-                                                <input type="color" class="form-control" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]">
+                                                <input type="color" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control">
                                             @elseif($attribute->option === 'Resim')
-                                                <!-- Resim için gerekli alanlar -->
+                                                <input type="file" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}]" class="form-control-file">
                                             @elseif($attribute->option === 'Buton')
-                                                <!-- Buton için gerekli alanlar -->
+                                                <button type="button" id="{{ $attribute->slug }}"
+                                                    name="attributes[{{ $attribute->id }}]"
+                                                    class="btn btn-primary">{{ $attribute->name }}</button>
                                             @elseif($attribute->option === 'Liste')
-                                                <!-- Liste için gerekli alanlar -->
+                                                <div class="form-group">
+                                                    <label for="{{ $attribute->slug }}">{{ $attribute->name }}
+                                                        Seçimi:</label>
+                                                    <select id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}]" class="form-control">
+                                                        <option value="">Seçiniz</option>
+                                                        <!-- Liste seçeneklerini burada döngü ile ekleyebilirsiniz -->
+                                                    </select>
+                                                </div>
                                             @endif
                                         </div>
                                     @endforeach
                                 </div>
+
+                                <hr>
                                 <br>
-                                <hr><br>
+
                                 <div class="row" id="resimEkleAlani">
                                     <div class="col-12">
                                         <div class="form-group row align-items-center">
@@ -318,7 +380,6 @@
                                     </div>
                                 </div>
 
-
                             </form>
                         </div>
                     </div>
@@ -331,8 +392,146 @@
 
 @section('scripts')
     <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend_assets/extensions/choices.js/public/assets/scripts/choices.js') }}"></script>
+    <script src="{{ asset('backend_assets/static/js/pages/form-element-select.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+    <!--script>
+                const choices = new Choices('.choices', {
+                    removeItemButton: true,
+                    maxItemCount: 5, // İstenilen maksimum öğe sayısı
+                    searchEnabled: true, // Arama özelliğini etkinleştirme
+                    placeholder: true, // Placeholder kullanma
+                    placeholderValue: 'Seçenekleri seçin', // Placeholder metni
+                });
+            </script-->
+
+    <script>
+        /*
+                                                conts variantJson = @json($variants);
+                                                const variants = JSON.parse(variantJson);
+                                                */
+
+        const variants = {!! json_encode($variants) !!};
+        const variantValues = {!! json_encode($variantValues) !!};
+
+        const variantSelect = document.getElementById('variant-select');
+
+        variantSelect.addEventListener('change', function() {
+
+            const selectedOptions = Array.from(variantSelect.selectedOptions).map(option => parseInt(option.value));
+            if (selectedOptions.length === 0) {
+                // Seçili bir veri yoksa tabloyu gizle
+                document.querySelector('.table').style.display = 'none';
+                return; // Geri dön ve tabloyu oluşturmadan çık
+            } else {
+                document.querySelector('.table').style.display = 'table'; // Tabloyu göster
+            }
+
+            const filteredVariants = variants.filter(variant => selectedOptions.includes(variant.id));
+
+            const selectedVariantIdler = Array.from(variantSelect.selectedOptions).map(option => parseInt(option
+                .value));
+            const filteredVariantsValues = variantValues.filter(value => selectedVariantIdler.includes(value
+                .variant_id));
+
+            const combinations = generateCombinations(filteredVariants, filteredVariantsValues);
+
+            // Tabloyu oluştur
+            const combinationsTableBody = document.getElementById('combinations-table-body');
+
+            while (combinationsTableBody.hasChildNodes()) {
+                combinationsTableBody.removeChild(combinationsTableBody.firstChild);
+            }
+
+            let rowCounter = 0;
+
+            combinations.forEach(combination => {
+                const row = document.createElement('tr');
+                const checkCell = document.createElement('td');
+                const variantCell = document.createElement('td');
+                const priceCell = document.createElement('td');
+                const stockCell = document.createElement('td');
+                const statusCell = document.createElement('td');
+
+                variantCell.textContent = combination.map(item => item.value).join(' - ');
+
+                const checkInput = document.createElement('input');
+                checkInput.type = 'checkbox';
+                checkInput.className = 'form-check-input form-check-primary';
+                checkInput.name = 'row_' + rowCounter + '_check';
+                checkCell.appendChild(checkInput);
+
+                const priceInput = document.createElement('input');
+                priceInput.type = 'number';
+                priceInput.className = 'form-control';
+                priceInput.name = 'row_' + rowCounter + '_price';
+                priceCell.appendChild(priceInput);
+
+                const stockInput = document.createElement('input');
+                stockInput.type = 'number';
+                stockInput.className = 'form-control';
+                stockInput.name = 'row_' + rowCounter + '_stock';
+                stockCell.appendChild(stockInput);
+
+                const statusInput = document.createElement('input');
+                statusInput.type = 'checkbox';
+                statusInput.className = 'form-check-input form-check-primary';
+                statusInput.name = 'row_' + rowCounter + '_status';
+                statusCell.appendChild(statusInput);
+
+                row.appendChild(checkCell);
+                row.appendChild(variantCell);
+                row.appendChild(priceCell);
+                row.appendChild(stockCell);
+                row.appendChild(statusCell);
+
+                combinationsTableBody.appendChild(row);
+
+                rowCounter++;
+            });
+
+        });
+
+        // Kombinasyonları oluşturan fonksiyon
+        function generateCombinations(variantIds, variantValueIds) {
+
+            if (variantIds.length === 0) {
+                return [];
+            }
+
+            const selectedVariantIds = variantIds.map(variant => variant.id);
+
+            const selectedVariantValues = variantValueIds.filter(value => {
+                return selectedVariantIds.includes(value.variant_id);
+            });
+
+            const combinations = [];
+
+            function generate(prefix, remainingVariants) {
+                if (remainingVariants.length === 0) {
+                    combinations.push(prefix);
+                    return;
+                }
+
+                const currentVariant = remainingVariants[0];
+                const remaining = remainingVariants.slice(1);
+
+                selectedVariantValues
+                    .filter(value => value.variant_id === currentVariant.id)
+                    .forEach(value => {
+                        generate([...prefix, value], remaining);
+                    });
+            }
+
+            generate([], variantIds);
+
+            console.log(combinations);
+
+            return combinations;
+        }
+    </script>
+
     <script>
         function deleteImage(imageId, previewId) {
             Swal.fire({

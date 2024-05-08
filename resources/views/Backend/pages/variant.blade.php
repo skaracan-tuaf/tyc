@@ -1,6 +1,6 @@
 @extends('Backend.index')
 
-@section('title', '| Mühimmatlar')
+@section('title', '| Varyantlar')
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/simple-datatables/style.css') }}">
@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.css') }}" />
 @endsection
 
-@section('page-title', 'Mühimmatlar')
-@section('page-subtitle', 'Mühimmatlar')
+@section('page-title', 'Varyantler')
+@section('page-subtitle', 'Varyantlar')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">Mühimmatlar</li>
+    <li class="breadcrumb-item active" aria-current="page">Varyantlar</li>
 @endsection
 
 @section('content')
@@ -21,8 +21,8 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title">
-                    Mühimmat Veri Tablosu
-                    <a style="float: right;" href="{{ route('muhimmat.create') }}"
+                    Varyant Veri Tablosu
+                    <a style="float: right;" href="{{ route('varyant.create') }}"
                         class="btn icon icon-left btn-secondary"><i class="bi bi-plus"></i>Yeni</a>
                 </h5>
             </div>
@@ -32,77 +32,32 @@
                         <tr>
                             <th>#</th>
                             <th>Adı</th>
-                            <th>Kategori</th>
-                            <th>Ülke</th>
-                            <th>Fiyat</th>
-                            <th>Durum</th>
+                            <th>Değerler</th>
                             <th>İşlem</th>
                         </tr>
                     </thead>
-                    @php
-                        // Ülke kodlarını ve isimlerini içeren bir dizi oluştur
-                        $countries = [
-                            'TR' => 'Türkiye',
-                            'US' => 'A.B.D',
-                            'DE' => 'Almanya',
-                            'FR' => 'Fransa',
-                            'JP' => 'Japonya',
-                            'CN' => 'Çin',
-                            'IN' => 'Hindistan',
-                            'IL' => 'İsrail',
-                            'RU' => 'Rusya',
-                            'UA' => 'Ukrayna',
-                            'BR' => 'Brezilya',
-                            'GB' => 'İngiltere',
-                            'IT' => 'İtalya',
-                            'ES' => 'İspanya',
-                            'CA' => 'Kanada',
-                            'AU' => 'Avustralya',
-                            'NL' => 'Hollanda',
-                            'CH' => 'İsviçre',
-                            'SG' => 'Singapur',
-                            'SE' => 'İsveç',
-                            'BE' => 'Belçika',
-                            'AT' => 'Avusturya',
-                            'KR' => 'Güney Kore',
-                        ];
-
-                        // Verilen ülke kodunu isimle eşleştiren bir işlev oluştur
-                        function myGetCountryName($code, $countries)
-                        {
-                            return $countries[$code] ?? $code;
-                        }
-                    @endphp
                     <tbody>
-                        @foreach ($munitions as $munition)
+                        @foreach ($variants as $variant)
                             <tr>
-                                <td>{{ $munition->id }}</td>
-                                <td>{{ $munition->name }}</td>
-                                <td>{{ $munition->category->name ?? 'Belirtilmemiş' }}</td>
-                                <td>{{ myGetCountryName($munition->origin, $countries) }}</td>
-                                <td>{{ $munition->price }}</td>
+                                <td>{{ $variant->id }}</td>
+                                <td>{{ $variant->name }}</td>
                                 <td>
-                                    <form action="{{ route('muhimmatDurumunuDegistir', $munition->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($munition->status)
-                                            <button type="submit"
-                                                class="btn icon icon-left btn-success me-2 text-nowrap">Yayında</button>
-                                        @else
-                                            <button type="submit"
-                                                class="btn icon icon-left btn-warning me-2 text-nowrap">Beklemede</button>
+                                    @foreach ($variant->values as $value)
+                                        {{ $value->value }}
+                                        @if (!$loop->last)
+                                            ,
                                         @endif
-                                    </form>
+                                    @endforeach
                                 </td>
                                 <td>
                                     <div class="comment-actions">
                                         <button class="btn icon icon-left btn-primary me-2 text-nowrap">
-                                            <a href="{{ route('muhimmat.edit', $munition->id) }}"
+                                            <a href="{{ route('varyant.edit', $variant->id) }}"
                                                 style="color: white; text-decoration: none;">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                         </button>
-                                        <form id="deleteForm" action="{{ route('muhimmat.destroy', $munition->id) }}"
+                                        <form id="deleteForm" action="{{ route('varyant.destroy', $variant->id) }}"
                                             method="POST" class="delete-form d-inline">
                                             @csrf
                                             @method('DELETE')

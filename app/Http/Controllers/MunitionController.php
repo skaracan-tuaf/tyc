@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Attribute;
 use App\Models\Munition;
+use App\Models\MunitionAttribute;
 use App\Models\Image;
+use App\Models\Sku;
+use App\Models\Variant;
+use App\Models\VariantValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Http\File;
@@ -31,7 +35,33 @@ class MunitionController extends Controller
         $categories = Category::all();
         $munitions = Munition::all();
         $attributes = Attribute::all();
-        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munitions'));
+        $variants = Variant::all();
+        $variantValues = VariantValue::all();
+        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munitions', 'variants', 'variantValues'));
+    }
+
+    public function generateCombinations($variants, $index = 0, $combination = [], $result = [])
+    {
+        $variantName = array_keys($variants)[$index];
+        $values = $variants[$variantName];
+        foreach ($values as $value) {
+            $combination[$variantName] = $value;
+            if ($index < count($variants) - 1) {
+                $result = $this->generateCombinations($variants, $index + 1, $combination, $result);
+            } else {
+                $result[] = $combination;
+            }
+        }
+        return $result;
+    }
+
+    function generateSKU($combination)
+    {
+        $sku = '';
+        foreach ($combination as $key => $value) {
+            $sku .= $value[0]; // Her varyant değerinin ilk harfini SKU'ya ekle
+        }
+        return $sku;
     }
 
     /**
@@ -58,6 +88,24 @@ class MunitionController extends Controller
 
         // Mühimmatı oluştur
         $munition = Munition::create($validatedData);
+
+        // Özellik değerlerini kaydet
+        $attributes = $request->input('attributes');
+        foreach ($attributes as $attributeId => $attributeValues) {
+            // Eğer attribute sadece tek bir değer alıyorsa
+            if (isset($attributeValues['value'])) {
+                $value = $attributeValues['value'];
+                $munition->attributes()->attach($attributeId, ['value' => $value]);
+            }
+            // Eğer attribute bir aralık alıyorsa
+            if (isset($attributeValues['min']) && isset($attributeValues['max'])) {
+                $min = $attributeValues['min'];
+                $max = $attributeValues['max'];
+                $munition->attributes()->attach($attributeId, ['min' => $min, 'max' => $max]);
+            }
+            // Diğer durumlar için gerekli işlemler yapılabilir
+        }
+
 
         for ($i = 1; $i <= 6; $i++) {
             $imageInputName = 'imageInput' . $i;
@@ -153,11 +201,6 @@ class MunitionController extends Controller
         // Mühimmatı güncelle
         $munition->update($validatedData);
 
-        // Mühimmatın eski resimlerini sil
-        //$munition->images()->delete();
-
-        // Yeni resimleri kaydet
-
         //$munitionImages = $munition->images()->orderBy('id')->get();
         $munitionImages = $munition->images()->orderByDesc('id')->get();
 
@@ -241,7 +284,7 @@ class MunitionController extends Controller
         }
 
         if ($munition->delete()) {
-            return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına silindi.');
+            return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanından silindi.');
         } else {
             return redirect()->route('muhimmat.index')->with('fail', $munition->name . ' veritabanından silinirken bir hata oluştu.');
         }
