@@ -226,26 +226,33 @@
                                             <label for="{{ $attribute->slug }}">{{ $attribute->name }}:</label>
                                             @if ($attribute->option === 'Yazı')
                                                 <input type="text" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control">
+                                                    name="attributes[{{ $attribute->id }}][value]"
+                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                    class="form-control">
                                             @elseif($attribute->option === 'Tam Sayı')
                                                 <input type="text" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control">
+                                                    name="attributes[{{ $attribute->id }}][value]"
+                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                    class="form-control">
                                             @elseif($attribute->option === 'Ondalık')
                                                 <input type="number" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control"
-                                                    step="0.01">
+                                                    name="attributes[{{ $attribute->id }}][value]"
+                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                    class="form-control" step="0.01">
                                             @elseif($attribute->option === 'Doğrulama')
                                                 <div class="form-check">
                                                     <input type="radio" id="{{ $attribute->slug }}_1"
                                                         name="attributes[{{ $attribute->id }}][value]" value="1"
-                                                        class="form-check-input">
+                                                        class="form-check-input"
+                                                        {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 1 ? 'checked' : '' }}>
                                                     <label for="{{ $attribute->slug }}_1"
                                                         class="form-check-label">Var</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input type="radio" id="{{ $attribute->slug }}_0"
                                                         name="attributes[{{ $attribute->id }}][value]" value="0"
-                                                        class="form-check-input">
+                                                        class="form-check-input"
+                                                        {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 0 ? 'checked' : '' }}>
                                                     <label for="{{ $attribute->slug }}_0"
                                                         class="form-check-label">Yok</label>
                                                 </div>
@@ -255,18 +262,22 @@
                                                         <div class="col">
                                                             <input type="number" id="{{ $attribute->slug }}_min"
                                                                 name="attributes[{{ $attribute->id }}][min]"
+                                                                value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->min : '' }}"
                                                                 class="form-control" placeholder="asgari" step="0.01">
                                                         </div>
                                                         <div class="col">
                                                             <input type="number" id="{{ $attribute->slug }}_max"
                                                                 name="attributes[{{ $attribute->id }}][max]"
+                                                                value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->max : '' }}"
                                                                 class="form-control" placeholder="azami" step="0.01">
                                                         </div>
                                                     </div>
                                                 </div>
                                             @elseif($attribute->option === 'Renk')
                                                 <input type="color" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]" class="form-control">
+                                                    name="attributes[{{ $attribute->id }}][value]"
+                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                    class="form-control">
                                             @elseif($attribute->option === 'Resim')
                                                 <input type="file" id="{{ $attribute->slug }}"
                                                     name="attributes[{{ $attribute->id }}]" class="form-control-file">
@@ -298,10 +309,11 @@
                                             <label class="col-2 col-form-label" for="first-name">En / Boy Oranı</label>
                                             <div class="col-10 d-flex align-items-center">
                                                 <input type="number" id="input-width" class="form-control mr-2"
-                                                    name="iwidth" placeholder="Genişlik" min="1">
+                                                    name="iwidth" placeholder="Genişlik" min="1" value="730">
                                                 <span class="text-center mr-2">&nbsp;/&nbsp;</span>
                                                 <input type="number" id="input-length" class="form-control ml-2"
-                                                    name="ilength" placeholder="Yükseklik" min="1">
+                                                    name="ilength" placeholder="Yükseklik" min="1"
+                                                    value="410">
                                                 <div class="d-flex justify-content-end">
                                                     &nbsp;<a href="#" class="btn btn-outline-primary">+</a>
                                                     &nbsp;<a href="#" class="btn btn-outline-primary">-</a>
@@ -397,20 +409,20 @@
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
     <!--script>
-                const choices = new Choices('.choices', {
-                    removeItemButton: true,
-                    maxItemCount: 5, // İstenilen maksimum öğe sayısı
-                    searchEnabled: true, // Arama özelliğini etkinleştirme
-                    placeholder: true, // Placeholder kullanma
-                    placeholderValue: 'Seçenekleri seçin', // Placeholder metni
-                });
-            </script-->
+                            const choices = new Choices('.choices', {
+                                removeItemButton: true,
+                                maxItemCount: 5, // İstenilen maksimum öğe sayısı
+                                searchEnabled: true, // Arama özelliğini etkinleştirme
+                                placeholder: true, // Placeholder kullanma
+                                placeholderValue: 'Seçenekleri seçin', // Placeholder metni
+                            });
+                        </script-->
 
     <script>
         /*
-                                                conts variantJson = @json($variants);
-                                                const variants = JSON.parse(variantJson);
-                                                */
+                                                            conts variantJson = @json($variants);
+                                                            const variants = JSON.parse(variantJson);
+                                                            */
 
         const variants = {!! json_encode($variants) !!};
         const variantValues = {!! json_encode($variantValues) !!};

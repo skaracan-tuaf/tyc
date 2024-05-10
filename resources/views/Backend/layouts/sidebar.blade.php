@@ -67,7 +67,7 @@
 
                 <li class="sidebar-item{{ request()->routeIs('varyant.*') ? ' active' : '' }}">
                     <a href="{{ route('varyant.index') }}" class='sidebar-link'>
-                        <i class="bi bi-collection-fill"></i>
+                        <i class="bi bi-layers-fill"></i>
                         <span>Varyantlar</span>
                     </a>
                 </li>
@@ -106,10 +106,24 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item{{-- request()->routeIs('muhimmat.*') ? ' active' : '' --}}">
-                    <a href="{{-- route('muhimmat.index') --}}" class='sidebar-link'>
+                <li class="sidebar-item{{-- request()->routeIs('mesaj.*') ? ' active' : '' --}}">
+                    <a href="{{-- route('mesaj.index') --}}" class='sidebar-link'>
                         <i class="bi bi-envelope-fill"></i>
                         <span>Mesajlar</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item{{-- request()->routeIs('ayar.*') ? ' active' : '' --}}">
+                    <a href="{{-- route('ayar.index') --}}" class='sidebar-link'>
+                        <i class="bi bi-person-fill"></i>
+                        <span>Profil</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item{{-- request()->routeIs('ayar.*') ? ' active' : '' --}}">
+                    <a href="{{-- route('ayar.index') --}}" class='sidebar-link'>
+                        <i class="bi bi-gear-fill"></i>
+                        <span>Ayarlar</span>
                     </a>
                 </li>
 

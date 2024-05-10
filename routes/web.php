@@ -23,9 +23,17 @@ Route::fallback(function () {
 
 
 Route::get('/', [FrontendController::class, 'index'])->name('AnaSayfa');
-Route::get('/yonetim', [BackendController::class, 'index'])->name('YoneticiAnaSayfa');
+Route::get('/blog', [FrontendController::class, 'blog'])->name('Blog');
+Route::get('/hakkimizda', [FrontendController::class, 'about'])->name('Hakkimizda');
+Route::get('/iletisim', [FrontendController::class, 'contact'])->name('Iletisim');
+
+Route::get('/search', [FrontendController::class, 'search'])->name('search');
+Route::get('/muhimmat-detay/{slug}', [FrontendController::class, 'ShowMunitionDetail'])->name('muhimmatDetay');
+
 
 Route::prefix('yonetim')->group(function () {
+    Route::get('/', [BackendController::class, 'index'])->name('YoneticiAnaSayfa');
+
     Route::resource('kategori', CategoryController::class);
     Route::resource('muhimmat', MunitionController::class);
     Route::resource('ozellik', AttributeController::class);
@@ -37,11 +45,11 @@ Route::prefix('yonetim')->group(function () {
     Route::put('/kategori/{id}/durum-degistir', [CategoryController::class, 'changeStatus'])->name('kategoriDurumunuDegistir');
     Route::put('/ozellik/{id}/durum-degistir', [AttributeController::class, 'changeStatus'])->name('ozellikDurumunuDegistir');
     Route::put('/muhimmat/{id}/durum-degistir', [MunitionController::class, 'changeStatus'])->name('muhimmatDurumunuDegistir');
-
-    Route::delete('/muhimmat/images/{id}', [MunitionController::class, 'deleteImage'])->name('muhimmatResminiSil');
     Route::put('/etiket/{id}/durum-degistir', [TagController::class, 'changeStatus'])->name('etiketDurumunuDegistir');
     Route::put('/makale/{id}/durum-degistir', [PostController::class, 'changeStatus'])->name('makaleDurumunuDegistir');
+
     Route::put('/makale/{id}/arsivle', [PostController::class, 'remove'])->name('makaleyiArsivle');
+    Route::delete('/muhimmat/images/{id}', [MunitionController::class, 'deleteImage'])->name('muhimmatResminiSil');
 });
 
 

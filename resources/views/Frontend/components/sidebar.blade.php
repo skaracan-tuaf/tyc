@@ -55,56 +55,65 @@
                 <div class="flex-w flex-sb p-t-36 gallery-lb">
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-01.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-01.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-01.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-01.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-02.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-02.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-02.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-02.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-03.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-03.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-03.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-03.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-04.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-04.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-04.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-04.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-05.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-05.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-05.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-05.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-06.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-06.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-06.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-06.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-07.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-07.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-07.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-07.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-08.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-08.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-08.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-08.jpg') }}');"></a>
                     </div>
 
                     <!-- item gallery sidebar -->
                     <div class="wrap-item-gallery m-b-10">
-                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-09.jpg') }}" data-lightbox="gallery"
-                        style="background-image: url('{{ asset('frontend_assets/images/gallery-09.jpg') }}');"></a>
+                        <a class="item-gallery bg-img1" href="{{ asset('frontend_assets/images/gallery-09.jpg') }}"
+                            data-lightbox="gallery"
+                            style="background-image: url('{{ asset('frontend_assets/images/gallery-09.jpg') }}');"></a>
                     </div>
                 </div>
             </div>
@@ -115,7 +124,9 @@
                 </span>
 
                 <p class="stext-108 cl6 p-t-27">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur maximus vulputate hendrerit. Praesent faucibus erat vitae rutrum gravida. Vestibulum tempus mi enim, in molestie sem fermentum quis.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur maximus vulputate hendrerit.
+                    Praesent faucibus erat vitae rutrum gravida. Vestibulum tempus mi enim, in molestie sem fermentum
+                    quis.
                 </p>
             </div>
         </div>

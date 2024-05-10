@@ -94,12 +94,12 @@
                                                         </div>
                                                         <div class="col-4">
                                                             <input type="number" id="input-width" class="form-control"
-                                                                name="iwidth" placeholder="Genişlik" min="1">
+                                                                name="iwidth" placeholder="Genişlik" min="1" value="1200">
                                                         </div>
                                                         <span class="col-1 text-center">/</span>
                                                         <div class="col-4">
                                                             <input type="number" id="input-length" class="form-control"
-                                                                name="ilength" placeholder="Yükseklik" min="1">
+                                                                name="ilength" placeholder="Yükseklik" min="1" value="807">
                                                         </div>
                                                     </div>
                                                 </div>

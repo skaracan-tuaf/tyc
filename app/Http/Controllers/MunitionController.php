@@ -162,9 +162,11 @@ class MunitionController extends Controller
     {
         $categories = Category::all();
         $attributes = Attribute::all();
+        $variants = Variant::all();
+        $variantValues = VariantValue::all();
         $munition = Munition::findOrFail($id);
 
-        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munition'));
+        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munition', 'variants', 'variantValues'));
     }
 
     public function changeStatus($id)

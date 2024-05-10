@@ -28,7 +28,7 @@ class Munition extends Model
 
     public function attributes()
     {
-        return $this->belongsToMany(Attribute::class, 'munition_attributes')->withPivot('value');
+        return $this->belongsToMany(Attribute::class, 'munition_attributes')->withPivot('value', 'min', 'max');
     }
 
     public function images()
