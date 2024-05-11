@@ -93,7 +93,7 @@
                                         {{ $munition->name }}
                                     </a>
                                     <span class="stext-105 cl3">
-                                        ${{ $munition->price }}
+                                        ${{ number_format($munition->price, 2, ',', '.') }}
                                     </span>
                                 </div>
                                 <div class="block2-txt-child2 flex-r p-t-3">
