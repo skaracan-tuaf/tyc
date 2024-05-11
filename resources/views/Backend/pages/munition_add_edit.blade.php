@@ -180,6 +180,9 @@
                                     <div class="ol-12">
                                         <div class="form-group">
                                             <label for="variants" class="form-label">Varyantlar</label>
+                                            <p>Birden fazla varyant seçilebilir. Seçilen varyantların kombinasyonu
+                                                oluşturulur. <code>X</code> tuşu ile varyantı kaldırılabilirsiniz.
+                                            </p>
                                             <select class="choices form-select multiple-remove" multiple="multiple"
                                                 name="variants[]" id="variant-select">
                                                 @foreach ($variants as $variant)
@@ -409,20 +412,20 @@
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
     <!--script>
-                            const choices = new Choices('.choices', {
-                                removeItemButton: true,
-                                maxItemCount: 5, // İstenilen maksimum öğe sayısı
-                                searchEnabled: true, // Arama özelliğini etkinleştirme
-                                placeholder: true, // Placeholder kullanma
-                                placeholderValue: 'Seçenekleri seçin', // Placeholder metni
-                            });
-                        </script-->
+                                const choices = new Choices('.choices', {
+                                    removeItemButton: true,
+                                    maxItemCount: 5, // İstenilen maksimum öğe sayısı
+                                    searchEnabled: true, // Arama özelliğini etkinleştirme
+                                    placeholder: true, // Placeholder kullanma
+                                    placeholderValue: 'Seçenekleri seçin', // Placeholder metni
+                                });
+                            </script-->
 
     <script>
         /*
-                                                            conts variantJson = @json($variants);
-                                                            const variants = JSON.parse(variantJson);
-                                                            */
+                                                                conts variantJson = @json($variants);
+                                                                const variants = JSON.parse(variantJson);
+                                                                */
 
         const variants = {!! json_encode($variants) !!};
         const variantValues = {!! json_encode($variantValues) !!};

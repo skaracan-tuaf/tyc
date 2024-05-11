@@ -205,7 +205,8 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content p-t-43">
-                        <!-- - -->
+
+                        <!-- description -->
                         <div class="tab-pane fade show active" id="description" role="tabpanel">
                             <div class="how-pos2 p-lr-15-md">
                                 <p class="stext-102 cl6">
@@ -214,66 +215,27 @@
                             </div>
                         </div>
 
-                        <!-- - -->
+                        <!-- information -->
                         <div class="tab-pane fade" id="information" role="tabpanel">
                             <div class="row">
                                 <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
                                     <ul class="p-lr-28 p-lr-15-sm">
-                                        <li class="flex-w flex-t p-b-7">
-                                            <span class="stext-102 cl3 size-205">
-                                                Weight
-                                            </span>
-
-                                            <span class="stext-102 cl6 size-206">
-                                                0.79 kg
-                                            </span>
-                                        </li>
-
-                                        <li class="flex-w flex-t p-b-7">
-                                            <span class="stext-102 cl3 size-205">
-                                                Dimensions
-                                            </span>
-
-                                            <span class="stext-102 cl6 size-206">
-                                                110 x 33 x 100 cm
-                                            </span>
-                                        </li>
-
-                                        <li class="flex-w flex-t p-b-7">
-                                            <span class="stext-102 cl3 size-205">
-                                                Materials
-                                            </span>
-
-                                            <span class="stext-102 cl6 size-206">
-                                                60% cotton
-                                            </span>
-                                        </li>
-
-                                        <li class="flex-w flex-t p-b-7">
-                                            <span class="stext-102 cl3 size-205">
-                                                Color
-                                            </span>
-
-                                            <span class="stext-102 cl6 size-206">
-                                                Black, Blue, Grey, Green, Red, White
-                                            </span>
-                                        </li>
-
-                                        <li class="flex-w flex-t p-b-7">
-                                            <span class="stext-102 cl3 size-205">
-                                                Size
-                                            </span>
-
-                                            <span class="stext-102 cl6 size-206">
-                                                XL, L, M, S
-                                            </span>
-                                        </li>
+                                        @foreach ($munition->attributes as $attribute)
+                                            <li class="flex-w flex-t p-b-7">
+                                                <span class="stext-102 cl3 size-205">
+                                                    {{ $attribute->name }}
+                                                </span>
+                                                <span class="stext-102 cl6 size-206">
+                                                    {{ $attribute->pivot->value }}
+                                                </span>
+                                            </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- - -->
+                        <!-- reviews -->
                         <div class="tab-pane fade" id="reviews" role="tabpanel">
                             <div class="row">
                                 <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
@@ -281,7 +243,8 @@
                                         <!-- Review -->
                                         <div class="flex-w flex-t p-b-68">
                                             <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-                                                <img src="{{ asset('frontend_assets/images/avatar-01.jpg') }}" alt="AVATAR">
+                                                <img src="{{ asset('frontend_assets/images/avatar-01.jpg') }}"
+                                                    alt="AVATAR">
                                             </div>
 
                                             <div class="size-207">

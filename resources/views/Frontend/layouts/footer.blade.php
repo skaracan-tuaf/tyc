@@ -3,31 +3,31 @@
         <div class="row">
             <div class="col-sm-6 col-lg-3 p-b-50">
                 <h4 class="stext-301 cl0 p-b-30">
-                    Categories
+                    Bağlantılar
                 </h4>
 
                 <ul>
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Women
+                        <a href="https://www.msb.gov.tr" class="stext-107 cl7 hov-cl1 trans-04">
+                            Milli Savunma Bakanlığı
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="https://www.tsk.tr/" class="stext-107 cl7 hov-cl1 trans-04">
+                            Genel Kurmay Başkanlığı
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="https://www.hvkk.tsk.tr" class="stext-107 cl7 hov-cl1 trans-04">
+                            Hava Kuvvetleri Komutanlığı
                         </a>
                     </li>
 
                     <li class="p-b-10">
                         <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Men
-                        </a>
-                    </li>
-
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Shoes
-                        </a>
-                    </li>
-
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Watches
+                            HUGEM K.lığı
                         </a>
                     </li>
                 </ul>
@@ -35,31 +35,31 @@
 
             <div class="col-sm-6 col-lg-3 p-b-50">
                 <h4 class="stext-301 cl0 p-b-30">
-                    Help
+                    Hızlı Erişim
                 </h4>
 
                 <ul>
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Track Order
+                        <a href="{{ route('AnaSayfa') }}" class="stext-107 cl7 hov-cl1 trans-04">
+                            Ana Sayfa
                         </a>
                     </li>
 
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Returns
+                        <a href="{{ route('Blog') }}" class="stext-107 cl7 hov-cl1 trans-04">
+                            Blog
                         </a>
                     </li>
 
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Shipping
+                        <a href="{{ route('Hakkimizda') }}" class="stext-107 cl7 hov-cl1 trans-04">
+                            Hakkımızda
                         </a>
                     </li>
 
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            FAQs
+                        <a href="{{ route('Iletisim') }}" class="stext-107 cl7 hov-cl1 trans-04">
+                            İletişim
                         </a>
                     </li>
                 </ul>
@@ -67,32 +67,42 @@
 
             <div class="col-sm-6 col-lg-3 p-b-50">
                 <h4 class="stext-301 cl0 p-b-30">
-                    GET IN TOUCH
+                    İLETİŞİM
                 </h4>
 
                 <p class="stext-107 cl7 size-201">
-                    Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on
-                    (+1) 96 716 6879
+                    Hava Kuvvetleri Komutanlığı Devlet Mahallesi, İnönü Bulvarı Bakanlıklar / ANKARA 06100 <br> 444 8
+                    HKK (455)
                 </p>
 
                 <div class="p-t-27">
-                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                    <a href="https://www.facebook.com/tcsavunma" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                         <i class="fa fa-facebook"></i>
                     </a>
 
-                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                    <a href="https://instagram.com/savunmabakanligi" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                         <i class="fa fa-instagram"></i>
                     </a>
 
-                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                        <i class="fa fa-pinterest-p"></i>
+                    <a href="https://twitter.com/tcsavunma" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCXBZBxOu3ZIb0fjHqPuU9tQ"
+                        class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-youtube-play"></i>
+                    </a>
+                    <a href="https://eposta.hvkk.tsk.tr/" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-envelope"></i>
+                    </a>
+                    <a href="mailto:eposta@hvkk.tsk.tr" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-pencil-square"></i>
                     </a>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-3 p-b-50">
                 <h4 class="stext-301 cl0 p-b-30">
-                    Newsletter
+                    Bülten
                 </h4>
 
                 <form>
@@ -104,7 +114,7 @@
 
                     <div class="p-t-18">
                         <button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-                            Subscribe
+                            Abone ol
                         </button>
                     </div>
                 </form>
@@ -113,37 +123,24 @@
 
         <div class="p-t-40">
             <div class="flex-c-m flex-w p-b-18">
-                <a href="#" class="m-all-1">
-                    <img src="{{ asset('frontend_assets/images/icons/icon-pay-01.png') }}" alt="ICON-PAY">
-                </a>
-
-                <a href="#" class="m-all-1">
-                    <img src="{{ asset('frontend_assets/images/icons/icon-pay-02.png') }}" alt="ICON-PAY">
-                </a>
-
-                <a href="#" class="m-all-1">
-                    <img src="{{ asset('frontend_assets/images/icons/icon-pay-03.png') }}" alt="ICON-PAY">
-                </a>
-
-                <a href="#" class="m-all-1">
-                    <img src="{{ asset('frontend_assets/images/icons/icon-pay-04.png') }}" alt="ICON-PAY">
-                </a>
-
-                <a href="#" class="m-all-1">
-                    <img src="{{ asset('frontend_assets/images/icons/icon-pay-05.png') }}" alt="ICON-PAY">
-                </a>
+                <img src="{{ asset('frontend_assets/images/hvkk-footer-img.png') }}" alt="ICON-PAY"
+                    style="height: 500px; width: auto; display: block; margin: 0 auto;">
             </div>
-
+            <br>
             <p class="stext-107 cl6 txt-center">
-                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                Türkiye Cumhuriyeti Millî Savunma Bakanlığı Hava Kuvvetleri Hava ve Uzay Gücü Geliştirme Merkezi (HUGEM)
+                Komutanlığı
+            </p>
+            <br>
+            <p class="stext-107 cl6 txt-center">
                 Copyright &copy;
                 <script>
                     document.write(new Date().getFullYear());
-                </script> All rights reserved | Made with <i class="fa fa-heart-o"
-                    aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp;
-                distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                </script> Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a
+                    href="https://serkankaracan.com" target="_blank">Serkan KARACAN</a> &amp; distributed by <a
+                    href="#" target="_blank">HUGEM</a> K.lığı
             </p>
         </div>
+
     </div>
 </footer>
