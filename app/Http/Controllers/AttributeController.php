@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attribute;
+use App\Models\AttributeListValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -68,6 +69,21 @@ class AttributeController extends Controller
 
         // Yeni özelliği oluştur
         $attribute = Attribute::create($validatedData);
+
+        $option = $request->input('option');
+        $listValues = $request->input('list_values');
+
+        if ($option === "Liste" && $listValues !== null) {
+            // Liste değerlerini döngü ile işle
+            foreach ($listValues as $value) {
+                // Değerleri veritabanına kaydet
+                AttributeListValue::create([
+                    'attribute_id' => $attribute->id, // Özellik ID'si
+                    'value' => $value
+                ]);
+            }
+        }
+
 
         if ($attribute) {
             return redirect()->route('ozellik.index')->with('success', $attribute->name . ' veritabanına eklendi.');

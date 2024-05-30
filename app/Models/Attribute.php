@@ -25,4 +25,9 @@ class Attribute extends Model
     {
         return $this->belongsToMany(Munition::class, 'munition_attributes')->withPivot('value');
     }
+
+    public function listValues()
+    {
+        return $this->hasMany(AttributeListValue::class);
+    }
 }

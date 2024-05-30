@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -17,6 +18,8 @@ return new class extends Migration {
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('SET NULL');
             $table->string('origin')->nullable()->default('Bilinmiyor');
             $table->decimal('price', 12, 2)->default(0);
+            $table->enum('target_type', ['SOFT', 'HARD']);
+            $table->integer('score')->default(0);
             $table->text('summary')->nullable();
             $table->longText('description')->nullable();
             $table->boolean('status')->default(true);

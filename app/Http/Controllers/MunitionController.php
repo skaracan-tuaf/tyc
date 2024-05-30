@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class MunitionController extends Controller
 {
@@ -69,6 +70,14 @@ class MunitionController extends Controller
      */
     public function store(Request $request)
     {
+        /*
+        $formData = $request->all();
+        try {
+            return response()->json(['success' => true, 'message' => $formData]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+        */
         // Gelen isteği doğrula
         $validatedData = $request->validate([
             'name' => 'required|string',
@@ -80,6 +89,8 @@ class MunitionController extends Controller
             'status' => 'boolean',
             'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'stock.*' => 'nullable|integer|min:0', // Kullanıcı tarafından girilen stok değerlerini doğrula
+            'sku.*' => 'nullable|string|unique:skus,sku', // Kullanıcı tarafından girilen SKU'ları doğrula ve benzersiz olmasını sağla
         ]);
 
         // Slug oluştur
@@ -106,7 +117,7 @@ class MunitionController extends Controller
             // Diğer durumlar için gerekli işlemler yapılabilir
         }
 
-
+        // resim kayıt işlemleri
         for ($i = 1; $i <= 6; $i++) {
             $imageInputName = 'imageInput' . $i;
             $croppedImageName = 'croppedImage' . $i;
@@ -142,6 +153,30 @@ class MunitionController extends Controller
                 $munitionImage->save();
             }
         }
+
+        // SKU'ları oluştur ve kaydet
+        /*
+        $variants = $munition->variants;
+        $variantValues = $munition->variantValues;
+        $stock = $request->input('stock');
+        $skus = $request->input('sku');
+
+        foreach ($variants as $variant) {
+            foreach ($variantValues as $value) {
+                // SKU oluştur
+                $sku = isset($skus[$variant->id][$value->id]) ? $skus[$variant->id][$value->id] : $this->generateSKU([$variant, $value]);
+
+                // SKU'yu kaydet
+                Sku::create([
+                    'munition_variant_id' => $variant->id,
+                    'stock' => isset($stock[$variant->id][$value->id]) ? $stock[$variant->id][$value->id] : 0, // Kullanıcı tarafından girilen stok değerini kullan
+                    'price' => $validatedData['price'], // Kullanıcının girdiği fiyatı kullan
+                    'sku' => $sku,
+                    'status' => true, // Varsayılan olarak SKU aktif olabilir
+                ]);
+            }
+        }
+        */
 
         // Başarıyla tamamlandı mesajı ile birlikte index sayfasına yönlendir
         return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına eklendi.');
@@ -202,6 +237,23 @@ class MunitionController extends Controller
 
         // Mühimmatı güncelle
         $munition->update($validatedData);
+
+        // Attribute değerlerini güncelle
+        $attributes = $request->input('attributes');
+        foreach ($attributes as $attributeId => $attributeValues) {
+            // Eğer attribute sadece tek bir değer alıyorsa
+            if (isset($attributeValues['value'])) {
+                $value = $attributeValues['value'];
+                $munition->attributes()->sync([$attributeId => ['value' => $value]]);
+            }
+            // Eğer attribute bir aralık alıyorsa
+            if (isset($attributeValues['min']) && isset($attributeValues['max'])) {
+                $min = $attributeValues['min'];
+                $max = $attributeValues['max'];
+                $munition->attributes()->sync([$attributeId => ['min' => $min, 'max' => $max]]);
+            }
+            // Diğer durumlar için gerekli işlemler yapılabilir
+        }
 
         //$munitionImages = $munition->images()->orderBy('id')->get();
         $munitionImages = $munition->images()->orderByDesc('id')->get();

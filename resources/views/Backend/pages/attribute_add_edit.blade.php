@@ -48,15 +48,67 @@
                                                 <select class="form-select" name="option" id="option-type" required>
                                                     <option value="" disabled>Seçenek</option>
                                                     @foreach ($enumValues as $option)
-                                                    <option value="{{ $option }}" {{ isset($attribute) && $option === $attribute->option ? 'selected' : '' }}>
-                                                        {{ ucfirst($option) }}
-                                                    </option>
+                                                        <option value="{{ $option }}"
+                                                            {{ isset($attribute) && $option === $attribute->option ? 'selected' : '' }}>
+                                                            {{ ucfirst($option) }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </fieldset>
+                                            <div id="list-values-container">
+                                                <!-- Buraya JavaScript ile eklenen liste değerleri gelecek -->
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-primary mt-2" id="add-list-value"
+                                                style="display: none;">EKLE</button>
                                         </div>
                                     </div>
                                 </div>
+                                <script>
+                                    // + butonunu göster veya gizle
+                                    document.getElementById("option-type").addEventListener("change", function() {
+                                        var selectedOption = this.value;
+                                        var addButton = document.getElementById("add-list-value");
+                                        addButton.style.display = selectedOption === "Liste" ? "block" : "none";
+                                        var removeButtons = document.querySelectorAll(".remove-list-value");
+                                        removeButtons.forEach(function(button) {
+                                            button.style.display = selectedOption === "Liste" ? "inline-block" : "none";
+                                        });
+
+                                        if (selectedOption !== "Liste") {
+                                            // Liste harici bir seçenek seçildiğinde, listeyi temizle
+                                            var container = document.getElementById("list-values-container");
+                                            container.innerHTML = ""; // Container'ı boşalt
+                                        }
+                                    });
+
+                                    // + butonu işlevi
+                                    document.getElementById("add-list-value").addEventListener("click", function() {
+                                        var container = document.getElementById("list-values-container");
+                                        var inputContainer = document.createElement("div");
+                                        inputContainer.className = "d-flex align-items-center mb-2";
+
+                                        var input = document.createElement("input");
+                                        input.type = "text";
+                                        input.className = "form-control me-2";
+                                        input.placeholder = "Değer";
+                                        input.name = "list_values[]"; // Name olarak dizi kullanın
+                                        inputContainer.appendChild(input);
+
+                                        var removeButton = document.createElement("button");
+                                        removeButton.type = "button";
+                                        removeButton.className = "btn btn-sm btn-danger remove-list-value";
+                                        removeButton.textContent = "Kaldır";
+                                        inputContainer.appendChild(removeButton);
+
+                                        container.appendChild(inputContainer);
+
+                                        // Kaldır butonuna işlev ekle
+                                        removeButton.addEventListener("click", function() {
+                                            container.removeChild(inputContainer);
+                                        });
+                                    });
+                                </script>
+
                                 <div class="row">
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">

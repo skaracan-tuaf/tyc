@@ -155,10 +155,36 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-
                                             </fieldset>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group mandatory">
+                                            <label for="target-type" class="form-label">Hedef Tipi</label>
+                                            <fieldset class="form-group">
+                                                <select class="form-select" name="target_type" id="target-type" required>
+                                                    <option value="">Seçiniz...</option>
+                                                    <option value="SOFT"
+                                                        {{ isset($munition) && $munition->target_type == 'SOFT' ? 'selected' : '' }}>
+                                                        SOFT</option>
+                                                    <option value="HARD"
+                                                        {{ isset($munition) && $munition->target_type == 'HARD' ? 'selected' : '' }}>
+                                                        HARD</option>
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group mandatory">
+                                            <label for="munition-score" class="form-label">Puan</label>
+                                            <input type="number" id="munition-score" class="form-control mr-2"
+                                                name="score" placeholder="Puan" min="1" max="10"
+                                                value="{{ isset($munition) ? $munition->score : '' }}">
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="munition-summary" class="form-label">Özet</label>
@@ -189,6 +215,8 @@
                                                     <option value="{{ $variant->id }}">{{ $variant->name }}</option>
                                                 @endforeach
                                             </select>
+                                            <button type="button" id="save-button"
+                                                class="btn btn-primary">KAYDET</button>
                                         </div>
                                     </div>
                                 </div>
@@ -288,14 +316,23 @@
                                                 <button type="button" id="{{ $attribute->slug }}"
                                                     name="attributes[{{ $attribute->id }}]"
                                                     class="btn btn-primary">{{ $attribute->name }}</button>
-                                            @elseif($attribute->option === 'Liste')
+                                            @elseif ($attribute->option === 'Liste')
                                                 <div class="form-group">
                                                     <label for="{{ $attribute->slug }}">{{ $attribute->name }}
                                                         Seçimi:</label>
                                                     <select id="{{ $attribute->slug }}"
-                                                        name="attributes[{{ $attribute->id }}]" class="form-control">
+                                                        name="attributes[{{ $attribute->id }}][value]"
+                                                        class="form-control">
                                                         <option value="">Seçiniz</option>
-                                                        <!-- Liste seçeneklerini burada döngü ile ekleyebilirsiniz -->
+                                                        @if ($attribute->listValues)
+                                                            @foreach ($attribute->listValues as $value)
+                                                                <option value="{{ $value->id }}"
+                                                                    @if (isset($munition) &&
+                                                                            $munition->attributes->contains('id', $attribute->id) &&
+                                                                            $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == $value->id) selected @endif>
+                                                                    {{ $value->value }}</option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </div>
                                             @endif
@@ -411,22 +448,9 @@
     <script src="{{ asset('backend_assets/static/js/pages/form-element-select.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
-    <!--script>
-                                const choices = new Choices('.choices', {
-                                    removeItemButton: true,
-                                    maxItemCount: 5, // İstenilen maksimum öğe sayısı
-                                    searchEnabled: true, // Arama özelliğini etkinleştirme
-                                    placeholder: true, // Placeholder kullanma
-                                    placeholderValue: 'Seçenekleri seçin', // Placeholder metni
-                                });
-                            </script-->
+
 
     <script>
-        /*
-                                                                conts variantJson = @json($variants);
-                                                                const variants = JSON.parse(variantJson);
-                                                                */
-
         const variants = {!! json_encode($variants) !!};
         const variantValues = {!! json_encode($variantValues) !!};
 
@@ -506,7 +530,31 @@
                 rowCounter++;
             });
 
+            combinations.forEach((combination, index) => {
+                const row = combinationsTableBody.childNodes[index]; // Doğru satırı al
+                const sku = generateSKU(combination); // Her bir kombinasyon için SKU oluştur
+                const skuInput = document.createElement('input');
+                skuInput.type = 'hidden';
+                skuInput.name = 'row_' + index + '_sku';
+                skuInput.value = sku;
+                row.appendChild(skuInput);
+
+                console.log(skuInput);
+            });
+
         });
+
+        function generateSKU(combination) {
+            let sku = '';
+            combination.forEach((value, index) => {
+                sku += value.value.substring(0, 3); // Değerlerin ilk üç harfini alarak SKU'ya ekle
+                if (index < combination.length - 1) {
+                    sku += '_'; // Değerler arasına "_" ekleyerek ayrım yap
+                }
+            });
+            return sku.toUpperCase(); // SKU'ları büyük harfle döndür
+        }
+
 
         // Kombinasyonları oluşturan fonksiyon
         function generateCombinations(variantIds, variantValueIds) {
@@ -540,8 +588,6 @@
             }
 
             generate([], variantIds);
-
-            console.log(combinations);
 
             return combinations;
         }
@@ -662,9 +708,8 @@
                         let croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/jpeg');
                         let croppedImageInput = document.getElementById('croppedImage' + i);
                         croppedImageInput.value = croppedDataUrl;
-                        console.log(croppedImageInput.value);
                     } else {
-                        console.log("hata var.");
+                        console.log("cropper'da hata var.");
                     }
                 }
 

@@ -75,7 +75,9 @@
                         <div class="block2">
                             <div class="block2-pic hov-img0">
                                 @if ($munition->images->count() > 0)
-                                    <img src="{{ asset('storage/' . $munition->images[0]->url) }}" alt="IMG-PRODUCT">
+                                    <a href="{{ route('muhimmatDetay', $munition->slug) }}">
+                                        <img src="{{ asset('storage/' . $munition->images[0]->url) }}" alt="IMG-PRODUCT">
+                                    </a>
                                 @else
                                     <img src="{{ asset('backend_assets/compiled/jpg/origami.jpg') }}" alt="IMG-PRODUCT">
                                 @endif

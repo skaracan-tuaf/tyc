@@ -23,11 +23,13 @@ Route::fallback(function () {
 
 
 Route::get('/', [FrontendController::class, 'index'])->name('AnaSayfa');
+Route::get('/karsilastir', [FrontendController::class, 'kiyasla'])->name('Kiyasla');
 Route::get('/blog', [FrontendController::class, 'blog'])->name('Blog');
 Route::get('/hakkimizda', [FrontendController::class, 'about'])->name('Hakkimizda');
 Route::get('/iletisim', [FrontendController::class, 'contact'])->name('Iletisim');
 
 Route::get('/search', [FrontendController::class, 'search'])->name('search');
+Route::get('/kategori/{slug}', [FrontendController::class, 'FilterByCategory'])->name('kategoriFiltresi');
 Route::get('/muhimmat-detay/{slug}', [FrontendController::class, 'ShowMunitionDetail'])->name('muhimmatDetay');
 
 
