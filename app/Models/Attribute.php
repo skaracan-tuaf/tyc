@@ -10,7 +10,7 @@ class Attribute extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'option', 'description', 'status'];
+    protected $fillable = ['name', 'slug', 'option', 'multiplier', 'description', 'status'];
 
     public static function boot()
     {

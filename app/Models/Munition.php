@@ -10,7 +10,7 @@ class Munition extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'category_id', 'origin', 'price', 'summary', 'description', 'status'];
+    protected $fillable = ['name', 'slug', 'category_id', 'origin', 'price', 'target_type', 'score', 'summary', 'description', 'status'];
 
     public static function boot()
     {

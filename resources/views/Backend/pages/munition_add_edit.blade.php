@@ -318,8 +318,6 @@
                                                     class="btn btn-primary">{{ $attribute->name }}</button>
                                             @elseif ($attribute->option === 'Liste')
                                                 <div class="form-group">
-                                                    <label for="{{ $attribute->slug }}">{{ $attribute->name }}
-                                                        Seçimi:</label>
                                                     <select id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
                                                         class="form-control">
@@ -363,7 +361,7 @@
                                     </div>
                                     @for ($i = 1; $i <= 6; $i++)
                                         <div class="col-12 col-xl-6 col-lg-6 col-md-6">
-                                            <div class="form-group text-center">
+                                            <div class="form-group text-left">
                                                 <label for="imageInput{{ $i }}">Resim {{ $i }}<span
                                                         style="color:red;"> *</span></label>
                                                 <img id="image{{ $i }}" src="" alt=""

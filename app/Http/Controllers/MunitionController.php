@@ -87,6 +87,7 @@ class MunitionController extends Controller
             'summary' => 'nullable|string',
             'description' => 'nullable|string',
             'status' => 'boolean',
+            'score' => 'required|numeric|min:1|max:10',
             'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'stock.*' => 'nullable|integer|min:0', // Kullanıcı tarafından girilen stok değerlerini doğrula

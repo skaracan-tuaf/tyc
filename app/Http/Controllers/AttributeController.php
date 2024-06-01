@@ -59,6 +59,7 @@ class AttributeController extends Controller
                     }
                 }
             ],
+            'multiplier' => 'required|numeric',//|regex:/^\d*(\.\d{1,4})?$/',
             'description' => 'nullable|string',
             'status' => 'boolean'
         ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Munition;
+use App\Models\MunitionAttribute;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Attribute;
@@ -24,12 +25,30 @@ class FrontendController extends Controller
         ));
     }
 
-    public function kiyasla()
+    public function kiyasla(Request $request)
     {
-        $munitions = Munition::paginate(9);
         $categories = Category::all();
         $attributes = Attribute::all();
         $tags = Tag::all();
+
+        $targetType = $request->input('target_type');
+        $minRange = $request->input('min');
+        $maxRange = $request->input('max');
+
+        // Mühimmatları filtrele
+        $attribute = Attribute::where('name', 'like', '%menzil%')->first();
+
+        if ($attribute) {
+            $munitionIds = MunitionAttribute::where('attribute_id', $attribute->id)
+                ->whereBetween('value', [$minRange, $maxRange])
+                ->pluck('munition_id');
+
+            $munitions = Munition::whereIn('id', $munitionIds)
+                ->where('target_type', $targetType)
+                ->get();
+        } else {
+            $munitions = collect();
+        }
 
         return view('Frontend.pages.munition_compare', compact(
             'munitions',
@@ -38,6 +57,8 @@ class FrontendController extends Controller
             'attributes'
         ));
     }
+
+
 
     public function blog()
     {

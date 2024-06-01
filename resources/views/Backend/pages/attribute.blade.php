@@ -33,6 +33,7 @@
                             <th>#</th>
                             <th>Adı</th>
                             <th>Tip</th>
+                            <th>Katsayı</th>
                             <th>Slug</th>
                             <th>Açıklama</th>
                             <th>Durum</th>
@@ -45,6 +46,7 @@
                                 <td>{{ $attribute->id }}</td>
                                 <td>{{ $attribute->name }}</td>
                                 <td>{{ $attribute->option }}</td>
+                                <td>{{ $attribute->multiplier }}</td>
                                 <td>{{ $attribute->slug }}</td>
                                 <td>{{ $attribute->description }}</td>
                                 <td>

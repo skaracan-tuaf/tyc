@@ -62,8 +62,25 @@
                                                 style="display: none;">EKLE</button>
                                         </div>
                                     </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group mandatory">
+                                            <label for="attribute-multiplier" class="form-label">Katsayı</label>
+                                            <input type="number" step="0.0001" min="0.0000" id="attribute-multiplier"
+                                                class="form-control" placeholder="Katsayı çarpanı" name="multiplier"
+                                                value="{{ isset($attribute) ? $attribute->multiplier : '' }}" required />
+                                        </div>
+                                    </div>
                                 </div>
                                 <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        //var multiplierInput = document.getElementById('attribute-multiplier');
+
+                                        //multiplierInput.addEventListener('input', function(event) {
+                                        //    var value = event.target.value;
+                                        //    event.target.value = value.replace(',', '.');
+                                        //});
+                                    });
+
                                     // + butonunu göster veya gizle
                                     document.getElementById("option-type").addEventListener("change", function() {
                                         var selectedOption = this.value;
