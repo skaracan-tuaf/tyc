@@ -45,6 +45,14 @@
                                                 @if ($attrValue)
                                                     @if ($attribute->option === 'Liste')
                                                         {{ $attribute->listValues->where('id', $attrValue->pivot->value)->first()->value ?? '' }}
+                                                    @elseif ($attribute->option === 'Doğrulama')
+                                                        @if ($attrValue->pivot->value == 1)
+                                                            Var
+                                                        @else
+                                                            Yok
+                                                        @endif
+                                                    @elseif ($attribute->option === 'Aralık')
+                                                        {{ $attrValue->pivot->min }}-{{ $attrValue->pivot->max }}
                                                     @else
                                                         {{ $attrValue->pivot->value ?? '' }}
                                                     @endif
