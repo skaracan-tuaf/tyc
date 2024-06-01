@@ -9,7 +9,7 @@ class MunitionAttribute extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['munition_id', 'attribute_id', 'value', 'min', 'max'];
+    protected $fillable = ['munition_id', 'attribute_id', 'value', 'score', 'min', 'max'];
 
     public function munition()
     {

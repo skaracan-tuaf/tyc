@@ -56,8 +56,24 @@
                                 <tr>
                                     <td><strong>Puan</strong></td>
                                     @foreach ($munitions as $munition)
-                                        <td><strong>{{ $munition->score }}</strong></td>
+                                        <td>
+                                            <strong>
+                                                @php
+                                                    $totalScore = 0;
+                                                @endphp
+                                                @foreach ($munition->attributes as $attribute)
+                                                    @if ($attribute->pivot->score && $attribute->multiplier)
+                                                        @php
+                                                            $totalScore +=
+                                                                $attribute->multiplier * $attribute->pivot->score;
+                                                        @endphp
+                                                    @endif
+                                                @endforeach
+                                                {{ $totalScore }}
+                                            </strong>
+                                        </td>
                                     @endforeach
+
                                 </tr>
                             </tbody>
                         </table>

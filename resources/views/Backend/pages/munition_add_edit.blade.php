@@ -176,14 +176,16 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group mandatory">
-                                            <label for="munition-score" class="form-label">Puan</label>
-                                            <input type="number" id="munition-score" class="form-control mr-2"
-                                                name="score" placeholder="Puan" min="1" max="10"
-                                                value="{{ isset($munition) ? $munition->score : '' }}">
-                                        </div>
-                                    </div>
+                                    <!--
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mandatory">
+                                                        <label for="munition-score" class="form-label">Puan</label>
+                                                        <input type="number" id="munition-score" class="form-control mr-2"
+                                                            name="score" placeholder="Puan" min="1" max="10"
+                                                            value="{{ isset($munition) ? $munition->score : '' }}">
+                                                    </div>
+                                                </div>
+                                            -->
 
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
@@ -199,27 +201,30 @@
                                     </div>
                                 </div>
 
-                                <br>
-                                <hr><br>
+                                <!--
+                                    <br>
+                                        <hr>
+                                        <br>
 
-                                <div class="row">
-                                    <div class="ol-12">
-                                        <div class="form-group">
-                                            <label for="variants" class="form-label">Varyantlar</label>
-                                            <p>Birden fazla varyant seçilebilir. Seçilen varyantların kombinasyonu
-                                                oluşturulur. <code>X</code> tuşu ile varyantı kaldırılabilirsiniz.
-                                            </p>
-                                            <select class="choices form-select multiple-remove" multiple="multiple"
-                                                name="variants[]" id="variant-select">
-                                                @foreach ($variants as $variant)
-                                                    <option value="{{ $variant->id }}">{{ $variant->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button type="button" id="save-button"
-                                                class="btn btn-primary">KAYDET</button>
+                                        <div class="row">
+                                            <div class="ol-12">
+                                                <div class="form-group">
+                                                    <label for="variants" class="form-label">Varyantlar</label>
+                                                    <p>Birden fazla varyant seçilebilir. Seçilen varyantların kombinasyonu
+                                                        oluşturulur. <code>X</code> tuşu ile varyantı kaldırılabilirsiniz.
+                                                    </p>
+                                                    <select class="choices form-select multiple-remove" multiple="multiple"
+                                                        name="variants[]" id="variant-select">
+                                                        @foreach ($variants as $variant)
+    <option value="{{ $variant->id }}">{{ $variant->name }}</option>
+    @endforeach
+                                                    </select>
+                                                    <button type="button" id="save-button"
+                                                        class="btn btn-primary">KAYDET</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    -->
                                 <br>
                                 <div class="row">
                                     <div class="col-12">
@@ -253,71 +258,75 @@
 
                                 <div class="row">
                                     @foreach ($attributes as $attribute)
-                                        <div class="form-group">
-                                            <label for="{{ $attribute->slug }}">{{ $attribute->name }}:</label>
-                                            @if ($attribute->option === 'Yazı')
-                                                <input type="text" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]"
-                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
-                                                    class="form-control">
-                                            @elseif($attribute->option === 'Tam Sayı')
-                                                <input type="text" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]"
-                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
-                                                    class="form-control">
-                                            @elseif($attribute->option === 'Ondalık')
-                                                <input type="number" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]"
-                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
-                                                    class="form-control" step="0.01">
-                                            @elseif($attribute->option === 'Doğrulama')
-                                                <div class="form-check">
-                                                    <input type="radio" id="{{ $attribute->slug }}_1"
-                                                        name="attributes[{{ $attribute->id }}][value]" value="1"
-                                                        class="form-check-input"
-                                                        {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 1 ? 'checked' : '' }}>
-                                                    <label for="{{ $attribute->slug }}_1"
-                                                        class="form-check-label">Var</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="radio" id="{{ $attribute->slug }}_0"
-                                                        name="attributes[{{ $attribute->id }}][value]" value="0"
-                                                        class="form-check-input"
-                                                        {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 0 ? 'checked' : '' }}>
-                                                    <label for="{{ $attribute->slug }}_0"
-                                                        class="form-check-label">Yok</label>
-                                                </div>
-                                            @elseif($attribute->option === 'Aralık')
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <input type="number" id="{{ $attribute->slug }}_min"
-                                                                name="attributes[{{ $attribute->id }}][min]"
-                                                                value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->min : '' }}"
-                                                                class="form-control" placeholder="asgari" step="0.01">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="number" id="{{ $attribute->slug }}_max"
-                                                                name="attributes[{{ $attribute->id }}][max]"
-                                                                value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->max : '' }}"
-                                                                class="form-control" placeholder="azami" step="0.01">
+                                        <div class="form-group col-12 row mb-3">
+                                            <!-- Attribute Input -->
+                                            <div class="col-6">
+                                                <label for="{{ $attribute->slug }}">{{ $attribute->name }}:</label>
+                                                @if ($attribute->option === 'Yazı')
+                                                    <input type="text" id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}][value]"
+                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        class="form-control">
+                                                @elseif($attribute->option === 'Tam Sayı')
+                                                    <input type="text" id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}][value]"
+                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        class="form-control">
+                                                @elseif($attribute->option === 'Ondalık')
+                                                    <input type="number" id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}][value]"
+                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        class="form-control" step="0.01">
+                                                @elseif($attribute->option === 'Doğrulama')
+                                                    <div class="form-check">
+                                                        <input type="radio" id="{{ $attribute->slug }}_1"
+                                                            name="attributes[{{ $attribute->id }}][value]" value="1"
+                                                            class="form-check-input"
+                                                            {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 1 ? 'checked' : '' }}>
+                                                        <label for="{{ $attribute->slug }}_1"
+                                                            class="form-check-label">Var</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="radio" id="{{ $attribute->slug }}_0"
+                                                            name="attributes[{{ $attribute->id }}][value]" value="0"
+                                                            class="form-check-input"
+                                                            {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 0 ? 'checked' : '' }}>
+                                                        <label for="{{ $attribute->slug }}_0"
+                                                            class="form-check-label">Yok</label>
+                                                    </div>
+                                                @elseif($attribute->option === 'Aralık')
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <input type="number" id="{{ $attribute->slug }}_min"
+                                                                    name="attributes[{{ $attribute->id }}][min]"
+                                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->min : '' }}"
+                                                                    class="form-control" placeholder="asgari"
+                                                                    step="0.01">
+                                                            </div>
+                                                            <div class="col">
+                                                                <input type="number" id="{{ $attribute->slug }}_max"
+                                                                    name="attributes[{{ $attribute->id }}][max]"
+                                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->max : '' }}"
+                                                                    class="form-control" placeholder="azami"
+                                                                    step="0.01">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @elseif($attribute->option === 'Renk')
-                                                <input type="color" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}][value]"
-                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
-                                                    class="form-control">
-                                            @elseif($attribute->option === 'Resim')
-                                                <input type="file" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]" class="form-control-file">
-                                            @elseif($attribute->option === 'Buton')
-                                                <button type="button" id="{{ $attribute->slug }}"
-                                                    name="attributes[{{ $attribute->id }}]"
-                                                    class="btn btn-primary">{{ $attribute->name }}</button>
-                                            @elseif ($attribute->option === 'Liste')
-                                                <div class="form-group">
+                                                @elseif($attribute->option === 'Renk')
+                                                    <input type="color" id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}][value]"
+                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        class="form-control">
+                                                @elseif($attribute->option === 'Resim')
+                                                    <input type="file" id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}]"
+                                                        class="form-control-file">
+                                                @elseif($attribute->option === 'Buton')
+                                                    <button type="button" id="{{ $attribute->slug }}"
+                                                        name="attributes[{{ $attribute->id }}]"
+                                                        class="btn btn-primary">{{ $attribute->name }}</button>
+                                                @elseif ($attribute->option === 'Liste')
                                                     <select id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
                                                         class="form-control">
@@ -332,11 +341,20 @@
                                                             @endforeach
                                                         @endif
                                                     </select>
-                                                </div>
-                                            @endif
+                                                @endif
+                                            </div>
+                                            <!-- Score Input -->
+                                            <div class="col-6">
+                                                <label for="score_{{ $attribute->slug }}">Puan:</label>
+                                                <input type="number" id="score_{{ $attribute->slug }}" step="0.01"
+                                                    name="attributes[{{ $attribute->id }}][score]"
+                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->score : '' }}"
+                                                    class="form-control" step="1">
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
+
 
                                 <hr>
                                 <br>

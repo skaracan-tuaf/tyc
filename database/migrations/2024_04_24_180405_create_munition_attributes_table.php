@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('munition_id')->constrained('munitions')->onDelete('cascade');
             $table->foreignId('attribute_id')->constrained('attributes');
             $table->string('value', 255)->nullable();
+            $table->decimal('score',  8, 2)->default(0);
             $table->decimal('min',  8, 2)->nullable();
             $table->decimal('max',  8, 2)->nullable();
             $table->timestamps();

@@ -104,18 +104,18 @@ class MunitionController extends Controller
         // Özellik değerlerini kaydet
         $attributes = $request->input('attributes');
         foreach ($attributes as $attributeId => $attributeValues) {
-            // Eğer attribute sadece tek bir değer alıyorsa
-            if (isset($attributeValues['value'])) {
-                $value = $attributeValues['value'];
-                $munition->attributes()->attach($attributeId, ['value' => $value]);
-            }
-            // Eğer attribute bir aralık alıyorsa
-            if (isset($attributeValues['min']) && isset($attributeValues['max'])) {
-                $min = $attributeValues['min'];
-                $max = $attributeValues['max'];
-                $munition->attributes()->attach($attributeId, ['min' => $min, 'max' => $max]);
-            }
-            // Diğer durumlar için gerekli işlemler yapılabilir
+            $value = $attributeValues['value'] ?? null;
+            $score = $attributeValues['score'] ?? 0;
+            $min = $attributeValues['min'] ?? null;
+            $max = $attributeValues['max'] ?? null;
+
+            // Attribute'u iliştir
+            $munition->attributes()->attach($attributeId, [
+                'value' => $value,
+                'score' => $score,
+                'min' => $min,
+                'max' => $max,
+            ]);
         }
 
         // resim kayıt işlemleri
