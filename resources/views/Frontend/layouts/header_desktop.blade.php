@@ -19,7 +19,7 @@
                         <ul class="sub-menu">
                             @foreach ($categories as $category)
                                 @if ($category->parent_id === null)
-                                    <li><a href="#">{{ $category->name }}</a></li>
+                                    <li><a href="{{ route('kategoriFiltresi', $category->slug) }}">{{ $category->name }}</a></li>
                                 @endif
                             @endforeach
                         </ul>

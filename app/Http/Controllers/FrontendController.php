@@ -14,7 +14,7 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $munitions = Munition::paginate(9);
+        $munitions = Munition::paginate(12);
         $categories = Category::all();
         $tags = Tag::all();
 
@@ -35,19 +35,30 @@ class FrontendController extends Controller
         $minRange = $request->input('min');
         $maxRange = $request->input('max');
 
-        // Mühimmatları filtrele
+        // Menzil adında bir özellik var mı kontrol et
         $attribute = Attribute::where('name', 'like', '%menzil%')->first();
 
-        if ($attribute) {
-            $munitionIds = MunitionAttribute::where('attribute_id', $attribute->id)
-                ->whereBetween('value', [$minRange, $maxRange])
-                ->pluck('munition_id');
+        // Menzil özelliği varsa ve min veya max değerleri boş değilse, bu özelliği kullanarak filtreleme yap
+        if ($attribute && (!empty($minRange) || !empty($maxRange))) {
+            $query = MunitionAttribute::where('attribute_id', $attribute->id);
+
+            // Min ve max değerlerinin kontrolü
+            if (!empty($minRange) && !empty($maxRange)) {
+                $query->whereBetween('value', [$minRange, $maxRange]);
+            } elseif (!empty($minRange)) {
+                $query->where('value', '>=', $minRange);
+            } elseif (!empty($maxRange)) {
+                $query->where('value', '<=', $maxRange);
+            }
+
+            $munitionIds = $query->pluck('munition_id');
 
             $munitions = Munition::whereIn('id', $munitionIds)
                 ->where('target_type', $targetType)
                 ->get();
         } else {
-            $munitions = collect();
+            // Menzil özelliği yoksa veya min ve max değerleri boşsa sadece target_type üzerinden sorgu yap
+            $munitions = Munition::where('target_type', $targetType)->get();
         }
 
         return view('Frontend.pages.munition_compare', compact(
@@ -57,8 +68,6 @@ class FrontendController extends Controller
             'attributes'
         ));
     }
-
-
 
     public function blog()
     {
@@ -106,6 +115,7 @@ class FrontendController extends Controller
     public function ShowMunitionDetail($slug)
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
         $munition = Munition::where('slug', $slug)->first();
 
@@ -115,7 +125,7 @@ class FrontendController extends Controller
 
         $munitionImages = Image::where('munition_id', $munition->id)->get();
 
-        return view('Frontend.pages.munition_detail', compact('munition', 'munitionImages', 'categories'));
+        return view('Frontend.pages.munition_detail', compact('munition', 'munitionImages', 'categories', 'tags'));
     }
 
     public function getMunitionsByCategory($categoryId)
@@ -138,26 +148,16 @@ class FrontendController extends Controller
 
     public function FilterByCategory($slug)
     {
-        //ayrı bir sayfa yapılacak.
-
         // Kategoriyi bul
-        $category = Category::where('slug', $slug)->first();
+        $category = Category::where('slug', $slug)->firstOrFail();
 
-        // Kategori bulunamazsa 404 hatası göster
-        if (!$category) {
-            abort(404);
-        }
-
-        // Kategoriye ait mühimmatları çek
-        //$munitions = Munition::where('category_id', $category->id)->get();
-
-        // Kategoriye ait tüm mühimmatları al (alt kategoriler de dahil)
+        // Kategoriye ait mühimmatları ve alt kategorileri çek
         $munitions = $this->getMunitionsByCategory($category->id);
-
-        // Mühimmatları bulunamazsa boş dizi döndür
-        if ($munitions->isEmpty()) {
-            return view('Frontend.pages.home', compact('category'));
-        }
+        // Mühimmatları sayfalandır
+        $perPage = 10; // Her sayfada gösterilecek mühimmat sayısı
+        $currentPage = request()->query('page', 1); // Geçerli sayfa numarası
+        $pagedData = $munitions->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $munitions = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, count($munitions), $perPage);
 
         // Mühimmatların resimlerini çekmek için boş bir dizi oluştur
         $munitionImages = [];
@@ -168,14 +168,18 @@ class FrontendController extends Controller
             $munitionImages[$munition->id] = $images;
         }
 
+        $categories = Category::all();
+        $tags = Tag::all();
+
         // Sonucu görünüme aktar ve home.blade.php dosyasını çağır
-        return view('Frontend.pages.home', compact('munitions', 'munitionImages', 'category'));
+        return view('Frontend.pages.home', compact('munitions', 'munitionImages', 'category', 'tags', 'categories'));
     }
 
 
     public function search(Request $request)
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
         // Arama sorgusunu al
         $search = $request->input('q');
@@ -190,6 +194,6 @@ class FrontendController extends Controller
             ->orWhere('description', 'like', '%' . $search . '%')
             ->paginate(12); // Sayfalama ekleyerek 12 sonuç göster
 
-        return view('Frontend.pages.home', compact('munitions', 'search', 'categories'));
+        return view('Frontend.pages.home', compact('munitions', 'search', 'categories', 'tags'));
     }
 }

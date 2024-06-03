@@ -216,95 +216,99 @@ class MunitionController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
-    {
-        $munition = Munition::findOrFail($id);
+{
+    $munition = Munition::findOrFail($id);
 
-        // Gelen isteği doğrula
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
-            'origin' => 'required|string',
-            'summary' => 'nullable|string',
-            'description' => 'nullable|string',
-            'status' => 'boolean',
-            'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-        ]);
+    // Gelen isteği doğrula
+    $validatedData = $request->validate([
+        'name' => 'required|string',
+        'category_id' => 'required|exists:categories,id',
+        'price' => 'required|numeric|min:0',
+        'origin' => 'required|string',
+        'summary' => 'nullable|string',
+        'description' => 'nullable|string',
+        'status' => 'boolean',
+        'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+        'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+    ]);
 
-        // Slug oluştur
-        $slug = Str::slug($validatedData['name']);
-        $validatedData['slug'] = $slug;
+    // Slug oluştur
+    $slug = Str::slug($validatedData['name']);
+    $validatedData['slug'] = $slug;
 
-        // Mühimmatı güncelle
-        $munition->update($validatedData);
+    // Mühimmatı güncelle
+    $munition->update($validatedData);
 
-        // Attribute değerlerini güncelle
-        $attributes = $request->input('attributes');
-        foreach ($attributes as $attributeId => $attributeValues) {
-            // Eğer attribute sadece tek bir değer alıyorsa
-            if (isset($attributeValues['value'])) {
-                $value = $attributeValues['value'];
-                $munition->attributes()->sync([$attributeId => ['value' => $value]]);
-            }
-            // Eğer attribute bir aralık alıyorsa
-            if (isset($attributeValues['min']) && isset($attributeValues['max'])) {
-                $min = $attributeValues['min'];
-                $max = $attributeValues['max'];
-                $munition->attributes()->sync([$attributeId => ['min' => $min, 'max' => $max]]);
-            }
-            // Diğer durumlar için gerekli işlemler yapılabilir
+    // Attribute değerlerini güncelle
+    $attributes = $request->input('attributes', []);
+    foreach ($attributes as $attributeId => $attributeValues) {
+        $pivotData = [];
+        if (isset($attributeValues['value'])) {
+            $pivotData['value'] = $attributeValues['value'];
+        }
+        if (isset($attributeValues['min']) && isset($attributeValues['max'])) {
+            $pivotData['min'] = $attributeValues['min'];
+            $pivotData['max'] = $attributeValues['max'];
+        }
+        if (isset($attributeValues['score'])) {
+            $pivotData['score'] = $attributeValues['score'];
         }
 
-        //$munitionImages = $munition->images()->orderBy('id')->get();
-        $munitionImages = $munition->images()->orderByDesc('id')->get();
+        // Mevcut attribute varsa güncelle, yoksa ekle
+        if (!empty($pivotData)) {
+            $munition->attributes()->syncWithoutDetaching([$attributeId => $pivotData]);
+        }
+    }
 
-        for ($i = 1; $i <= 6; $i++) {
-            $imageInputName = 'imageInput' . $i;
-            $croppedImageName = 'croppedImage' . $i;
+    // Var olan resimleri sırayla güncelle veya ekle
+    $munitionImages = $munition->images()->orderByDesc('id')->get();
+
+    for ($i = 1; $i <= 6; $i++) {
+        $imageInputName = 'imageInput' . $i;
+        $croppedImageName = 'croppedImage' . $i;
+
+        if ($request->has($imageInputName)) {
+            $existingImage = $munitionImages->get($i - 1); // -1 çünkü indeksler 0'dan başlar
+
+            if ($existingImage) {
+                Storage::delete('public/' . $existingImage->url);
+                $existingImage->delete();
+            }
 
             if ($request->has($imageInputName)) {
-                $existingImage = $munitionImages->get($i - 1); // -1 çünkü indeksler 0'dan başlar
+                // Get base64 image data
+                $croppedImageData = $request->input($croppedImageName);
 
-                if ($existingImage) {
-                    Storage::delete('public/' . $existingImage->url);
-                    $existingImage->delete();
-                }
+                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
 
-                if ($request->has($imageInputName)) {
+                // Base64 kodunu dosyaya yaz
+                $tempImagePath = tempnam(sys_get_temp_dir(), 'cropped_image');
+                file_put_contents($tempImagePath, $image);
 
-                    // Get base64 image data
-                    $croppedImageData = $request->input($croppedImageName);
+                $imageData = $request->file($imageInputName);
+                // Generate unique image name
+                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
+                $imageExtension = $imageData->getClientOriginalExtension();
+                $fullImageName = $imageName . '.' . $imageExtension;
 
-                    $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
+                // Save image to storage
+                $storagePath = Storage::putFileAs('public/munition_images', new File($tempImagePath), $fullImageName);
 
-                    // Base64 kodunu dosyaya yaz
-                    $tempImagePath = tempnam(sys_get_temp_dir(), 'cropped_image');
-                    file_put_contents($tempImagePath, $image);
+                unlink($tempImagePath);
 
-                    $imageData = $request->file($imageInputName);
-                    // Generate unique image name
-                    $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
-                    $imageExtension = $imageData->getClientOriginalExtension();
-                    $fullImageName = $imageName . '.' . $imageExtension;
-
-                    // Save image to storage
-                    $storagePath = Storage::putFileAs('public/munition_images', new File($tempImagePath), $fullImageName);
-
-                    unlink($tempImagePath);
-
-                    // Create and save image record in database
-                    $munitionImage = new Image();
-                    $munitionImage->url = 'munition_images/' . $fullImageName;
-                    $munitionImage->munition_id = $munition->id;
-                    $munitionImage->save();
-                }
+                // Create and save image record in database
+                $munitionImage = new Image();
+                $munitionImage->url = 'munition_images/' . $fullImageName;
+                $munitionImage->munition_id = $munition->id;
+                $munitionImage->save();
             }
         }
-
-        // Başarıyla tamamlandı mesajı ile birlikte index sayfasına yönlendir
-        return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanında güncellendi.');
     }
+
+    // Başarıyla tamamlandı mesajı ile birlikte index sayfasına yönlendir
+    return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanında güncellendi.');
+}
+
 
     public function deleteImage($id)
     {

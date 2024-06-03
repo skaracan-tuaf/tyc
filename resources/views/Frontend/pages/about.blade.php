@@ -23,28 +23,33 @@
                         </h3>
 
                         <p class="stext-113 cl6 p-b-26">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat consequat enim, non
-                            auctor massa ultrices non. Morbi sed odio massa. Quisque at vehicula tellus, sed tincidunt
-                            augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                            Maecenas varius egestas diam, eu sodales metus scelerisque congue. Pellentesque habitant morbi
-                            tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas gravida justo eu arcu
-                            egestas convallis. Nullam eu erat bibendum, tempus ipsum eget, dictum enim. Donec non neque ut
-                            enim dapibus tincidunt vitae nec augue. Suspendisse potenti. Proin ut est diam. Donec
-                            condimentum euismod tortor, eget facilisis diam faucibus et. Morbi a tempor elit.
+                            Hava ve Uzay Gücü Komutanlığı, Türk havacılık tarihinin en köklü kurumlarından biridir. 1911
+                            yılında kurulan Hava Kuvvetleri Komutanlığı, 2021 yılında Hava ve Uzay Gücü Komutanlığı'na
+                            dönüştürülmüştür. Komutanlık, Türkiye'nin hava ve uzay hakimiyetini korumak ve geliştirmek için
+                            görev yapmaktadır.
                         </p>
 
                         <p class="stext-113 cl6 p-b-26">
-                            Donec gravida lorem elit, quis condimentum ex semper sit amet. Fusce eget ligula magna. Aliquam
-                            aliquam imperdiet sodales. Ut fringilla turpis in vehicula vehicula. Pellentesque congue ac orci
-                            ut gravida. Aliquam erat volutpat. Donec iaculis lectus a arcu facilisis, eu sodales lectus
-                            sagittis. Etiam pellentesque, magna vel dictum rutrum, neque justo eleifend elit, vel tincidunt
-                            erat arcu ut sem. Sed rutrum, turpis ut commodo efficitur, quam velit convallis ipsum, et
-                            maximus enim ligula ac ligula.
+                            Hava ve Uzay Gücü Komutanlığı, Türkiye'nin en modern ve güçlü havacılık güçlerinden biridir.
+                            Komutanlık, geniş bir yelpazede hava savunma, havadan havaya, havadan yere ve elektronik harp
+                            sistemlerine sahiptir. Komutanlık ayrıca uzay araştırmaları ve uzay güvenliği alanlarında da
+                            çalışmalar yürütmektedir.
                         </p>
 
                         <p class="stext-113 cl6 p-b-26">
-                            Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us
-                            on (+1) 96 716 6879
+                            Hava ve Uzay Gücü Komutanlığı, ulusal ve uluslararası barışa katkıda bulunmak için de aktif rol
+                            oynamaktadır. Komutanlık, NATO ve diğer uluslararası organizasyonlarla iş birliği içinde
+                            faaliyet göstermektedir.
+                        </p>
+                        <p class="stext-113 cl6 p-b-26">
+                            Hava ve Uzay Gücü Komutanlığı, Türk havacılık tarihinin en önemli başarılarına imza atmıştır.
+                            Komutanlık, Çanakkale Savaşı'ndan Kurtuluş Savaşı'na, Kıbrıs Barış Harekatı'ndan günümüze kadar
+                            birçok önemli operasyonda görev almıştır.
+                        </p>
+                        <p class="stext-113 cl6 p-b-26">
+                            Hava ve Uzay Gücü Komutanlığı, Türkiye'nin havacılık ve uzay alanında lider bir güç olmasını
+                            sağlamak için çalışmalarını sürdürmektedir. Komutanlık, geleceğe güvenle bakmakta ve Türkiye'nin
+                            hava ve uzay hakimiyetini korumak için her zaman hazır olmaktadır.
                         </p>
                     </div>
                 </div>
@@ -52,7 +57,7 @@
                 <div class="col-11 col-md-5 col-lg-4 m-lr-auto">
                     <div class="how-bor1 ">
                         <div class="hov-img0">
-                            <img src="{{ asset('frontend_assets/images/icons/logo-03.png') }}" alt="IMG">
+                            <img src="{{ asset('frontend_assets/images/icons/logo-04.png') }}" alt="IMG">
                         </div>
                     </div>
                 </div>
@@ -66,14 +71,22 @@
                         </h3>
 
                         <p class="stext-113 cl6 p-b-26">
-                            Mauris non lacinia magna. Sed nec lobortis dolor. Vestibulum rhoncus dignissim risus, sed
-                            consectetur erat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
-                            turpis egestas. Nullam maximus mauris sit amet odio convallis, in pharetra magna gravida.
-                            Praesent sed nunc fermentum mi molestie tempor. Morbi vitae viverra odio. Pellentesque ac velit
-                            egestas, luctus arcu non, laoreet mauris. Sed in ipsum tempor, consequat odio in, porttitor
-                            ante. Ut mauris ligula, volutpat in sodales in, porta non odio. Pellentesque tempor urna vitae
-                            mi vestibulum, nec venenatis nulla lobortis. Proin at gravida ante. Mauris auctor purus at lacus
-                            maximus euismod. Pellentesque vulputate massa ut nisl hendrerit, eget elementum libero iaculis.
+                            Hava ve Uzay Gücü Komutanlığı'nın temel görevi, Türkiye'nin hava ve uzay hakimiyetini korumak ve
+                            geliştirmektir. Bu görevi yerine getirmek için komutanlık aşağıdaki faaliyetleri yürütmektedir:
+                        </p>
+                        <p class="stext-113 cl6 p-b-26">
+                            Hava Savunması: Türkiye'nin hava sahasını korumak ve savunmak.
+                            Havadan Havaya Muharebe: Düşman hava araçlarını etkisiz hale getirmek.
+                            Havadan Yere Muharebe: Yer hedeflerini vurmak.
+                            Elektronik Harp: Düşman haberleşme ve radar sistemlerini etkisiz hale getirmek.
+                            Uzay Araştırmaları ve Uzay Güvenliği: Uzay araştırmaları yapmak ve uzaydaki varlıklarımızı
+                            korumak.
+                            Ulusal ve Uluslararası Barışa Katkı: Ulusal ve uluslararası barışa katkıda bulunmak.
+                        </p>
+                        <p class="stext-113 cl6 p-b-26">
+                            Hava ve Uzay Gücü Komutanlığı, bu görevleri yerine getirirken en son teknolojiyi kullanmakta ve
+                            personele en iyi eğitimi vermektedir. Komutanlık, Türkiye'nin havacılık ve uzay alanında lider
+                            bir güç olmasını sağlamak için çalışmalarını sürdürmektedir.
                         </p>
 
                         <div class="bor16 p-l-29 p-b-9 m-t-22">

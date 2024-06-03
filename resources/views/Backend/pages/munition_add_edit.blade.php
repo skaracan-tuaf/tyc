@@ -262,27 +262,30 @@
                                             <!-- Attribute Input -->
                                             <div class="col-6">
                                                 <label for="{{ $attribute->slug }}">{{ $attribute->name }}:</label>
+                                                @php
+                                                    $pivot = isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot ?? null : null;
+                                                @endphp
                                                 @if ($attribute->option === 'Yazı')
                                                     <input type="text" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        value="{{ $pivot ? $pivot->value : '' }}"
                                                         class="form-control">
                                                 @elseif($attribute->option === 'Tam Sayı')
                                                     <input type="text" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        value="{{ $pivot ? $pivot->value : '' }}"
                                                         class="form-control">
                                                 @elseif($attribute->option === 'Ondalık')
                                                     <input type="number" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        value="{{ $pivot ? $pivot->value : '' }}"
                                                         class="form-control" step="0.01">
                                                 @elseif($attribute->option === 'Doğrulama')
                                                     <div class="form-check">
                                                         <input type="radio" id="{{ $attribute->slug }}_1"
                                                             name="attributes[{{ $attribute->id }}][value]" value="1"
                                                             class="form-check-input"
-                                                            {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 1 ? 'checked' : '' }}>
+                                                            {{ $pivot && $pivot->value == 1 ? 'checked' : '' }}>
                                                         <label for="{{ $attribute->slug }}_1"
                                                             class="form-check-label">Var</label>
                                                     </div>
@@ -290,7 +293,7 @@
                                                         <input type="radio" id="{{ $attribute->slug }}_0"
                                                             name="attributes[{{ $attribute->id }}][value]" value="0"
                                                             class="form-check-input"
-                                                            {{ isset($munition) && $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == 0 ? 'checked' : '' }}>
+                                                            {{ $pivot && $pivot->value == 0 ? 'checked' : '' }}>
                                                         <label for="{{ $attribute->slug }}_0"
                                                             class="form-check-label">Yok</label>
                                                     </div>
@@ -300,14 +303,14 @@
                                                             <div class="col">
                                                                 <input type="number" id="{{ $attribute->slug }}_min"
                                                                     name="attributes[{{ $attribute->id }}][min]"
-                                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->min : '' }}"
+                                                                    value="{{ $pivot ? $pivot->min : '' }}"
                                                                     class="form-control" placeholder="asgari"
                                                                     step="0.01">
                                                             </div>
                                                             <div class="col">
                                                                 <input type="number" id="{{ $attribute->slug }}_max"
                                                                     name="attributes[{{ $attribute->id }}][max]"
-                                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->max : '' }}"
+                                                                    value="{{ $pivot ? $pivot->max : '' }}"
                                                                     class="form-control" placeholder="azami"
                                                                     step="0.01">
                                                             </div>
@@ -316,7 +319,7 @@
                                                 @elseif($attribute->option === 'Renk')
                                                     <input type="color" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->value : '' }}"
+                                                        value="{{ $pivot ? $pivot->value : '' }}"
                                                         class="form-control">
                                                 @elseif($attribute->option === 'Resim')
                                                     <input type="file" id="{{ $attribute->slug }}"
@@ -334,9 +337,7 @@
                                                         @if ($attribute->listValues)
                                                             @foreach ($attribute->listValues as $value)
                                                                 <option value="{{ $value->id }}"
-                                                                    @if (isset($munition) &&
-                                                                            $munition->attributes->contains('id', $attribute->id) &&
-                                                                            $munition->attributes->firstWhere('id', $attribute->id)->pivot->value == $value->id) selected @endif>
+                                                                    {{ $pivot && $pivot->value == $value->id ? 'selected' : '' }}>
                                                                     {{ $value->value }}</option>
                                                             @endforeach
                                                         @endif
@@ -348,12 +349,13 @@
                                                 <label for="score_{{ $attribute->slug }}">Puan:</label>
                                                 <input type="number" id="score_{{ $attribute->slug }}" step="0.01"
                                                     name="attributes[{{ $attribute->id }}][score]"
-                                                    value="{{ isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot->score : '' }}"
+                                                    value="{{ $pivot ? $pivot->score : '' }}"
                                                     class="form-control" step="1">
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
+
 
 
                                 <hr>

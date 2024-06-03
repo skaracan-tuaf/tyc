@@ -70,10 +70,24 @@
                                         {{ $attribute->name }}
                                     </span>
                                     <span class="stext-102 cl6 size-206">
-                                        @if ($attribute->option === 'Liste')
-                                            {{ $attribute->listValues->where('id', $attribute->pivot->value)->first()->value ?? '' }}
-                                        @else
-                                            {{ $attribute->pivot->value }}
+                                        @php
+                                            $attrValue = $attribute;
+                                        @endphp
+                                        @if ($attrValue)
+                                            @if ($attribute->option === 'Liste')
+                                                {{ $attribute->listValues->where('id', $attrValue->pivot->value)->first()->value ?? '' }}
+                                            @elseif ($attribute->option === 'Doğrulama')
+                                                @if ($attrValue->pivot->value == 1)
+                                                    Var
+                                                @else
+                                                    Yok
+                                                @endif
+                                            @elseif ($attribute->option === 'Aralık')
+                                                {{ $attrValue->pivot->min ?? '' }} -
+                                                {{ $attrValue->pivot->max ?? '' }}
+                                            @else
+                                                {{ $attrValue->pivot->value ?? '' }}
+                                            @endif
                                         @endif
                                     </span>
                                 </li>

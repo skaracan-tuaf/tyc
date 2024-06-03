@@ -15,6 +15,21 @@
         <div class="header-cart-content flex-w js-pscroll">
             <form action="{{ route('Kiyasla') }}" method="GET" class="header-cart-content flex-w js-pscroll">
                 <ul class="header-cart-wrapitem w-full">
+                    <!-- Hedef Kategorisi -->
+                    <li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-txt p-t-8 w-full">
+                            <label for="target-select" class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">
+                                Hedef Kategorisi:
+                            </label>
+                            <select id="target-select" name="target_type" class="form-control m-b-10">
+                                <option value="" selected>Kategori seçin...</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </li>
+
                     <!-- Hedef Bilgisi -->
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
@@ -27,7 +42,6 @@
                                 <option value="SOFT">Radar</option>
                             </select>
                         </div>
-
                     </li>
 
                     <!-- Menzil Bilgisi -->
@@ -57,7 +71,8 @@
                 </ul>
 
                 <div class="w-full">
-                    <button type="submit" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+                    <button type="submit"
+                        class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
                         Uygula
                     </button>
                 </div>

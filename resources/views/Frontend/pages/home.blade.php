@@ -31,6 +31,9 @@
                 </div>
 
                 <div class="flex-w flex-c-m m-tb-10">
+                    <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4">
+                        Kıyasla
+                    </div>
                     <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
                         <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
                         <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
@@ -63,7 +66,7 @@
             </div>
 
             <div class="row isotope-grid">
-                @foreach ($munitions as $munition)
+                @forelse ($munitions as $munition)
                     @php
                         $topCategory = $munition->category; // Mühimmata ait kategoriyi başlangıçta üst kategori olarak kabul ediyoruz
                         while ($topCategory->parent_id !== null) {
@@ -114,27 +117,34 @@
 
                     <!-- Modal -->
                     @include('Frontend.components.modal')
-                @endforeach
+                @empty
+                    <div class="col-12">
+                        <p class="text-center">Mühimmat bulunamadı.</p>
+                    </div>
+                @endforelse
             </div>
 
             <!-- Pagination -->
-            <div class="flex-c-m flex-w w-full p-t-38">
-                @if ($munitions->currentPage() > 1)
-                    <a href="{{ $munitions->previousPageUrl() }}" class="flex-c-m how-pagination1 trans-04 m-all-7">
-                        < </a>
-                @endif
-                @for ($i = 1; $i <= $munitions->lastPage(); $i++)
-                    <a href="{{ $munitions->url($i) }}"
-                        class="flex-c-m how-pagination1 trans-04 m-all-7{{ $i == $munitions->currentPage() ? ' active-pagination1' : '' }}">
-                        {{ $i }}
-                    </a>
-                @endfor
-                @if ($munitions->hasMorePages())
-                    <a href="{{ $munitions->nextPageUrl() }}" class="flex-c-m how-pagination1 trans-04 m-all-7">
-                        >
-                    </a>
-                @endif
-            </div>
+            @if ($munitions->hasPages())
+                <div class="flex-c-m flex-w w-full p-t-38">
+                    @if ($munitions->previousPageUrl())
+                        <a href="{{ $munitions->previousPageUrl() }}" class="flex-c-m how-pagination1 trans-04 m-all-7">
+                            << /a>
+                    @endif
+                    @for ($i = 1; $i <= $munitions->lastPage(); $i++)
+                        <a href="{{ $munitions->url($i) }}"
+                            class="flex-c-m how-pagination1 trans-04 m-all-7{{ $i == $munitions->currentPage() ? ' active-pagination1' : '' }}">
+                            {{ $i }}
+                        </a>
+                    @endfor
+                    @if ($munitions->nextPageUrl())
+                        <a href="{{ $munitions->nextPageUrl() }}" class="flex-c-m how-pagination1 trans-04 m-all-7">
+                            >
+                        </a>
+                    @endif
+                </div>
+            @endif
+
 
         </div>
     </section>

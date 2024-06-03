@@ -32,6 +32,17 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>Resim</td>
+                                    @foreach ($munitions as $munition)
+                                        <td>
+                                            @if ($munition->images->isNotEmpty())
+                                                <img src="{{ asset('storage/' . $munition->images->first()->url) }}"
+                                                    alt="Mühimmat Resmi" style="max-width: 100px; max-height: 100px;">
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
                                 @foreach ($attributes as $attribute)
                                     <tr>
                                         <td>{{ $attribute->name }}</td>
@@ -81,14 +92,15 @@
                                             </strong>
                                         </td>
                                     @endforeach
-
                                 </tr>
+
                             </tbody>
                         </table>
                     </div>
                 @endif
             </div>
         </div>
+
 
         <br>
 

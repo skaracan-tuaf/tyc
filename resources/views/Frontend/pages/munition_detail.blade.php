@@ -105,14 +105,28 @@
                                         {{ $attribute->name }}
                                     </span>
                                     <span class="stext-102 cl6 size-206">
-                                        @if ($attribute->option === 'Liste')
-                                            {{ $attribute->listValues->where('id', $attribute->pivot->value)->first()->value ?? '' }}
-                                        @else
-                                            {{ $attribute->pivot->value }}
+                                        @php
+                                            $attrValue = $attribute;
+                                        @endphp
+                                        @if ($attrValue)
+                                            @if ($attribute->option === 'Liste')
+                                                {{ $attribute->listValues->where('id', $attrValue->pivot->value)->first()->value ?? '' }}
+                                            @elseif ($attribute->option === 'Doğrulama')
+                                                @if ($attrValue->pivot->value == 1)
+                                                    Var
+                                                @else
+                                                    Yok
+                                                @endif
+                                            @elseif ($attribute->option === 'Aralık')
+                                                {{ $attrValue->pivot->min ?? '' }} - {{ $attrValue->pivot->max ?? '' }}
+                                            @else
+                                                {{ $attrValue->pivot->value ?? '' }}
+                                            @endif
                                         @endif
                                     </span>
                                 </li>
                             @endforeach
+
                         </ul>
 
                     </div>
@@ -156,14 +170,29 @@
                                                     {{ $attribute->name }}
                                                 </span>
                                                 <span class="stext-102 cl6 size-206">
-                                                    @if ($attribute->option === 'Liste')
-                                                        {{ $attribute->listValues->where('id', $attribute->pivot->value)->first()->value ?? '' }}
-                                                    @else
-                                                        {{ $attribute->pivot->value }}
+                                                    @php
+                                                        $attrValue = $attribute;
+                                                    @endphp
+                                                    @if ($attrValue)
+                                                        @if ($attribute->option === 'Liste')
+                                                            {{ $attribute->listValues->where('id', $attrValue->pivot->value)->first()->value ?? '' }}
+                                                        @elseif ($attribute->option === 'Doğrulama')
+                                                            @if ($attrValue->pivot->value == 1)
+                                                                Var
+                                                            @else
+                                                                Yok
+                                                            @endif
+                                                        @elseif ($attribute->option === 'Aralık')
+                                                            {{ $attrValue->pivot->min ?? '' }} -
+                                                            {{ $attrValue->pivot->max ?? '' }}
+                                                        @else
+                                                            {{ $attrValue->pivot->value ?? '' }}
+                                                        @endif
                                                     @endif
                                                 </span>
                                             </li>
                                         @endforeach
+
                                     </ul>
                                 </div>
                             </div>
@@ -175,11 +204,11 @@
 
         <div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
             <span class="stext-107 cl6 p-lr-25">
-                SKU: JAK-01
+                SKU: A2G-01
             </span>
 
             <span class="stext-107 cl6 p-lr-25">
-                Categories: Jacket, Men
+                Kategori: {{ $munition->category->name }}
             </span>
         </div>
     </section>
