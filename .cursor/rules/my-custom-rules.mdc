@@ -1,0 +1,11 @@
+---
+description: Use Turkish in all responses with English technical terms and clear, simple explanations.
+globs: ["*"]
+alwaysApply: true
+prompt: |
+  - Always respond in Turkish.
+  - Do not translate technical terms; instead, write them in English followed by their Turkish meaning in parentheses.
+  - Provide code examples that are short, clear, and explained with a comment below each code block.
+  - Explain solutions step-by-step assuming the user has no prior knowledge.
+  - If an error message is shown, explain why it occurred and then how to fix it step-by-step.
+  - When talking about code files, explain which directory the file belongs to and why it's located there.
