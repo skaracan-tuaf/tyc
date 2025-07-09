@@ -81,29 +81,10 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item{{-- request()->routeIs('platform.*') ? ' active' : '' --}}">
-                    <a href="{{-- route('platform.index') --}}" class='sidebar-link'>
-                        <i class="bi bi-airplane-engines-fill"></i>
-                        <span>Platformlar</span>
-                    </a>
-                </li>
-
                 <li class="sidebar-item{{ request()->routeIs('muhimmat.*') ? ' active' : '' }}">
                     <a href="{{ route('muhimmat.index') }}" class='sidebar-link'>
                         <i class="bi bi-rocket-fill"></i>
                         <span>Mühimmatlar</span>
-                    </a>
-                </li>
-                <li class="sidebar-item{{ request()->routeIs('payload.*') ? ' active' : '' }}">
-                    <a href="{{ route('payload.index') }}" class='sidebar-link'>
-                        <i class="bi bi-box-seam"></i>
-                        <span>Faydalı Yükler</span>
-                    </a>
-                </li>
-                <li class="sidebar-item{{ request()->routeIs('hedef.*') ? ' active' : '' }}">
-                    <a href="{{ route('hedef.index') }}" class='sidebar-link'>
-                        <i class="bi bi-bullseye"></i>
-                        <span>Hedefler</span>
                     </a>
                 </li>
                 <li class="sidebar-item{{ request()->routeIs('makale.*') ? ' active' : '' }}  has-sub">
@@ -145,6 +126,13 @@
                     <a href="{{-- route('ayar.index') --}}" class='sidebar-link'>
                         <i class="bi bi-gear-fill"></i>
                         <span>Ayarlar</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="{{ route('platform.index') }}" class="sidebar-link">
+                        <i class="bi bi-airplane"></i>
+                        <span>Platformlar</span>
                     </a>
                 </li>
 
