@@ -1,144 +1,117 @@
-<div class="wrap-header-cart js-panel-cart">
+<div class="wrap-header-cart js-panel-cart" style="width: 100%; max-width: 300px;">
     <div class="s-full js-hide-cart"></div>
-
-    <div class="header-cart flex-col-l p-l-65 p-r-25">
+    <div class="header-cart flex-col-l p-l-65 p-r-25" style="width: 20%;">
         <div class="header-cart-title flex-w flex-sb-m p-b-8">
-            <span class="mtext-103 cl2">
-                Filtrele
-            </span>
-
+            <span class="mtext-103 cl2">Filtrele</span>
             <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
                 <i class="zmdi zmdi-close"></i>
             </div>
         </div>
 
-        <div class="header-cart-content flex-w js-pscroll">
-            <form action="{{ route('Kiyasla') }}" method="GET" class="header-cart-content flex-w js-pscroll">
+        <div class="header-cart-content flex-w js-pscroll" style="width: 100%;">
+            <form action="{{ route('Kiyasla') }}" method="GET" class="w-full" style="max-width: 300px; width: 100%;">
                 <ul class="header-cart-wrapitem w-full">
-                    <!-- Hedef Kategorisi -->
+
+                    <!-- Platform -->
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
-                            <label for="category-select" class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">
-                                Kategori:
-                            </label>
-                            <select id="category-select" name="category_id" class="form-control m-b-10">
-                                <option value="" selected>TÜMÜ</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Platform:</label>
+                            <select name="platform" class="form-control m-b-10">
+                                <option value="" disabled selected>Seçin</option>
+                                <option>F-16</option>
+                                <option>F-22</option>
+                                <option>F-35</option>
+                                <option>SU-57</option>
+                                <option>AH-64 Apache</option>
+                                <option>CH-47 Chinook</option>
+                                <option>TB2</option>
+                                <option>Akıncı</option>
+                                <option>Global Hawk</option>
+                                <option>Predator</option>
+                                <!-- İsteğe göre genişletilebilir -->
                             </select>
                         </div>
                     </li>
 
-                    <!-- Hedef Bilgisi -->
+                    <!-- Hedef Tipi -->
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
-                            <label for="target-select" class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">
-                                Hedef Tipi:
-                            </label>
-                            <select id="target-select" name="target_type" class="form-control m-b-10">
-                                <option value="" selected>TÜMÜ</option>
-                                <option value="HARD">SAM-Ana Operasyon Merkezi-Tam Korumalı</option>
-                                <option value="HARD">SAM-Mobil SAM</option>
-                                <option value="HARD">SAM-Füze Taşıyıcı Araç Sığınağı Tam Korumalı</option>
-                                <option value="HARD">SAM-Radar Bölgesi K2B Merkezi</option>
-                                <option value="HARD">SAM-Füze Bataryası K2 Merkezi</option>
-                                <option value="HARD">SAM-Tespit Radarı Kontrol Merkezi</option>
-                                <option value="HARD">SAM-Atış Kontrol Radarı Komuta Merkezi</option>
-                                <option value="HARD">SSM- Mobil SSM Lançeri</option>
-                                <option value="HARD">SSM- Füze Taşıyıcı Araç Sığınağı Tam Korumalı</option>
-                                <option value="HARD">SSM- Füze Başlığı Depo Binası</option>
-                                <option value="HARD">SSM- Füze Montaj Atelyesi</option>
-                                <option value="HARD">SSM- Ana Operasyon Merkezi Tam Korumalı</option>
-                                <option value="HARD">Radar Mevzii- Mobil SAM</option>
-                                <option value="HARD">Radar Mevzii- Ana Operasyon Merkezi Tam Korumalı</option>
-                                <option value="HARD">Radar Mevzii- Operasyon Binası</option>
-                                <option value="HARD">Radar Mevzii- Muhabere Merkezi</option>
-                                <option value="HARD">Limanlar- Mobil SAM</option>
-                                <option value="HARD">Limanlar- Yüzer Vasıtalar</option>
-                                <option value="HARD">Limanlar- Deniz Harp Vasıtası</option>
-                                <option value="HARD">Limanlar- Rıhtım/İskele</option>
-                                <option value="HARD">Limanlar- Tam Korumalı Mühimmat Deposu</option>
-                                <option value="HARD">Limanlar- Yakıt Deposu Tam Korumalı</option>
-                                <option value="HARD">Limanlar- Ana Operasyon Merkezi</option>
-                                <option value="HARD">Limanlar- Muhabere Merkezi</option>
-                                <option value="HARD">Endüstriyel Tesisler- Mobil SAM</option>
-                                <option value="HARD">Endüstriyel Tesisler- Üretim Binası</option>
-                                <option value="HARD">Endüstriyel Tesisler- Montaj Binası</option>
-                                <option value="HARD">Endüstriyel Tesisler- Eritme Fırını</option>
-                                <option value="HARD">Endüstriyel Tesisler- Atmosferik Damıtma Kulesi</option>
-                                <option value="HARD">Endüstriyel Tesisler- Tam Korumalı Mühimmat Deposu</option>
-                                <option value="HARD">Endüstriyel Tesisler- Takat Merkezi</option>
-                                <option value="HARD">Takat Kaynakları- Mobil SAM</option>
-                                <option value="HARD">Takat Kaynakları- Buhar Kazanı ve Yanma Odası</option>
-                                <option value="HARD">Takat Kaynakları- Transformatör Kontrol Binası</option>
-                                <option value="HARD">Takat Kaynakları- Yakıt Deposu Tam Korumalı</option>
-                                <option value="HARD">Takat Kaynakları- Yakıt Deposu (Toprak içi-Beton)</option>
-                                <option value="HARD">Takat Kaynakları- Ana Operasyon Merkezi Tam Korumalı</option>
-                                <option value="HARD">Takat Kaynakları- Operasyon Binası</option>
-                                <option value="HARD">Meydanlar- Ana Pist </option>
-                                <option value="HARD">Meydanlar- Emercensi Pist</option>
-                                <option value="HARD">Meydanlar- Uçak Sığınağı</option>
-                                <option value="HARD">Meydanlar- Tam Korumalı Mühimmat Deposu</option>
-                                <option value="HARD">Meydanlar- Uçak Bakım Hangarı</option>
-                                <option value="HARD">Meydanlar- Yakıt Deposu Tam Korumalı</option>
-                                <option value="HARD">Meydanlar- Savaş Harekât Merkezi</option>
-                                <option value="HARD">Depolar- Mobil SAM </option>
-                                <option value="HARD">Depolar- Tam Korumalı Mühimmat Deposu</option>
-                                <option value="HARD">Depolar- Ana Operasyon Merkezi Tam Korumalı</option>
-                                <option value="SOFT">SAM-Atış Kontrol Radarı</option>
-                                <option value="SOFT">SAM-Hedef Tespit Radarı</option>
-                                <option value="SOFT">SAM-Füze Bataryası</option>
-                                <option value="SOFT">SAM-TEL</option>
-                                <option value="SOFT">SAM-TELAR</option>
-                                <option value="SOFT">SAM-Sabit SAM Lançeri</option>
-                                <option value="SOFT">SAM-Komuta Kontrol/Muhabere Veni</option>
-                                <option value="SOFT">SSM-Sabit SSM Lançeri</option>
-                                <option value="SOFT">SSM-Toprak Refüjlü Füze Başlığı Deposu</option>
-                                <option value="SOFT">SSM-Komuta Kontrol/Muhabere Veni</option>
-                                <option value="SOFT">SSM- Meteroloji Radarı</option>
-                                <option value="SOFT">Radar Mevzii- Radome</option>
-                                <option value="SOFT">Radar Mevzii- Radar Anteni</option>
-                                <option value="SOFT">Radar Mevzii-Komuta Kontrol/Muhabere Veni</option>
-                                <option value="SOFT">Radar Mevzii-Muhabere Antenleri</option>
-                                <option value="SOFT">Limanlar- Muhabere Antenleri</option>
-                                <option value="SOFT">Endüstriyel Tesisler- Buhar Üretme Ünitesi</option>
-                                <option value="SOFT">Endüstriyel Tesisler- Soğutma Ünitesi(Su)</option>
-                                <option value="SOFT">Endüstriyel Tesisler- Soğutma Ünitesi(Hava)</option>
-                                <option value="SOFT">Endüstriyel Tesisler- POL Deposu</option>
-                                <option value="SOFT">Endüstriyel Tesisler- Transformatör</option>
-                                <option value="SOFT">Takat Kaynakları- Türbin Jeneratör Bölümü</option>
-                                <option value="SOFT">Takat Kaynakları- Dizel Motor Jeneratör</option>
-                                <option value="SOFT">Takat Kaynakları- Batarya Tipi Soğutma Ünitesi</option>
-                                <option value="SOFT">Takat Kaynakları- Transformatör</option>
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Hedef Tipi:</label>
+                            <select name="target_type" class="form-control m-b-10">
+                                <option value="" disabled selected>Seçin</option>
+                                <option>Sığınak</option>
+                                <option>Hangar</option>
+                                <option>Pist</option>
+                                <option>Radar</option>
+                                <option>Depo</option>
                             </select>
                         </div>
                     </li>
 
-                    <!-- Menzil Bilgisi -->
+                    <!-- Meteorolojik Durum -->
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
-                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">
-                                Menzil:
-                            </label>
-                            <div class="m-b-10">
-                                <div class="m-b-10">
-                                    <label for="range-min" class="header-cart-item-name m-b-5 hov-cl1 trans-04">
-                                        Min
-                                    </label>
-                                    <input type="number" id="range-min" name="min" class="form-control"
-                                        placeholder="Min">
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Meteorolojik
+                                Durum:</label>
+                            <select name="weather" class="form-control m-b-10">
+                                <option value="" disabled selected>Seçin</option>
+                                <option>Açık</option>
+                                <option>Sisli</option>
+                                <option>Yağmurlu</option>
+                            </select>
+                        </div>
+                    </li>
+
+                    <!-- İmha Türü -->
+                    <li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-txt p-t-8 w-full">
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">İmha Türü:</label>
+                            <select id="destruction-type" name="destruction_type" class="form-control m-b-10"
+                                onchange="togglePercentageInput(this)">
+                                <option value="" disabled selected>Seçin</option>
+                                <option value="tam">Tam</option>
+                                <option value="gecici">Geçici</option>
+                            </select>
+                            <div id="percentage-container" style="display:none;" class="m-t-10">
+                                <label>Geçici İmha Yüzdesi (%):</label>
+                                <input type="number" name="destruction_percentage" min="0" max="100"
+                                    class="form-control" placeholder="örn: 70">
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Çevresel Hassasiyet -->
+                    <li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-txt p-t-8 w-full">
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Çevresel
+                                Hassasiyet:</label>
+                            <select name="env_sensitivity" class="form-control m-b-10" onchange="toggleEnvInputs(this)">
+                                <option value="" disabled selected>Seçin</option>
+                                <option value="yok">Yok</option>
+                                <option value="var">Var</option>
+                            </select>
+
+                            <div id="env-details" style="display:none;" class="m-t-10">
+                                <div id="env-group-list">
+                                    <div class="env-group d-flex align-items-center m-b-10">
+                                        <input type="text" name="env_name[]" class="form-control me-2"
+                                            placeholder="Örn: Cami">
+                                        <input type="number" name="env_distance[]" class="form-control me-2"
+                                            placeholder="Mesafe (m)">
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="removeThisGroup(this)">-</button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label for="range-max" class="header-cart-item-name m-b-5 hov-cl1 trans-04">
-                                        Max
-                                    </label>
-                                    <input type="number" id="range-max" name="max" class="form-control"
-                                        placeholder="Max">
+
+                                <!-- Tek "+" Butonu -->
+                                <div class="m-t-10">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="addEnvGroup()">+</button>
                                 </div>
                             </div>
                         </div>
                     </li>
+
                 </ul>
 
                 <div class="w-full">
@@ -148,7 +121,61 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
+
+<script>
+    function togglePercentageInput(select) {
+        const container = document.getElementById('percentage-container');
+        container.style.display = (select.value === 'gecici') ? 'block' : 'none';
+    }
+
+    function toggleEnvInputs(select) {
+        const envDetails = document.getElementById('env-details');
+        envDetails.style.display = (select.value === 'var') ? 'block' : 'none';
+    }
+
+    function addEnvGroup() {
+        const container = document.getElementById('env-group-list');
+        const group = document.createElement('div');
+        group.className = 'env-group d-flex align-items-center m-b-10';
+
+        group.innerHTML = `
+            <input type="text" name="env_name[]" class="form-control me-2" placeholder="Örn: Okul">
+            <input type="number" name="env_distance[]" class="form-control me-2" placeholder="Mesafe (m)">
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeThisGroup(this)">-</button>
+        `;
+
+        container.appendChild(group);
+        updateGroupBorders();
+    }
+
+    function removeThisGroup(button) {
+        const group = button.closest('.env-group');
+        const container = document.getElementById('env-group-list');
+        if (container.children.length > 1) {
+            container.removeChild(group);
+            updateGroupBorders();
+        }
+    }
+
+    function updateGroupBorders() {
+        const groups = document.querySelectorAll('#env-group-list .env-group');
+        groups.forEach((group, index) => {
+            if (groups.length === 1) {
+                group.style.borderBottom = 'none';
+                group.style.paddingBottom = '0';
+                group.style.marginBottom = '10px';
+            } else {
+                group.style.borderBottom = (index < groups.length - 1) ? '1px solid #ccc' : 'none';
+                group.style.paddingBottom = (index < groups.length - 1) ? '10px' : '0';
+                group.style.marginBottom = '10px';
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateGroupBorders(); // Sayfa yüklendiğinde ilk grubu çizgisiz yap
+    });
+</script>
