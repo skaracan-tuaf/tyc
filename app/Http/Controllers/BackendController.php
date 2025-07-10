@@ -21,7 +21,6 @@ class BackendController extends Controller
         $totalCategories = Category::count();
         $totalAttributes = Attribute::count();
         $totalPosts = Post::count();
-        $totalVariants = Variant::count();
         $totalTags = Tag::count();
         $totalUsers = User::count();
 
@@ -35,7 +34,6 @@ class BackendController extends Controller
             'totalAttributes',
             'totalImages',
             'totalPosts',
-            'totalVariants',
             'totalTags',
             'totalUsers'
         ));

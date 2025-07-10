@@ -65,19 +65,17 @@
                     </a>
                 </li>
 
-                <!--
-                <li class="sidebar-item{{ request()->routeIs('varyant.*') ? ' active' : '' }}">
-                    <a href="{{ route('varyant.index') }}" class='sidebar-link'>
-                        <i class="bi bi-layers-fill"></i>
-                        <span>Varyantlar</span>
-                    </a>
-                </li>
-                -->
-
                 <li class="sidebar-item{{ request()->routeIs('etiket.*') ? ' active' : '' }}">
                     <a href="{{ route('etiket.index') }}" class='sidebar-link'>
                         <i class="bi bi-tags-fill"></i>
                         <span>Etiketler</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item{{ request()->routeIs('platform.*') ? ' active' : '' }}">
+                    <a href="{{ route('platform.index') }}" class="sidebar-link">
+                        <i class="bi bi-airplane"></i>
+                        <span>Platformlar</span>
                     </a>
                 </li>
 
@@ -126,13 +124,6 @@
                     <a href="{{-- route('ayar.index') --}}" class='sidebar-link'>
                         <i class="bi bi-gear-fill"></i>
                         <span>Ayarlar</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="{{ route('platform.index') }}" class="sidebar-link">
-                        <i class="bi bi-airplane"></i>
-                        <span>Platformlar</span>
                     </a>
                 </li>
 

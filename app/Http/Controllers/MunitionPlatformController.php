@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VariantValue;
+use App\Models\MunitionPlatform;
 use Illuminate\Http\Request;
 
-class VariantValueController extends Controller
+class MunitionPlatformController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class VariantValueController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(VariantValue $variantValue)
+    public function show(MunitionPlatform $munitionPlatform)
     {
         //
     }
@@ -42,7 +42,7 @@ class VariantValueController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(VariantValue $variantValue)
+    public function edit(MunitionPlatform $munitionPlatform)
     {
         //
     }
@@ -50,7 +50,7 @@ class VariantValueController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VariantValue $variantValue)
+    public function update(Request $request, MunitionPlatform $munitionPlatform)
     {
         //
     }
@@ -58,7 +58,7 @@ class VariantValueController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VariantValue $variantValue)
+    public function destroy(MunitionPlatform $munitionPlatform)
     {
         //
     }

@@ -8,7 +8,6 @@ use App\Http\Controllers\MunitionController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\VariantController;
 use App\Http\Controllers\PlatformController;
 
 /*
@@ -41,7 +40,6 @@ Route::prefix('yonetim')->group(function () {
     Route::resource('kategori', CategoryController::class);
     Route::resource('muhimmat', MunitionController::class);
     Route::resource('ozellik', AttributeController::class);
-    Route::resource('varyant', VariantController::class);
     Route::resource('platform', PlatformController::class);
 
     Route::resource('makale', PostController::class);

@@ -7,7 +7,7 @@ use App\Models\Attribute;
 use App\Models\Munition;
 use App\Models\MunitionAttribute;
 use App\Models\Image;
-use App\Models\Sku;
+use App\Models\Platform;
 use App\Models\Variant;
 use App\Models\VariantValue;
 use Illuminate\Http\Request;
@@ -37,33 +37,13 @@ class MunitionController extends Controller
         $categories = Category::all();
         $munitions = Munition::all();
         $attributes = Attribute::all();
-        $variants = Variant::all();
-        $variantValues = VariantValue::all();
-        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munitions', 'variants', 'variantValues'));
-    }
-
-    public function generateCombinations($variants, $index = 0, $combination = [], $result = [])
-    {
-        $variantName = array_keys($variants)[$index];
-        $values = $variants[$variantName];
-        foreach ($values as $value) {
-            $combination[$variantName] = $value;
-            if ($index < count($variants) - 1) {
-                $result = $this->generateCombinations($variants, $index + 1, $combination, $result);
-            } else {
-                $result[] = $combination;
-            }
-        }
-        return $result;
-    }
-
-    function generateSKU($combination)
-    {
-        $sku = '';
-        foreach ($combination as $key => $value) {
-            $sku .= $value[0]; // Her varyant değerinin ilk harfini SKU'ya ekle
-        }
-        return $sku;
+        $platforms = Platform::where('status', true)->orderBy('name')->get();
+        return view('Backend.pages.munition_add_edit', compact(
+            'categories',
+            'attributes',
+            'munitions',
+            'platforms'
+        ));
     }
 
     /**
@@ -89,6 +69,8 @@ class MunitionController extends Controller
             'description' => 'nullable|string',
             'status' => 'boolean',
             'target_type' => ['required', Rule::in(['SOFT', 'HARD'])], // target_type doğrulama kuralı
+            'platforms' => ['nullable', 'array'],
+            'platforms.*' => ['exists:platforms,id'],
             //'score' => 'required|numeric|min:1|max:10',
             'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
@@ -102,6 +84,7 @@ class MunitionController extends Controller
 
         // Mühimmatı oluştur
         $munition = Munition::create($validatedData);
+        $munition->platforms()->sync($request->input('platforms', [])); // boşsa temizler
 
         // Özellik değerlerini kaydet
         $attributes = $request->input('attributes');
@@ -161,30 +144,6 @@ class MunitionController extends Controller
             }
         }
 
-        // SKU'ları oluştur ve kaydet
-        /*
-        $variants = $munition->variants;
-        $variantValues = $munition->variantValues;
-        $stock = $request->input('stock');
-        $skus = $request->input('sku');
-
-        foreach ($variants as $variant) {
-            foreach ($variantValues as $value) {
-                // SKU oluştur
-                $sku = isset($skus[$variant->id][$value->id]) ? $skus[$variant->id][$value->id] : $this->generateSKU([$variant, $value]);
-
-                // SKU'yu kaydet
-                Sku::create([
-                    'munition_variant_id' => $variant->id,
-                    'stock' => isset($stock[$variant->id][$value->id]) ? $stock[$variant->id][$value->id] : 0, // Kullanıcı tarafından girilen stok değerini kullan
-                    'price' => $validatedData['price'], // Kullanıcının girdiği fiyatı kullan
-                    'sku' => $sku,
-                    'status' => true, // Varsayılan olarak SKU aktif olabilir
-                ]);
-            }
-        }
-        */
-
         // Başarıyla tamamlandı mesajı ile birlikte index sayfasına yönlendir
         return redirect()->route('muhimmat.index')->with('success', $munition->name . ' veritabanına eklendi.');
     }
@@ -204,11 +163,17 @@ class MunitionController extends Controller
     {
         $categories = Category::all();
         $attributes = Attribute::all();
-        $variants = Variant::all();
-        $variantValues = VariantValue::all();
         $munition = Munition::findOrFail($id);
+        $platforms = Platform::where('status', true)->orderBy('name')->get();
 
-        return view('Backend.pages.munition_add_edit', compact('categories', 'attributes', 'munition', 'variants', 'variantValues'));
+        return view('Backend.pages.munition_add_edit', compact(
+            'categories',
+            'attributes',
+            'munition',
+            'variants',
+            'variantValues',
+            'platforms'
+        ));
     }
 
     public function changeStatus($id)
@@ -235,6 +200,8 @@ class MunitionController extends Controller
             'description' => 'nullable|string',
             'status' => 'boolean',
             'target_type' => ['required', Rule::in(['SOFT', 'HARD'])], // target_type doğrulama kuralı
+            'platforms' => ['nullable', 'array'],
+            'platforms.*' => ['exists:platforms,id'],
             //'score' => 'required|numeric|min:1|max:10',
             'imageInput*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'croppedImage*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
@@ -248,6 +215,7 @@ class MunitionController extends Controller
 
         // Mühimmatı güncelle
         $munition->update($validatedData);
+        $munition->platforms()->sync($request->input('platforms', []));
 
         // Attribute değerlerini güncelle
         $attributes = $request->input('attributes', []);

@@ -14,7 +14,22 @@ return new class extends Migration
         Schema::create('platforms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['uçak', 'helikopter', 'iha', 'diğer']);
+            $table->enum('type', [
+                'multi_role_fighter',
+                'air_superiority_fighter',
+                'bomber',
+                'attack_aircraft',
+                'reconnaissance_aircraft',
+                'electronic_warfare_aircraft',
+                'tanker_aircraft',
+                'trainer_aircraft',
+                'transport_aircraft',
+                'attack_helicopter',
+                'transport_helicopter',
+                'uav',
+                'ucav',
+                'other'
+            ]);
             $table->string('origin', 2); // Ülke kodu (ör: TR, US)
             $table->text('description')->nullable();
             $table->string('image')->nullable();

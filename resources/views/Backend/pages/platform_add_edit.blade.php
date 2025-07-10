@@ -40,13 +40,35 @@
                                                 value="{{ isset($platform) ? $platform->name : '' }}" required />
                                         </div>
                                     </div>
+                                    @php
+                                        $platformTypes = [
+                                            'multi_role_fighter' => 'Çok Amaçlı Savaş Uçağı',
+                                            'air_superiority_fighter' => 'Hava Üstünlük Savaş Uçağı',
+                                            'bomber' => 'Bombardıman Uçağı',
+                                            'attack_aircraft' => 'Taarruz Uçağı',
+                                            'reconnaissance_aircraft' => 'Keşif Uçağı',
+                                            'electronic_warfare_aircraft' => 'Elektronik Harp Uçağı',
+                                            'tanker_aircraft' => 'Yakıt İkmal Uçağı',
+                                            'trainer_aircraft' => 'Eğitim Uçağı',
+                                            'transport_aircraft' => 'Nakliye Uçağı',
+                                            'attack_helicopter' => 'Taarruz Helikopteri',
+                                            'transport_helicopter' => 'Nakliye Helikopteri',
+                                            'uav' => 'İHA (İnsansız Hava Aracı)',
+                                            'ucav' => 'SİHA (Silahlı İHA)',
+                                            'other' => 'Diğer',
+                                        ];
+                                    @endphp
+
                                     <div class="col-md-6 col-12">
                                         <div class="form-group mandatory">
                                             <label for="platform-type" class="form-label">Tip</label>
                                             <select class="form-select" name="type" id="platform-type" required>
                                                 <option value="">Seçiniz...</option>
-                                                @foreach ($types as $type)
-                                                    <option value="{{ $type }}" {{ (isset($platform) && $platform->type == $type) ? 'selected' : '' }}>{{ ucfirst($type) }}</option>
+                                                @foreach ($platformTypes as $value => $label)
+                                                    <option value="{{ $value }}"
+                                                        {{ isset($platform) && $platform->type == $value ? 'selected' : '' }}>
+                                                        {{ $label }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -57,20 +79,32 @@
                                             <select class="form-select" name="origin" id="platform-origin" required>
                                                 <option value="">Seçiniz...</option>
                                                 @foreach ($countries as $code => $name)
-                                                    <option value="{{ $code }}" {{ (isset($platform) && $platform->origin == $code) ? 'selected' : '' }}>{{ $name }}</option>
+                                                    <option value="{{ $code }}"
+                                                        {{ isset($platform) && $platform->origin == $code ? 'selected' : '' }}>
+                                                        {{ $name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="platform-image" class="form-label">Görsel</label>
-                                            <input type="file" id="platform-image" class="form-control" name="image" accept="image/*">
-                                            @if (isset($platform) && $platform->image)
-                                                <img src="{{ asset('storage/' . $platform->image) }}" alt="Platform Görseli" style="max-width: 120px; max-height: 120px; margin-top: 10px;">
-                                            @endif
+
+                                    <div id="resimEkleAlani">
+                                        <img id="image" src="" alt="" class="col-3">
+                                        <input type="hidden" id="croppedImage" name="croppedImage"
+                                            {{ isset($platform) ? '' : 'required' }}>
+                                        @if (isset($platform) && !empty($platform->image))
+                                            <div id="previewImage" class="image-container"
+                                                style="display: flex; justify-content: center; align-items: center;">
+                                                <img src="{{ asset('storage/' . $platform->image) }}" alt=""
+                                                    class="img-fluid">
+                                            </div>
+                                        @endif
+                                        <div class="img-container mt-3" id="previewContainer"
+                                            style="display: flex; justify-content: center; align-items: center;">
                                         </div>
+                                        <input type="file" class="form-control" id="imageInput" name="platformImage"
+                                            accept="image/*" {{ isset($platform) ? '' : 'required' }}>
                                     </div>
+
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="platform-description" class="form-label">Açıklama</label>
@@ -81,14 +115,19 @@
                                         <div class="form-group">
                                             <label for="platform-status" class="form-label">Durum</label>
                                             <select class="form-select" name="status" id="platform-status">
-                                                <option value="1" {{ (isset($platform) && $platform->status) ? 'selected' : '' }}>Aktif</option>
-                                                <option value="0" {{ (isset($platform) && !$platform->status) ? 'selected' : '' }}>Pasif</option>
+                                                <option value="1"
+                                                    {{ isset($platform) && $platform->status ? 'selected' : '' }}>Aktif
+                                                </option>
+                                                <option value="0"
+                                                    {{ isset($platform) && !$platform->status ? 'selected' : '' }}>Pasif
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">{{ isset($platform) ? 'Güncelle' : 'Ekle' }}</button>
+                                    <button type="submit"
+                                        class="btn btn-primary">{{ isset($platform) ? 'Güncelle' : 'Ekle' }}</button>
                                     <a href="{{ route('platform.index') }}" class="btn btn-secondary">İptal</a>
                                 </div>
                             </form>
@@ -98,4 +137,72 @@
             </div>
         </div>
     </section>
+@endsection
+@section('scripts')
+    <script src="{{ asset('backend_assets/extensions/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let imageInput = document.getElementById('imageInput');
+            let image = document.getElementById('image');
+            let previewContainer = document.getElementById('previewContainer');
+            let croppedImageInput = document.getElementById('croppedImage');
+            let previewImage = document.getElementById('previewImage');
+
+            let cropper;
+
+            imageInput.addEventListener('change', function() {
+                let file = this.files[0];
+
+                if (file) {
+                    let reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        // Eğer önceki cropper nesnesi varsa yok et
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+
+                        if (previewImage) {
+                            previewImage.remove();
+                        }
+
+                        // PreviewContainer'ı temizle
+                        previewContainer.innerHTML = '';
+
+                        // Resmi göster
+                        image.src = e.target.result;
+                        image.style.display = 'block';
+
+                        // Cropper nesnesini oluştur
+                        cropper = new Cropper(image, {
+                            aspectRatio: parseInt(document.getElementById('input-width')
+                                .value) / parseInt(document.getElementById('input-length')
+                                .value), ///_aspectRatio,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            responsive: true
+                        });
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form submit event'i
+            let form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Eğer cropper nesnesi varsa kırpılmış resmi al
+                if (cropper) {
+                    let croppedDataUrl = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+                    croppedImageInput.value = croppedDataUrl;
+                }
+
+                // Formu gönder
+                this.submit();
+            });
+        });
+    </script>
 @endsection

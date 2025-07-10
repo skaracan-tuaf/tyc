@@ -177,15 +177,32 @@
                                     </div>
 
                                     <!--
-                                                <div class="col-md-6 col-12">
-                                                    <div class="form-group mandatory">
-                                                        <label for="munition-score" class="form-label">Puan</label>
-                                                        <input type="number" id="munition-score" class="form-control mr-2"
-                                                            name="score" placeholder="Puan" min="1" max="10"
-                                                            value="{{ isset($munition) ? $munition->score : '' }}">
+                                                    <div class="col-md-6 col-12">
+                                                        <div class="form-group mandatory">
+                                                            <label for="munition-score" class="form-label">Puan</label>
+                                                            <input type="number" id="munition-score" class="form-control mr-2"
+                                                                name="score" placeholder="Puan" min="1" max="10"
+                                                                value="{{ isset($munition) ? $munition->score : '' }}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            -->
+                                                -->
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group mandatory">
+                                            <label for="munition-platforms" class="form-label">Kullanılabilir
+                                                Platformlar</label>
+                                            <select class="form-select multiple-remove" name="platforms[]"
+                                                id="munition-platforms" multiple>
+                                                @foreach ($platforms as $platform)
+                                                    <option value="{{ $platform->id }}"
+                                                        {{ isset($munition) && $munition->platforms->contains('id', $platform->id) ? 'selected' : '' }}>
+                                                        {{ $platform->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <small class="text-muted">Birden fazla platform seçebilirsiniz.</small>
+                                        </div>
+                                    </div>
 
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
@@ -200,31 +217,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!--
-                                    <br>
-                                        <hr>
-                                        <br>
-
-                                        <div class="row">
-                                            <div class="ol-12">
-                                                <div class="form-group">
-                                                    <label for="variants" class="form-label">Varyantlar</label>
-                                                    <p>Birden fazla varyant seçilebilir. Seçilen varyantların kombinasyonu
-                                                        oluşturulur. <code>X</code> tuşu ile varyantı kaldırılabilirsiniz.
-                                                    </p>
-                                                    <select class="choices form-select multiple-remove" multiple="multiple"
-                                                        name="variants[]" id="variant-select">
-                                                        @foreach ($variants as $variant)
-    <option value="{{ $variant->id }}">{{ $variant->name }}</option>
-    @endforeach
-                                                    </select>
-                                                    <button type="button" id="save-button"
-                                                        class="btn btn-primary">KAYDET</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    -->
                                 <br>
                                 <div class="row">
                                     <div class="col-12">
@@ -247,13 +239,6 @@
 
                                 <hr>
 
-                                @php
-                                    //$variantsJson = json_encode($variants);
-                                    /*
-                                     * bütün işlemler Controller'dan yapmak daha mantıklı olabilir.
-                                     */
-                                @endphp
-
                                 <br>
 
                                 <div class="row">
@@ -263,23 +248,24 @@
                                             <div class="col-6">
                                                 <label for="{{ $attribute->slug }}">{{ $attribute->name }}:</label>
                                                 @php
-                                                    $pivot = isset($munition) ? $munition->attributes->firstWhere('id', $attribute->id)->pivot ?? null : null;
+                                                    $pivot = isset($munition)
+                                                        ? $munition->attributes->firstWhere('id', $attribute->id)
+                                                                ->pivot ?? null
+                                                        : null;
                                                 @endphp
                                                 @if ($attribute->option === 'Yazı')
                                                     <input type="text" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ $pivot ? $pivot->value : '' }}"
-                                                        class="form-control">
+                                                        value="{{ $pivot ? $pivot->value : '' }}" class="form-control">
                                                 @elseif($attribute->option === 'Tam Sayı')
                                                     <input type="text" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ $pivot ? $pivot->value : '' }}"
-                                                        class="form-control">
+                                                        value="{{ $pivot ? $pivot->value : '' }}" class="form-control">
                                                 @elseif($attribute->option === 'Ondalık')
                                                     <input type="number" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ $pivot ? $pivot->value : '' }}"
-                                                        class="form-control" step="0.01">
+                                                        value="{{ $pivot ? $pivot->value : '' }}" class="form-control"
+                                                        step="0.01">
                                                 @elseif($attribute->option === 'Doğrulama')
                                                     <div class="form-check">
                                                         <input type="radio" id="{{ $attribute->slug }}_1"
@@ -319,8 +305,7 @@
                                                 @elseif($attribute->option === 'Renk')
                                                     <input type="color" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}][value]"
-                                                        value="{{ $pivot ? $pivot->value : '' }}"
-                                                        class="form-control">
+                                                        value="{{ $pivot ? $pivot->value : '' }}" class="form-control">
                                                 @elseif($attribute->option === 'Resim')
                                                     <input type="file" id="{{ $attribute->slug }}"
                                                         name="attributes[{{ $attribute->id }}]"
@@ -349,8 +334,8 @@
                                                 <label for="score_{{ $attribute->slug }}">Puan:</label>
                                                 <input type="number" id="score_{{ $attribute->slug }}" step="0.01"
                                                     name="attributes[{{ $attribute->id }}][score]"
-                                                    value="{{ $pivot ? $pivot->score : '' }}"
-                                                    class="form-control" step="1">
+                                                    value="{{ $pivot ? $pivot->score : '' }}" class="form-control"
+                                                    step="1">
                                             </div>
                                         </div>
                                     @endforeach
@@ -466,150 +451,6 @@
     <script src="{{ asset('backend_assets/static/js/pages/form-element-select.js') }}"></script>
     <script src="{{ asset('backend_assets/static/js/cropper/cropper.min.js') }}"></script>
     <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
-
-
-    <script>
-        const variants = {!! json_encode($variants) !!};
-        const variantValues = {!! json_encode($variantValues) !!};
-
-        const variantSelect = document.getElementById('variant-select');
-
-        variantSelect.addEventListener('change', function() {
-
-            const selectedOptions = Array.from(variantSelect.selectedOptions).map(option => parseInt(option.value));
-            if (selectedOptions.length === 0) {
-                // Seçili bir veri yoksa tabloyu gizle
-                document.querySelector('.table').style.display = 'none';
-                return; // Geri dön ve tabloyu oluşturmadan çık
-            } else {
-                document.querySelector('.table').style.display = 'table'; // Tabloyu göster
-            }
-
-            const filteredVariants = variants.filter(variant => selectedOptions.includes(variant.id));
-
-            const selectedVariantIdler = Array.from(variantSelect.selectedOptions).map(option => parseInt(option
-                .value));
-            const filteredVariantsValues = variantValues.filter(value => selectedVariantIdler.includes(value
-                .variant_id));
-
-            const combinations = generateCombinations(filteredVariants, filteredVariantsValues);
-
-            // Tabloyu oluştur
-            const combinationsTableBody = document.getElementById('combinations-table-body');
-
-            while (combinationsTableBody.hasChildNodes()) {
-                combinationsTableBody.removeChild(combinationsTableBody.firstChild);
-            }
-
-            let rowCounter = 0;
-
-            combinations.forEach(combination => {
-                const row = document.createElement('tr');
-                const checkCell = document.createElement('td');
-                const variantCell = document.createElement('td');
-                const priceCell = document.createElement('td');
-                const stockCell = document.createElement('td');
-                const statusCell = document.createElement('td');
-
-                variantCell.textContent = combination.map(item => item.value).join(' - ');
-
-                const checkInput = document.createElement('input');
-                checkInput.type = 'checkbox';
-                checkInput.className = 'form-check-input form-check-primary';
-                checkInput.name = 'row_' + rowCounter + '_check';
-                checkCell.appendChild(checkInput);
-
-                const priceInput = document.createElement('input');
-                priceInput.type = 'number';
-                priceInput.className = 'form-control';
-                priceInput.name = 'row_' + rowCounter + '_price';
-                priceCell.appendChild(priceInput);
-
-                const stockInput = document.createElement('input');
-                stockInput.type = 'number';
-                stockInput.className = 'form-control';
-                stockInput.name = 'row_' + rowCounter + '_stock';
-                stockCell.appendChild(stockInput);
-
-                const statusInput = document.createElement('input');
-                statusInput.type = 'checkbox';
-                statusInput.className = 'form-check-input form-check-primary';
-                statusInput.name = 'row_' + rowCounter + '_status';
-                statusCell.appendChild(statusInput);
-
-                row.appendChild(checkCell);
-                row.appendChild(variantCell);
-                row.appendChild(priceCell);
-                row.appendChild(stockCell);
-                row.appendChild(statusCell);
-
-                combinationsTableBody.appendChild(row);
-
-                rowCounter++;
-            });
-
-            combinations.forEach((combination, index) => {
-                const row = combinationsTableBody.childNodes[index]; // Doğru satırı al
-                const sku = generateSKU(combination); // Her bir kombinasyon için SKU oluştur
-                const skuInput = document.createElement('input');
-                skuInput.type = 'hidden';
-                skuInput.name = 'row_' + index + '_sku';
-                skuInput.value = sku;
-                row.appendChild(skuInput);
-
-                console.log(skuInput);
-            });
-
-        });
-
-        function generateSKU(combination) {
-            let sku = '';
-            combination.forEach((value, index) => {
-                sku += value.value.substring(0, 3); // Değerlerin ilk üç harfini alarak SKU'ya ekle
-                if (index < combination.length - 1) {
-                    sku += '_'; // Değerler arasına "_" ekleyerek ayrım yap
-                }
-            });
-            return sku.toUpperCase(); // SKU'ları büyük harfle döndür
-        }
-
-
-        // Kombinasyonları oluşturan fonksiyon
-        function generateCombinations(variantIds, variantValueIds) {
-
-            if (variantIds.length === 0) {
-                return [];
-            }
-
-            const selectedVariantIds = variantIds.map(variant => variant.id);
-
-            const selectedVariantValues = variantValueIds.filter(value => {
-                return selectedVariantIds.includes(value.variant_id);
-            });
-
-            const combinations = [];
-
-            function generate(prefix, remainingVariants) {
-                if (remainingVariants.length === 0) {
-                    combinations.push(prefix);
-                    return;
-                }
-
-                const currentVariant = remainingVariants[0];
-                const remaining = remainingVariants.slice(1);
-
-                selectedVariantValues
-                    .filter(value => value.variant_id === currentVariant.id)
-                    .forEach(value => {
-                        generate([...prefix, value], remaining);
-                    });
-            }
-
-            generate([], variantIds);
-
-            return combinations;
-        }
-    </script>
 
     <script>
         function deleteImage(imageId, previewId) {

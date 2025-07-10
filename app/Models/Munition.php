@@ -35,4 +35,9 @@ class Munition extends Model
     {
         return $this->hasMany(Image::class);
     }
+
+    public function platforms()
+    {
+        return $this->belongsToMany(Platform::class, 'munition_platforms');
+    }
 }
