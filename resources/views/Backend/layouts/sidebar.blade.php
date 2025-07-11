@@ -74,7 +74,7 @@
 
                 <li class="sidebar-item{{ request()->routeIs('platform.*') ? ' active' : '' }}">
                     <a href="{{ route('platform.index') }}" class="sidebar-link">
-                        <i class="bi bi-airplane"></i>
+                        <i class="bi bi-airplane-fill"></i>
                         <span>Platformlar</span>
                     </a>
                 </li>
@@ -83,6 +83,12 @@
                     <a href="{{ route('muhimmat.index') }}" class='sidebar-link'>
                         <i class="bi bi-rocket-fill"></i>
                         <span>Mühimmatlar</span>
+                    </a>
+                </li>
+                <li class="sidebar-item{{ request()->routeIs('target.*') ? ' active' : '' }}">
+                    <a href="{{ route('target.index') }}" class='sidebar-link'>
+                        <i class="bi bi-crosshair"></i>
+                        <span>Hedefler</span>
                     </a>
                 </li>
                 <li class="sidebar-item{{ request()->routeIs('makale.*') ? ' active' : '' }}  has-sub">

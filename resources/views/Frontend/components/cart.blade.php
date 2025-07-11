@@ -18,17 +18,9 @@
                             <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Platform:</label>
                             <select name="platform" class="form-control m-b-10">
                                 <option value="" disabled selected>Seçin</option>
-                                <option>F-16</option>
-                                <option>F-22</option>
-                                <option>F-35</option>
-                                <option>SU-57</option>
-                                <option>AH-64 Apache</option>
-                                <option>CH-47 Chinook</option>
-                                <option>TB2</option>
-                                <option>Akıncı</option>
-                                <option>Global Hawk</option>
-                                <option>Predator</option>
-                                <!-- İsteğe göre genişletilebilir -->
+                                @foreach ($platforms as $platform)
+                                    <option value="{{ $platform->name }}">{{ $platform->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </li>
@@ -39,11 +31,9 @@
                             <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Hedef Tipi:</label>
                             <select name="target_type" class="form-control m-b-10">
                                 <option value="" disabled selected>Seçin</option>
-                                <option>Sığınak</option>
-                                <option>Hangar</option>
-                                <option>Pist</option>
-                                <option>Radar</option>
-                                <option>Depo</option>
+                                @foreach ($targetTypes as $type)
+                                    <option value="{{ $type }}">{{ $type }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </li>

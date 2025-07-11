@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Attribute;
 use App\Models\Image;
+use App\Models\Platform;
 
 class FrontendController extends Controller
 {
@@ -18,11 +19,15 @@ class FrontendController extends Controller
         $munitions = Munition::paginate(12);
         $categories = Category::all();
         $tags = Tag::all();
+        $platforms = Platform::all();
+        $targetTypes = Munition::select('target_type')->distinct()->pluck('target_type');
 
         return view('Frontend.pages.home', compact(
             'munitions',
             'categories',
-            'tags'
+            'tags',
+            'platforms',
+            'targetTypes'
         ));
     }
 

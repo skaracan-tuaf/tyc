@@ -170,8 +170,6 @@ class MunitionController extends Controller
             'categories',
             'attributes',
             'munition',
-            'variants',
-            'variantValues',
             'platforms'
         ));
     }

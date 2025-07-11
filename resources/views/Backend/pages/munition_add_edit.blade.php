@@ -177,21 +177,21 @@
                                     </div>
 
                                     <!--
-                                                    <div class="col-md-6 col-12">
-                                                        <div class="form-group mandatory">
-                                                            <label for="munition-score" class="form-label">Puan</label>
-                                                            <input type="number" id="munition-score" class="form-control mr-2"
-                                                                name="score" placeholder="Puan" min="1" max="10"
-                                                                value="{{ isset($munition) ? $munition->score : '' }}">
+                                                        <div class="col-md-6 col-12">
+                                                            <div class="form-group mandatory">
+                                                                <label for="munition-score" class="form-label">Puan</label>
+                                                                <input type="number" id="munition-score" class="form-control mr-2"
+                                                                    name="score" placeholder="Puan" min="1" max="10"
+                                                                    value="{{ isset($munition) ? $munition->score : '' }}">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                -->
+                                                    -->
 
                                     <div class="col-md-6 col-12">
                                         <div class="form-group mandatory">
                                             <label for="munition-platforms" class="form-label">Kullanılabilir
                                                 Platformlar</label>
-                                            <select class="form-select multiple-remove" name="platforms[]"
+                                            <select class="choices form-select multiple-remove" name="platforms[]"
                                                 id="munition-platforms" multiple>
                                                 @foreach ($platforms as $platform)
                                                     <option value="{{ $platform->id }}"
@@ -201,6 +201,35 @@
                                                 @endforeach
                                             </select>
                                             <small class="text-muted">Birden fazla platform seçebilirsiniz.</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <h5>Meteorolojik Performanslar (0-100)</h5>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label for="clear_weather_performance" class="form-label">Açık
+                                                    Hava</label>
+                                                <input type="number" name="clear_weather_performance"
+                                                    id="clear_weather_performance" class="form-control" min="0"
+                                                    max="100" placeholder="0-100"
+                                                    value="{{ old('clear_weather_performance', $munition->clear_weather_performance ?? '') }}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="fog_weather_performance" class="form-label">Sisli Hava</label>
+                                                <input type="number" name="fog_weather_performance"
+                                                    id="fog_weather_performance" class="form-control" min="0"
+                                                    max="100" placeholder="0-100"
+                                                    value="{{ old('fog_weather_performance', $munition->fog_weather_performance ?? '') }}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="rain_weather_performance" class="form-label">Yağmurlu
+                                                    Hava</label>
+                                                <input type="number" name="rain_weather_performance"
+                                                    id="rain_weather_performance" class="form-control" min="0"
+                                                    max="100" placeholder="0-100"
+                                                    value="{{ old('rain_weather_performance', $munition->rain_weather_performance ?? '') }}">
+                                            </div>
                                         </div>
                                     </div>
 
