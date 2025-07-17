@@ -11,227 +11,256 @@ use App\Models\Tag;
 use App\Models\Attribute;
 use App\Models\Image;
 use App\Models\Platform;
+use Illuminate\Support\Facades\Cache;
 
 class FrontendController extends Controller
 {
+    /**
+     * Get common data for views to avoid repetition.
+     *
+     * @return array
+     */
+    private function getCommonViewData(): array
+    {
+        return [
+            'categories' => Cache::remember('categories_all', 60 * 60, fn() => Category::all()),
+            'tags' => Cache::remember('tags_all', 60 * 60, fn() => Tag::all()),
+            'platforms' => Cache::remember('platforms_all', 60 * 60, fn() => Platform::all()),
+            'targetTypes' => Cache::remember('munition_target_types', 60 * 60, fn() => Munition::distinct()->pluck('target_type')),
+        ];
+    }
+
+    /**
+     * Display the homepage with paginated munitions.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $munitions = Munition::paginate(12);
-        $categories = Category::all();
-        $tags = Tag::all();
-        $platforms = Platform::all();
-        $targetTypes = Munition::select('target_type')->distinct()->pluck('target_type');
 
-        return view('Frontend.pages.home', compact(
-            'munitions',
-            'categories',
-            'tags',
-            'platforms',
-            'targetTypes'
+        return view('Frontend.pages.home', array_merge(
+            $this->getCommonViewData(),
+            compact('munitions')
         ));
     }
 
+    /**
+     * Compare munitions based on filters.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function kiyasla(Request $request)
     {
-        $categories = Category::all();
-        $attributes = Attribute::all();
-        $tags = Tag::all();
+        $request->validate([
+            'target_type' => 'nullable|string|max:255',
+            'min' => 'nullable|numeric|min:0',
+            'max' => 'nullable|numeric|min:0',
+            'category_id' => 'nullable|exists:categories,id',
+        ]);
 
         $targetType = $request->input('target_type');
         $minRange = $request->input('min');
         $maxRange = $request->input('max');
         $categoryId = $request->input('category_id');
 
-        // Menzil adında bir özellik var mı kontrol et
-        $attribute = Attribute::where('name', 'like', '%menzil%')->first();
+        $query = Munition::query();
 
-        // Menzil özelliği varsa ve min veya max değerleri boş değilse, bu özelliği kullanarak filtreleme yap
-        if ($attribute && (!empty($minRange) || !empty($maxRange))) {
-            $query = MunitionAttribute::where('attribute_id', $attribute->id);
+        // Filter by range if provided
+        if ($minRange || $maxRange) {
+            $attribute = Attribute::where('name', 'like', '%menzil%')->first();
 
-            // Min ve max değerlerinin kontrolü
-            if (!empty($minRange) && !empty($maxRange)) {
-                $query->whereBetween('value', [$minRange, $maxRange]);
-            } elseif (!empty($minRange)) {
-                $query->where('value', '>=', $minRange);
-            } elseif (!empty($maxRange)) {
-                $query->where('value', '<=', $maxRange);
+            if ($attribute) {
+                $munitionQuery = MunitionAttribute::where('attribute_id', $attribute->id);
+
+                if ($minRange && $maxRange) {
+                    $munitionQuery->whereBetween('value', [$minRange, $maxRange]);
+                } elseif ($minRange) {
+                    $munitionQuery->where('value', '>=', $minRange);
+                } elseif ($maxRange) {
+                    $munitionQuery->where('value', '<=', $maxRange);
+                }
+
+                $munitionIds = $munitionQuery->pluck('munition_id');
+                $query->whereIn('id', $munitionIds);
             }
-
-            $munitionIds = $query->pluck('munition_id');
-
-            $munitions = Munition::whereIn('id', $munitionIds)
-                ->when($targetType, function ($query) use ($targetType) {
-                    return $query->where('target_type', $targetType);
-                })
-                ->when($categoryId, function ($query) use ($categoryId) {
-                    return $query->where('category_id', $categoryId);
-                })
-                ->get();
-        } else {
-            // Menzil özelliği yoksa veya min ve max değerleri boşsa sadece target_type ve category_id üzerinden sorgu yap
-            $munitions = Munition::when($targetType, function ($query) use ($targetType) {
-                return $query->where('target_type', $targetType);
-            })
-            ->when($categoryId, function ($query) use ($categoryId) {
-                return $query->where('category_id', $categoryId);
-            })
-            ->get();
         }
 
-        return view('Frontend.pages.munition_compare', compact(
-            'munitions',
-            'categories',
-            'tags',
-            'attributes'
+        // Apply additional filters
+        $query->when($targetType, fn($q) => $q->where('target_type', $targetType))
+            ->when($categoryId, fn($q) => $q->where('category_id', $categoryId));
+
+        $munitions = $query->get();
+        $attributes = Cache::remember('attributes_all', 60 * 60, fn() => Attribute::all());
+
+        return view('Frontend.pages.munition_compare', array_merge(
+            $this->getCommonViewData(),
+            compact('munitions', 'attributes')
         ));
     }
 
+    /**
+     * Display the blog page with paginated posts.
+     *
+     * @return \Illuminate\View\View
+     */
     public function blog()
     {
         $posts = Post::where('status', 1)->paginate(6);
-        $categories = Category::all();
-        $tags = Tag::all();
 
-        return view('Frontend.pages.blog', compact(
-            'posts',
-            'categories',
-            'tags'
+        return view('Frontend.pages.blog', array_merge(
+            $this->getCommonViewData(),
+            compact('posts')
         ));
     }
 
+    /**
+     * Display a single blog post by slug.
+     *
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
     public function blogDetail($slug)
     {
-        $post = Post::where('slug', $slug)->first();
+        $post = Post::where('slug', $slug)->firstOrFail();
 
-        if (!$post) {
-            abort(404);
-        }
-
-        $categories = Category::all();
-        $tags = Tag::all();
-
-        return view('Frontend.pages.blog_detail', compact(
-            'post',
-            'categories',
-            'tags'
+        return view('Frontend.pages.blog_detail', array_merge(
+            $this->getCommonViewData(),
+            compact('post')
         ));
     }
 
+    /**
+     * Display the about page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function about()
     {
         $munitions = Munition::paginate(9);
-        $categories = Category::all();
 
-        return view('Frontend.pages.about', compact(
-            'munitions',
-            'categories'
+        return view('Frontend.pages.about', array_merge(
+            $this->getCommonViewData(),
+            compact('munitions')
         ));
     }
 
+    /**
+     * Display the contact page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function contact()
     {
         $munitions = Munition::paginate(9);
-        $categories = Category::all();
 
-        return view('Frontend.pages.contact', compact(
-            'munitions',
-            'categories'
+        return view('Frontend.pages.contact', array_merge(
+            $this->getCommonViewData(),
+            compact('munitions')
         ));
     }
 
+    /**
+     * Display a single munition by ID.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function show($id)
     {
         $munition = Munition::findOrFail($id);
 
-        return view('Frontend.pages.home', compact(
-            'munitions',
-            'categories'
+        return view('Frontend.pages.munition_detail', array_merge(
+            $this->getCommonViewData(),
+            compact('munition')
         ));
     }
 
+    /**
+     * Display munition details by slug.
+     *
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
     public function ShowMunitionDetail($slug)
     {
-        $categories = Category::all();
-        $tags = Tag::all();
+        $munition = Munition::where('slug', $slug)->with('images')->firstOrFail();
+        $munitionImages = $munition->images;
 
-        $munition = Munition::where('slug', $slug)->first();
-
-        if (!$munition) {
-            abort(404);
-        }
-
-        $munitionImages = Image::where('munition_id', $munition->id)->get();
-
-        return view('Frontend.pages.munition_detail', compact('munition', 'munitionImages', 'categories', 'tags'));
+        return view('Frontend.pages.munition_detail', array_merge(
+            $this->getCommonViewData(),
+            compact('munition', 'munitionImages')
+        ));
     }
 
+    /**
+     * Get munitions by category ID, including subcategories.
+     *
+     * @param int $categoryId
+     * @return \Illuminate\Support\Collection
+     */
     public function getMunitionsByCategory($categoryId)
     {
-        $munitions = collect(); // Mühimmatları toplamak için bir koleksiyon oluştur
+        $categoryIds = Category::where('id', $categoryId)
+            ->orWhere('parent_id', $categoryId)
+            ->pluck('id');
 
-        // Verilen kategori ID'sine ait tüm mühimmatları al
-        $munitions = Munition::where('category_id', $categoryId)->get();
-
-        // Verilen kategoriye ait alt kategorileri bul
-        $subCategories = Category::where('parent_id', $categoryId)->get();
-
-        // Her bir alt kategori için mühimmatları almak üzere özyinelemeli olarak bu işlemi tekrarla
-        foreach ($subCategories as $subCategory) {
-            $munitions = $munitions->merge($this->getMunitionsByCategory($subCategory->id));
-        }
-
-        return $munitions;
+        return Munition::whereIn('category_id', $categoryIds)->get();
     }
 
+    /**
+     * Filter munitions by category slug.
+     *
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
     public function FilterByCategory($slug)
     {
-        // Kategoriyi bul
         $category = Category::where('slug', $slug)->firstOrFail();
-
-        // Kategoriye ait mühimmatları ve alt kategorileri çek
         $munitions = $this->getMunitionsByCategory($category->id);
-        // Mühimmatları sayfalandır
-        $perPage = 10; // Her sayfada gösterilecek mühimmat sayısı
-        $currentPage = request()->query('page', 1); // Geçerli sayfa numarası
+
+        // Paginate the results
+        $perPage = 10;
+        $currentPage = request()->query('page', 1);
         $pagedData = $munitions->slice(($currentPage - 1) * $perPage, $perPage)->all();
-        $munitions = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, count($munitions), $perPage);
+        $munitions = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, $munitions->count(), $perPage);
 
-        // Mühimmatların resimlerini çekmek için boş bir dizi oluştur
         $munitionImages = [];
-
-        // Her mühimmat için resimleri çek
         foreach ($munitions as $munition) {
-            $images = Image::where('munition_id', $munition->id)->get();
-            $munitionImages[$munition->id] = $images;
+            $munitionImages[$munition->id] = Image::where('munition_id', $munition->id)->get();
         }
 
-        $categories = Category::all();
-        $tags = Tag::all();
-
-        // Sonucu görünüme aktar ve home.blade.php dosyasını çağır
-        return view('Frontend.pages.home', compact('munitions', 'munitionImages', 'category', 'tags', 'categories'));
+        return view('Frontend.pages.home', array_merge(
+            $this->getCommonViewData(),
+            compact('munitions', 'munitionImages', 'category')
+        ));
     }
 
-
+    /**
+     * Search munitions based on query string.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function search(Request $request)
     {
-        $categories = Category::all();
-        $tags = Tag::all();
+        $request->validate([
+            'q' => 'nullable|string|max:255',
+        ]);
 
-        // Arama sorgusunu al
         $search = $request->input('q');
 
-        // Munition modelinden arama yap
-        $munitions = Munition::where('name', 'like', '%' . $search . '%')
-            ->orWhereHas('category', function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->orWhere('origin', 'like', '%' . $search . '%')
-            ->orWhere('summary', 'like', '%' . $search . '%')
-            ->orWhere('description', 'like', '%' . $search . '%')
-            ->paginate(12); // Sayfalama ekleyerek 12 sonuç göster
+        $munitions = Munition::where('name', 'like', "%{$search}%")
+            ->orWhereHas('category', fn($query) => $query->where('name', 'like', "%{$search}%"))
+            ->orWhere('origin', 'like', "%{$search}%")
+            ->orWhere('summary', 'like', "%{$search}%")
+            ->orWhere('description', 'like', "%{$search}%")
+            ->paginate(12);
 
-        return view('Frontend.pages.home', compact('munitions', 'search', 'categories', 'tags'));
+        return view('Frontend.pages.home', array_merge(
+            $this->getCommonViewData(),
+            compact('munitions', 'search')
+        ));
     }
 }
