@@ -32,7 +32,7 @@ class PlatformController extends Controller
             'origin' => $request->input('origin'),
             'description' => $request->input('description'),
             'status' => $request->input('status') == '1' ? true : false,
-            'image' => $request->hasFile('image') ? $request->file('image')->getClientOriginalName() : null,
+            'image' => null, // Resim burada null olarak başlatılır
         ];
 
         $rules = [
@@ -41,7 +41,6 @@ class PlatformController extends Controller
             'origin' => 'required|string|size:2',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'image' => 'nullable|string',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -50,26 +49,33 @@ class PlatformController extends Controller
             $platform = new Platform();
             $platform->fill($data);
 
-            if ($request->hasFile('platformImage')) {
-                // Resmin base64 verisi alınır ve resim dosyası oluşturulur
+            // Resim yükleme işlemi
+            if ($request->hasFile('platformImage') || $request->input('croppedImage')) {
                 $croppedImageData = $request->input('croppedImage');
-                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
-
-                // Geçici bir dosya oluşturulur ve resim verisi yazılır
-                $tempFilePath = tempnam(sys_get_temp_dir(), 'platform_image_');
-                file_put_contents($tempFilePath, $image);
-
-                // Resmin dosya bilgileri alınır ve dosya adı oluşturulur
-                $imageData = $request->file('platformImage');
-                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
-                $imageExtension = $imageData->getClientOriginalExtension();
-                $fullImageName = $imageName . '.' . $imageExtension;
-
-                // Geçici dosya Storage'a yüklenir ve dosya yolu kaydedilir
-                $storagePath = Storage::putFileAs('public/platform_images', new File($tempFilePath), $fullImageName);
-                $platform->image = 'platform_images/' . $fullImageName;
+                if ($croppedImageData) {
+                    // Base64 verisi varsa decode et
+                    $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
+                    if ($image !== false && strlen($image) > 0) {
+                        $imageData = $request->file('platformImage');
+                        $imageName = $imageData ? Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid() : uniqid('platform_image_');
+                        $imageExtension = $imageData ? $imageData->getClientOriginalExtension() : 'jpg';
+                        $fullImageName = $imageName . '.' . $imageExtension;
+                        $tempFilePath = tempnam(sys_get_temp_dir(), 'platform_image_');
+                        file_put_contents($tempFilePath, $image);
+                        Storage::putFileAs('public/platform_images', new File($tempFilePath), $fullImageName);
+                        $platform->image = 'platform_images/' . $fullImageName;
+                        unlink($tempFilePath);
+                    }
+                } else if ($request->hasFile('platformImage')) {
+                    // Sadece dosya yüklenmişse
+                    $imageData = $request->file('platformImage');
+                    $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
+                    $imageExtension = $imageData->getClientOriginalExtension();
+                    $fullImageName = $imageName . '.' . $imageExtension;
+                    Storage::putFileAs('public/platform_images', $imageData, $fullImageName);
+                    $platform->image = 'platform_images/' . $fullImageName;
+                }
             }
-
 
             if ($platform->save()) {
                 return redirect()->route('platform.index')->with('success', $platform->name . ' başarıyla eklendi.');
@@ -100,7 +106,7 @@ class PlatformController extends Controller
             'origin' => $request->input('origin'),
             'description' => $request->input('description'),
             'status' => $request->input('status') == '1' ? true : false,
-            'image' => $request->hasFile('image') ? $request->file('image')->getClientOriginalName() : null,
+            'image' => $platform->image, // Mevcut resmi koru
         ];
 
         $rules = [
@@ -109,7 +115,6 @@ class PlatformController extends Controller
             'origin' => 'required|string|size:2',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'image' => 'nullable|string',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -117,31 +122,31 @@ class PlatformController extends Controller
         if ($validator->passes()) {
             $platform->fill($data);
 
-            if ($request->hasFile('platformImage')) {
-                // Kırpılmış base64 veriyi al
+            // Resim yükleme işlemi
+            if ($request->hasFile('platformImage') || $request->input('croppedImage')) {
                 $croppedImageData = $request->input('croppedImage');
-                $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
-
-                // Geçici dosyaya yaz
-                $tempPath = tempnam(sys_get_temp_dir(), 'platform_image_');
-                file_put_contents($tempPath, $image);
-
-                // Dosya ismi oluştur
-                $imageData = $request->file('platformImage');
-                $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
-                $imageExtension = $imageData->getClientOriginalExtension();
-                $fullImageName = $imageName . '.' . $imageExtension;
-
-                // Storage'a yükle
-                $storagePath = Storage::putFileAs('public/platform_images', new File($tempPath), $fullImageName);
-
-                // Temizle
-                unlink($tempPath);
-
-                // Kaydedilecek path
-                $validated['image'] = 'platform_images/' . $fullImageName;
+                if ($croppedImageData) {
+                    $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
+                    if ($image !== false && strlen($image) > 0) {
+                        $imageData = $request->file('platformImage');
+                        $imageName = $imageData ? Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid() : uniqid('platform_image_');
+                        $imageExtension = $imageData ? $imageData->getClientOriginalExtension() : 'jpg';
+                        $fullImageName = $imageName . '.' . $imageExtension;
+                        $tempFilePath = tempnam(sys_get_temp_dir(), 'platform_image_');
+                        file_put_contents($tempFilePath, $image);
+                        Storage::putFileAs('public/platform_images', new File($tempFilePath), $fullImageName);
+                        $platform->image = 'platform_images/' . $fullImageName;
+                        unlink($tempFilePath);
+                    }
+                } else if ($request->hasFile('platformImage')) {
+                    $imageData = $request->file('platformImage');
+                    $imageName = Str::slug(pathinfo($imageData->getClientOriginalName(), PATHINFO_FILENAME), '_') . '_' . uniqid();
+                    $imageExtension = $imageData->getClientOriginalExtension();
+                    $fullImageName = $imageName . '.' . $imageExtension;
+                    Storage::putFileAs('public/platform_images', $imageData, $fullImageName);
+                    $platform->image = 'platform_images/' . $fullImageName;
+                }
             }
-
 
             if ($platform->save()) {
                 return redirect()->route('platform.index')->with('success', $platform->name . ' güncellendi.');

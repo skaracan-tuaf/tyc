@@ -10,21 +10,20 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('targets', function (Blueprint $table) {
+        Schema::create('target_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->unsignedBigInteger('subcategory_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->decimal('worth', 8, 2)->nullable()->default(0.00);
-            $table->text('description')->nullable();
             $table->boolean('status')->default(false);
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('category_id')->references('id')->on('target_categories')->onDelete('SET NULL');
-            $table->foreign('subcategory_id')->references('id')->on('target_categories')->onDelete('SET NULL');
+            $table->foreign('parent_id')->references('id')->on('target_categories')->onDelete('SET NULL');
+            $table->index(['slug', 'parent_id', 'status']);
         });
+
     }
 
     /**
@@ -32,6 +31,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('targets');
+        Schema::dropIfExists('target_categories');
     }
 };

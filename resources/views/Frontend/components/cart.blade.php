@@ -9,10 +9,12 @@
         </div>
 
         <div class="header-cart-content flex-w js-pscroll" style="width: 100%;">
-            <form action="{{ route('Kiyasla') }}" method="GET" class="w-full" style="max-width: 300px; width: 100%;">
+            <form action="{{ route('sonuclariGoster') }}" method="POST" class="w-full" style="max-width: 300px; width: 100%;">
+                @csrf
                 <ul class="header-cart-wrapitem w-full">
 
                     <!-- Platform -->
+                    <!--
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
                             <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Platform:</label>
@@ -24,15 +26,16 @@
                             </select>
                         </div>
                     </li>
+                    -->
 
-                    <!-- Hedef Tipi -->
+                    <!-- Hedef -->
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
-                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Hedef Tipi:</label>
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Hedef:</label>
                             <select name="target_type" class="form-control m-b-10">
                                 <option value="" disabled selected>Seçin</option>
-                                @foreach ($targetTypes as $type)
-                                    <option value="{{ $type }}">{{ $type }}</option>
+                                @foreach ($targets as $target)
+                                    <option value="{{ $target->id }}">{{ $target->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -53,6 +56,7 @@
                     </li>
 
                     <!-- İmha Türü -->
+                    <!--
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
                             <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">İmha Türü:</label>
@@ -69,8 +73,10 @@
                             </div>
                         </div>
                     </li>
+                    -->
 
                     <!-- Çevresel Hassasiyet -->
+                    <!--
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">
                             <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Çevresel
@@ -93,7 +99,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Tek "+" Butonu -->
                                 <div class="m-t-10">
                                     <button type="button" class="btn btn-sm btn-primary"
                                         onclick="addEnvGroup()">+</button>
@@ -101,7 +106,7 @@
                             </div>
                         </div>
                     </li>
-
+                    -->
                 </ul>
 
                 <div class="w-full">

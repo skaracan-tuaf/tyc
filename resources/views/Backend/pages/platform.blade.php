@@ -30,6 +30,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Resim</th>
                             <th>Adı</th>
                             <th>Tip</th>
                             <th>Ülke</th>
@@ -71,6 +72,9 @@
                         @foreach ($platforms as $platform)
                             <tr>
                                 <td>{{ $platform->id }}</td>
+                                <td>
+                                    <img src="{{ asset('storage/' . $platform->image) }}" alt="{{ $platform->name }}" class="img-fluid" style="width: 100px; height: 100px;">
+                                </td>
                                 <td>{{ $platform->name }}</td>
                                 <td>{{ ucfirst($platform->type) }}</td>
                                 <td>{{ myGetCountryName($platform->origin, $countries) }}</td>

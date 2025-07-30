@@ -15,6 +15,24 @@
 @endsection
 
 @section('content')
+@php
+    $platformTypes = [
+        'multi_role_fighter' => 'Çok Amaçlı Savaş Uçağı',
+        'air_superiority_fighter' => 'Hava Üstünlük Savaş Uçağı',
+        'bomber' => 'Bombardıman Uçağı',
+        'attack_aircraft' => 'Taarruz Uçağı',
+        'reconnaissance_aircraft' => 'Keşif Uçağı',
+        'electronic_warfare_aircraft' => 'Elektronik Harp Uçağı',
+        'tanker_aircraft' => 'Yakıt İkmal Uçağı',
+        'trainer_aircraft' => 'Eğitim Uçağı',
+        'transport_aircraft' => 'Nakliye Uçağı',
+        'attack_helicopter' => 'Taarruz Helikopteri',
+        'transport_helicopter' => 'Nakliye Helikopteri',
+        'uav' => 'İHA (İnsansız Hava Aracı)',
+        'ucav' => 'SİHA (Silahlı İHA)',
+        'other' => 'Diğer',
+    ];
+@endphp
     <section id="multiple-column-form">
         <div class="row match-height">
             <div class="col-12">
@@ -40,25 +58,6 @@
                                                 value="{{ isset($platform) ? $platform->name : '' }}" required />
                                         </div>
                                     </div>
-                                    @php
-                                        $platformTypes = [
-                                            'multi_role_fighter' => 'Çok Amaçlı Savaş Uçağı',
-                                            'air_superiority_fighter' => 'Hava Üstünlük Savaş Uçağı',
-                                            'bomber' => 'Bombardıman Uçağı',
-                                            'attack_aircraft' => 'Taarruz Uçağı',
-                                            'reconnaissance_aircraft' => 'Keşif Uçağı',
-                                            'electronic_warfare_aircraft' => 'Elektronik Harp Uçağı',
-                                            'tanker_aircraft' => 'Yakıt İkmal Uçağı',
-                                            'trainer_aircraft' => 'Eğitim Uçağı',
-                                            'transport_aircraft' => 'Nakliye Uçağı',
-                                            'attack_helicopter' => 'Taarruz Helikopteri',
-                                            'transport_helicopter' => 'Nakliye Helikopteri',
-                                            'uav' => 'İHA (İnsansız Hava Aracı)',
-                                            'ucav' => 'SİHA (Silahlı İHA)',
-                                            'other' => 'Diğer',
-                                        ];
-                                    @endphp
-
                                     <div class="col-md-6 col-12">
                                         <div class="form-group mandatory">
                                             <label for="platform-type" class="form-label">Tip</label>
@@ -86,26 +85,47 @@
                                             </select>
                                         </div>
                                     </div>
-
-                                    <div id="resimEkleAlani">
-                                        <img id="image" src="" alt="" class="col-3">
-                                        <input type="hidden" id="croppedImage" name="croppedImage"
-                                            {{ isset($platform) ? '' : 'required' }}>
-                                        @if (isset($platform) && !empty($platform->image))
-                                            <div id="previewImage" class="image-container"
-                                                style="display: flex; justify-content: center; align-items: center;">
-                                                <img src="{{ asset('storage/' . $platform->image) }}" alt=""
-                                                    class="img-fluid">
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group mandatory">
+                                            <label for="platform-image" class="form-label">Resim</label>
+                                            <div class="col-12">
+                                                <div class="form-group row align-items-center">
+                                                    <div class="row" style="display: flex; align-items: center;">
+                                                        <div class="col-2">
+                                                            <label class="col-form-label" for="first-name">En / Boy Oranı</label>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <input type="number" id="input-width" class="form-control"
+                                                                name="iwidth" placeholder="Genişlik" min="1" value="1200">
+                                                        </div>
+                                                        <span class="col-1 text-center">/</span>
+                                                        <div class="col-4">
+                                                            <input type="number" id="input-length" class="form-control"
+                                                                name="ilength" placeholder="Yükseklik" min="1" value="807">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        @endif
-                                        <div class="img-container mt-3" id="previewContainer"
-                                            style="display: flex; justify-content: center; align-items: center;">
+                                            <div id="resimEkleAlani">
+                                                <img id="image" src="" alt="" class="col-3">
+                                                <input type="hidden" id="croppedImage" name="croppedImage"
+                                                    {{ isset($platform) ? '' : 'required' }}>
+                                                @if (isset($platform) && !empty($platform->image))
+                                                    <div id="previewImage" class="image-container"
+                                                        style="display: flex; justify-content: center; align-items: center;">
+                                                        <img src="{{ asset('storage/' . $platform->image) }}" alt=""
+                                                            class="img-fluid">
+                                                    </div>
+                                                @endif
+                                                <div class="img-container mt-3" id="previewContainer"
+                                                    style="display: flex; justify-content: center; align-items: center;">
+                                                </div>
+                                                <input type="file" class="form-control" id="imageInput" name="platformImage"
+                                                    accept="image/*" {{ isset($platform) ? '' : 'required' }}>
+                                            </div>
                                         </div>
-                                        <input type="file" class="form-control" id="imageInput" name="platformImage"
-                                            accept="image/*" {{ isset($platform) ? '' : 'required' }}>
                                     </div>
-
-                                    <div class="col-12">
+                                    <div class="col-md-12 col-12">
                                         <div class="form-group">
                                             <label for="platform-description" class="form-label">Açıklama</label>
                                             <textarea class="form-control" id="platform-description" rows="4" name="description" placeholder="Açıklama">{{ isset($platform) ? $platform->description : '' }}</textarea>
@@ -125,10 +145,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-3">
-                                    <button type="submit"
-                                        class="btn btn-primary">{{ isset($platform) ? 'Güncelle' : 'Ekle' }}</button>
-                                    <a href="{{ route('platform.index') }}" class="btn btn-secondary">İptal</a>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">
+                                            {{ isset($platform) ? 'Güncelle' : 'Ekle' }}
+                                        </button>
+                                        <button type="reset" class="btn btn-light-secondary me-1 mb-1">
+                                            Temizle
+                                        </button>
+                                        <a href="{{ route('platform.index') }}" class="btn btn-secondary">İptal</a>
+                                    </div>
                                 </div>
                             </form>
                         </div>

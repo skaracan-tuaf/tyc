@@ -11,7 +11,10 @@ use App\Models\Tag;
 use App\Models\Attribute;
 use App\Models\Image;
 use App\Models\Platform;
+use App\Models\Target;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class FrontendController extends Controller
 {
@@ -26,6 +29,7 @@ class FrontendController extends Controller
             'categories' => Cache::remember('categories_all', 60 * 60, fn() => Category::all()),
             'tags' => Cache::remember('tags_all', 60 * 60, fn() => Tag::all()),
             'platforms' => Cache::remember('platforms_all', 60 * 60, fn() => Platform::all()),
+            'targets' => Cache::remember('targets_all', 60 * 60, fn() => Target::all()),
             'targetTypes' => Cache::remember('munition_target_types', 60 * 60, fn() => Munition::distinct()->pluck('target_type')),
         ];
     }
@@ -42,6 +46,92 @@ class FrontendController extends Controller
         return view('Frontend.pages.home', array_merge(
             $this->getCommonViewData(),
             compact('munitions')
+        ));
+    }
+
+    /**
+     * Show results based on target and weather conditions
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function sonuclariGoster(Request $request)
+    {
+        $request->validate([
+            'target_type' => 'required|numeric',
+            'weather' => 'required|string|in:Açık,Sisli,Yağmurlu',
+        ]);
+
+        $targetId = $request->input('target_type');
+        $weather = $request->input('weather');
+
+        // Hedef bilgisini al
+        $target = Target::find($targetId);
+        $targetName = $target ? $target->name : 'Bilinmeyen Hedef';
+
+        // Statik veri - hedef adı ve meteorolojik duruma göre sonuçlar
+        $staticData = [
+            'Pist' => [
+                'Açık' => [
+                    ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                    ['name' => 'GÖKDOĞAN', 'rank' => 2, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                    ['name' => 'BOZDOĞAN', 'rank' => 3, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                ],
+                'Sisli' => [
+                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                    ['name' => 'AIM 120C', 'rank' => 2, 'cost' => '$600K', 'platform' => 'F-16'],
+                ],
+                'Yağmurlu' => [
+                    ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                    ['name' => 'AIM 120B', 'rank' => 2, 'cost' => '$500K', 'platform' => 'F-16'],
+                ],
+            ],
+            'Radar' => [
+                'Açık' => [
+                    ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                    ['name' => 'GÖKDOĞAN', 'rank' => 2, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                ],
+                'Sisli' => [
+                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                    ['name' => 'AIM 120C', 'rank' => 2, 'cost' => '$600K', 'platform' => 'F-16'],
+                ],
+                'Yağmurlu' => [
+                    ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                ],
+            ],
+            'Komuta Merkezi' => [
+                'Açık' => [
+                    ['name' => 'AIM 120C', 'rank' => 1, 'cost' => '$600K', 'platform' => 'F-16'],
+                    ['name' => 'BOZDOĞAN', 'rank' => 2, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                ],
+                'Sisli' => [
+                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                ],
+                'Yağmurlu' => [
+                    ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                ],
+            ],
+            'Hangar' => [
+                'Açık' => [
+                    ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                    ['name' => 'AIM 120B', 'rank' => 2, 'cost' => '$500K', 'platform' => 'F-16'],
+                ],
+                'Sisli' => [
+                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                    ['name' => 'BOZDOĞAN', 'rank' => 2, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                ],
+                'Yağmurlu' => [
+                    ['name' => 'AIM 120C', 'rank' => 1, 'cost' => '$600K', 'platform' => 'F-16'],
+                ],
+            ],
+        ];
+
+        // Seçilen hedef adı ve meteorolojik duruma göre sonuçları al
+        $results = $staticData[$targetName][$weather] ?? [];
+
+        return view('Frontend.pages.results', array_merge(
+            $this->getCommonViewData(),
+            compact('results', 'targetName', 'weather')
         ));
     }
 
