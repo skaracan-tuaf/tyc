@@ -1,3 +1,4 @@
+<?php
 @extends('Backend.index')
 
 @section('title', '| Hedef Ekle')
@@ -10,7 +11,7 @@
 @section('page-subtitle', isset($target) ? 'Hedef Güncelle' : 'Yeni Hedef Ekle')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('target.index') }}">Hedefler</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('targets.index') }}">Hedefler</a></li>
     <li class="breadcrumb-item active">{{ isset($target) ? 'Güncelle' : 'Ekle' }}</li>
 @endsection
 
@@ -23,7 +24,7 @@
                         <h4 class="card-title">{{ isset($target) ? 'Hedef Güncelle' : 'Yeni Hedef Ekle' }}</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ isset($target) ? route('target.update', $target->id) : route('target.store') }}"
+                        <form action="{{ isset($target) ? route('targets.update', $target->id) : route('targets.store') }}"
                             method="POST">
                             @csrf
                             @if (isset($target)) @method('PUT') @endif
@@ -44,7 +45,11 @@
                                     <label for="category_id" class="form-label">Üst Kategori</label>
                                     <select name="category_id" id="category_id" class="form-select" required>
                                         <option value="">Seçiniz...</option>
+<<<<<<< HEAD
                                         @foreach (collect($categories)->whereNull('parent_id') as $category)
+=======
+                                        @foreach ($categories->whereNull('parent_id') as $category)
+>>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
                                             <option value="{{ $category->id }}"
                                                 {{ old('category_id', $target->category_id ?? '') == $category->id ? 'selected' : '' }}>
                                                 {{ $category->name }}
@@ -62,7 +67,11 @@
                                     <select name="subcategory_id" id="subcategory_id" class="form-select">
                                         <option value="">Alt kategori seçiniz</option>
                                         @if (isset($target) && $target->category_id)
+<<<<<<< HEAD
                                             @foreach (collect($categories)->where('parent_id', $target->category_id) as $subcategory)
+=======
+                                            @foreach ($categories->where('parent_id', $target->category_id) as $subcategory)
+>>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
                                                 <option value="{{ $subcategory->id }}"
                                                     {{ old('subcategory_id', $target->subcategory_id ?? '') == $subcategory->id ? 'selected' : '' }}>
                                                     {{ $subcategory->name }}
@@ -85,6 +94,10 @@
                                     @enderror
                                 </div>
 
+<<<<<<< HEAD
+=======
+                               37
+>>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
                                 {{-- Durum --}}
                                 <div class="col-md-6 mt-3">
                                     <label for="status" class="form-label">Durum</label>
@@ -107,7 +120,7 @@
 
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-primary">{{ isset($target) ? 'Güncelle' : 'Ekle' }}</button>
-                                <a href="{{ route('target.index') }}" class="btn btn-light-secondary ms-2">İptal</a>
+                                <a href="{{ route('targets.index') }}" class="btn btn-light-secondary ms-2">İptal</a>
                             </div>
                         </form>
                     </div>
@@ -156,3 +169,4 @@
         });
     </script>
 @endsection
+?>

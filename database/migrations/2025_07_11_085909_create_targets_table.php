@@ -11,7 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('targets', function (Blueprint $table) {
+<<<<<<< HEAD
             $table->id();
+=======
+            $table->bigIncrements('id');
+>>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('subcategory_id')->nullable();
             $table->string('name');
