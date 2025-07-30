@@ -1,4 +1,3 @@
-<?php
 @extends('Backend.index')
 
 @section('title', '| Hedefler')
@@ -22,7 +21,7 @@
             <div class="card-header">
                 <h5 class="card-title">
                     Hedef Veri Tablosu
-                    <a style="float: right;" href="{{ route('targets.create') }}"
+                    <a style="float: right;" href="{{ route('target.create') }}"
                         class="btn icon icon-left btn-secondary"><i class="bi bi-plus"></i>Yeni</a>
                 </h5>
             </div>
@@ -49,23 +48,21 @@
                                 <td>{{ $target->subcategory ? $target->subcategory->name : '-' }}</td>
                                 <td>{{ number_format($target->worth, 2) }}</td>
                                 <td>
-<<<<<<< HEAD
-                                    <form action="{{ route('target-category.changeStatus', $target->id) }}" method="POST" class="d-inline">
-=======
-                                    <form action="{{ route('targets.changeStatus', $target->id) }}" method="POST" class="d-inline">
->>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
+                                    <form action="{{ route('target-category.changeStatus', $target->id) }}" method="POST"
+                                        class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm {{ $target->status ? 'btn-success' : 'btn-warning' }}">
+                                        <button type="submit"
+                                            class="btn btn-sm {{ $target->status ? 'btn-success' : 'btn-warning' }}">
                                             {{ $target->status ? 'Aktif' : 'Pasif' }}
                                         </button>
                                     </form>
                                 </td>
                                 <td>{{ Str::limit($target->description, 50) }}</td>
                                 <td>
-                                    <a href="{{ route('targets.edit', $target->id) }}" class="btn btn-primary btn-sm">
+                                    <a href="{{ route('target.edit', $target->id) }}" class="btn btn-primary btn-sm">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <form action="{{ route('targets.destroy', $target->id) }}" method="POST"
+                                    <form action="{{ route('target.destroy', $target->id) }}" method="POST"
                                         class="d-inline delete-form">
                                         @csrf
                                         @method('DELETE')
@@ -89,9 +86,9 @@
     <script src="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.delete-form').forEach(function (form) {
-                form.addEventListener('submit', function (event) {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-form').forEach(function(form) {
+                form.addEventListener('submit', function(event) {
                     event.preventDefault();
                     Swal.fire({
                         title: 'Emin misiniz?',
@@ -112,4 +109,4 @@
         });
     </script>
 @endsection
-?>
+

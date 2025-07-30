@@ -45,11 +45,7 @@ class TargetController extends Controller
 
         $target = Target::create($validatedData);
 
-<<<<<<< HEAD
         return redirect()->route('target.index')->with('success', $target->name . ' başarıyla eklendi.');
-=======
-        return redirect()->route('targets.index')->with('success', $target->name . ' başarıyla eklendi.');
->>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
     }
 
     /**
@@ -79,11 +75,7 @@ class TargetController extends Controller
 
         $target->update($validatedData);
 
-<<<<<<< HEAD
         return redirect()->route('target.index')->with('success', $target->name . ' başarıyla güncellendi.');
-=======
-        return redirect()->route('targets.index')->with('success', $target->name . ' başarıyla güncellendi.');
->>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
     }
 
     /**
@@ -93,11 +85,7 @@ class TargetController extends Controller
     {
         $target = Target::findOrFail($id);
         $target->update(['status' => !$target->status]);
-<<<<<<< HEAD
         return redirect()->route('target.index')->with('success', $target->name . ' durumu değiştirildi.');
-=======
-        return redirect()->route('targets.index')->with('success', $target->name . ' durumu değiştirildi.');
->>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
     }
 
     /**
@@ -107,10 +95,6 @@ class TargetController extends Controller
     {
         $targetName = $target->name;
         $target->delete();
-<<<<<<< HEAD
         return redirect()->route('target.index')->with('success', $targetName . ' silindi.');
-=======
-        return redirect()->route('targets.index')->with('success', $targetName . ' silindi.');
->>>>>>> 6d86d9123df7e519931c66f92619ad5687484cc3
     }
 }

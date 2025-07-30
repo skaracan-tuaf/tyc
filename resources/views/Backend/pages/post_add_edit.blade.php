@@ -86,7 +86,7 @@
                             </div>
                             <fieldset class="form-group">
                                 <select class="form-select" name="category_id" id="category" required>
-                                    @if ($categories->isEmpty())
+                                    @if (empty($categories))
                                         <option value="" selected disabled>Kategori bulunamadı! Lütfen kategori
                                             ekleyin.</option>
                                     @else
