@@ -12,13 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('targets', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('subcategory_id')->nullable();
             $table->string('name');
-            $table->string('category'); // NATO kategorisi (e.g. Surface, Air)
-            $table->string('subcategory')->nullable(); // Örn: Pist, Tank, vs
-            $table->decimal('worth', 8, 2)->default(0.00); // değer
+            $table->string('slug')->unique();
+            $table->decimal('worth', 8, 2)->nullable()->default(0.00);
             $table->text('description')->nullable();
+            $table->boolean('status')->default(false);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('category_id')->references('id')->on('target_categories')->onDelete('SET NULL');
+            $table->foreign('subcategory_id')->references('id')->on('target_categories')->onDelete('SET NULL');
         });
     }
 

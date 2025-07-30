@@ -10,6 +10,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\TargetController;
+use App\Http\Controllers\TargetCategoryController;
 
 /*
 Route::get('/', function () {
@@ -43,6 +44,9 @@ Route::prefix('yonetim')->group(function () {
     Route::resource('ozellik', AttributeController::class);
     Route::resource('platform', PlatformController::class);
     Route::resource('target', TargetController::class);
+
+    Route::resource('target-category', TargetCategoryController::class)->names('target-category');
+    Route::post('target-category/{id}/status', [TargetCategoryController::class, 'changeStatus'])->name('target-category.changeStatus');
 
     Route::resource('makale', PostController::class);
     Route::resource('etiket', TagController::class);

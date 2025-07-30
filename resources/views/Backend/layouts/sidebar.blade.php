@@ -91,6 +91,12 @@
                         <span>Hedefler</span>
                     </a>
                 </li>
+                <li class="sidebar-item{{ request()->routeIs('target-category.*') ? ' active' : '' }}">
+                    <a href="{{ route('target-category.index') }}" class='sidebar-link'>
+                        <i class="bi bi-crosshair"></i>
+                        <span>Hedef Kategorileri</span>
+                    </a>
+                </li>
                 <li class="sidebar-item{{ request()->routeIs('makale.*') ? ' active' : '' }}  has-sub">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-pen-fill"></i>

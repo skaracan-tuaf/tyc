@@ -1,3 +1,4 @@
+<?php
 @extends('Backend.index')
 
 @section('title', '| Hedef Ekle')
@@ -10,7 +11,7 @@
 @section('page-subtitle', isset($target) ? 'Hedef Güncelle' : 'Yeni Hedef Ekle')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('target.index') }}">Hedefler</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('targets.index') }}">Hedefler</a></li>
     <li class="breadcrumb-item active">{{ isset($target) ? 'Güncelle' : 'Ekle' }}</li>
 @endsection
 
@@ -23,7 +24,7 @@
                         <h4 class="card-title">{{ isset($target) ? 'Hedef Güncelle' : 'Yeni Hedef Ekle' }}</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ isset($target) ? route('target.update', $target->id) : route('target.store') }}"
+                        <form action="{{ isset($target) ? route('targets.update', $target->id) : route('targets.store') }}"
                             method="POST">
                             @csrf
                             @if (isset($target)) @method('PUT') @endif
@@ -34,27 +35,45 @@
                                     <label for="name" class="form-label">Hedef Adı</label>
                                     <input type="text" name="name" id="name" class="form-control" placeholder="Örn: Pist, Hangar"
                                         value="{{ old('name', $target->name ?? '') }}" required>
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 {{-- Üst Kategori --}}
                                 <div class="col-md-6">
-                                    <label for="category" class="form-label">Üst Kategori</label>
-                                    <select name="category" id="category" class="form-select" required>
+                                    <label for="category_id" class="form-label">Üst Kategori</label>
+                                    <select name="category_id" id="category_id" class="form-select" required>
                                         <option value="">Seçiniz...</option>
-                                        @foreach ($categories as $main => $subs)
-                                            <option value="{{ $main }}" {{ old('category', $target->category ?? '') == $main ? 'selected' : '' }}>
-                                                {{ $main }}
+                                        @foreach ($categories->whereNull('parent_id') as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ old('category_id', $target->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('category_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 {{-- Alt Kategori --}}
                                 <div class="col-md-6 mt-3">
-                                    <label for="subcategory" class="form-label">Alt Kategori</label>
-                                    <select name="subcategory" id="subcategory" class="form-select">
+                                    <label for="subcategory_id" class="form-label">Alt Kategori</label>
+                                    <select name="subcategory_id" id="subcategory_id" class="form-select">
                                         <option value="">Alt kategori seçiniz</option>
+                                        @if (isset($target) && $target->category_id)
+                                            @foreach ($categories->where('parent_id', $target->category_id) as $subcategory)
+                                                <option value="{{ $subcategory->id }}"
+                                                    {{ old('subcategory_id', $target->subcategory_id ?? '') == $subcategory->id ? 'selected' : '' }}>
+                                                    {{ $subcategory->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
                                     </select>
+                                    @error('subcategory_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 {{-- Değer --}}
@@ -62,18 +81,35 @@
                                     <label for="worth" class="form-label">Değer ($)</label>
                                     <input type="number" step="0.01" name="worth" id="worth" class="form-control"
                                         value="{{ old('worth', $target->worth ?? '') }}">
+                                    @error('worth')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                               37
+                                {{-- Durum --}}
+                                <div class="col-md-6 mt-3">
+                                    <label for="status" class="form-label">Durum</label>
+                                    <input type="checkbox" name="status" id="status" value="1"
+                                        {{ old('status', isset($target) && $target->status ? 1 : 0) ? 'checked' : '' }}>
+                                    @error('status')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 {{-- Açıklama --}}
                                 <div class="col-md-12 mt-3">
                                     <label for="description" class="form-label">Açıklama</label>
                                     <textarea name="description" id="description" rows="3" class="form-control">{{ old('description', $target->description ?? '') }}</textarea>
+                                    @error('description')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-primary">{{ isset($target) ? 'Güncelle' : 'Ekle' }}</button>
-                                <a href="{{ route('target.index') }}" class="btn btn-light-secondary ms-2">İptal</a>
+                                <a href="{{ route('targets.index') }}" class="btn btn-light-secondary ms-2">İptal</a>
                             </div>
                         </form>
                     </div>
@@ -87,24 +123,25 @@
     <script src="{{ asset('backend_assets/extensions/choices.js/public/assets/scripts/choices.js') }}"></script>
 
     <script>
-        const categoryMap = @json($categories);
-        const oldCategory = "{{ old('category', $target->category ?? '') }}";
-        const oldSubcategory = "{{ old('subcategory', $target->subcategory ?? '') }}";
-
         document.addEventListener('DOMContentLoaded', function () {
-            const categorySelect = document.getElementById('category');
-            const subcategorySelect = document.getElementById('subcategory');
+            const categorySelect = document.getElementById('category_id');
+            const subcategorySelect = document.getElementById('subcategory_id');
+            const categories = @json($categories);
 
-            function populateSubcategories(category) {
-                const subcategories = categoryMap[category] || [];
+            function populateSubcategories(categoryId) {
                 subcategorySelect.innerHTML = '<option value="">Alt kategori seçiniz</option>';
-                subcategories.forEach(sub => {
-                    const opt = document.createElement('option');
-                    opt.value = sub;
-                    opt.textContent = sub;
-                    if (sub === oldSubcategory) opt.selected = true;
-                    subcategorySelect.appendChild(opt);
-                });
+                if (categoryId) {
+                    const subcategories = categories.filter(cat => cat.parent_id == categoryId);
+                    subcategories.forEach(sub => {
+                        const opt = document.createElement('option');
+                        opt.value = sub.id;
+                        opt.textContent = sub.name;
+                        if (sub.id == "{{ old('subcategory_id', $target->subcategory_id ?? '') }}") {
+                            opt.selected = true;
+                        }
+                        subcategorySelect.appendChild(opt);
+                    });
+                }
             }
 
             categorySelect.addEventListener('change', function () {
@@ -112,10 +149,14 @@
             });
 
             // Sayfa yüklendiğinde seçili kategorinin alt kategorilerini yükle
-            if (oldCategory) {
-                categorySelect.value = oldCategory;
-                populateSubcategories(oldCategory);
+            if (categorySelect.value) {
+                populateSubcategories(categorySelect.value);
             }
+
+            // Choices.js başlatma
+            new Choices(categorySelect);
+            new Choices(subcategorySelect);
         });
     </script>
 @endsection
+?>

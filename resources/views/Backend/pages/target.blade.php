@@ -1,3 +1,4 @@
+<?php
 @extends('Backend.index')
 
 @section('title', '| Hedefler')
@@ -21,7 +22,7 @@
             <div class="card-header">
                 <h5 class="card-title">
                     Hedef Veri Tablosu
-                    <a style="float: right;" href="{{ route('target.create') }}"
+                    <a style="float: right;" href="{{ route('targets.create') }}"
                         class="btn icon icon-left btn-secondary"><i class="bi bi-plus"></i>Yeni</a>
                 </h5>
             </div>
@@ -34,6 +35,7 @@
                             <th>Kategori</th>
                             <th>Alt Kategori</th>
                             <th>Değer ($)</th>
+                            <th>Durum</th>
                             <th>Açıklama</th>
                             <th>İşlem</th>
                         </tr>
@@ -43,15 +45,23 @@
                             <tr>
                                 <td>{{ $target->id }}</td>
                                 <td>{{ $target->name }}</td>
-                                <td>{{ $target->category }}</td>
-                                <td>{{ $target->subcategory ?? '-' }}</td>
+                                <td>{{ $target->category->name ?? '-' }}</td>
+                                <td>{{ $target->subcategory ? $target->subcategory->name : '-' }}</td>
                                 <td>{{ number_format($target->worth, 2) }}</td>
+                                <td>
+                                    <form action="{{ route('targets.changeStatus', $target->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm {{ $target->status ? 'btn-success' : 'btn-warning' }}">
+                                            {{ $target->status ? 'Aktif' : 'Pasif' }}
+                                        </button>
+                                    </form>
+                                </td>
                                 <td>{{ Str::limit($target->description, 50) }}</td>
                                 <td>
-                                    <a href="{{ route('target.edit', $target->id) }}" class="btn btn-primary btn-sm">
+                                    <a href="{{ route('targets.edit', $target->id) }}" class="btn btn-primary btn-sm">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <form action="{{ route('target.destroy', $target->id) }}" method="POST"
+                                    <form action="{{ route('targets.destroy', $target->id) }}" method="POST"
                                         class="d-inline delete-form">
                                         @csrf
                                         @method('DELETE')
@@ -88,7 +98,7 @@
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'SİL',
                         cancelButtonText: 'İptal'
-                    }).then((result) => {
+                    }).then((resultan) {
                         if (result.isConfirmed) {
                             form.submit();
                         }
@@ -98,3 +108,4 @@
         });
     </script>
 @endsection
+?>
