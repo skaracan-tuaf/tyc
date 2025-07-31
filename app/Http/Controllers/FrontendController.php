@@ -58,80 +58,197 @@ class FrontendController extends Controller
     public function sonuclariGoster(Request $request)
     {
         $request->validate([
+            'category_id' => 'required|numeric',
             'target_type' => 'required|numeric',
             'weather' => 'required|string|in:Açık,Sisli,Yağmurlu',
         ]);
 
+        $categoryId = $request->input('category_id');
         $targetId = $request->input('target_type');
         $weather = $request->input('weather');
 
-        // Hedef bilgisini al
+        // Kategori ve hedef bilgilerini al
+        $category = Category::find($categoryId);
         $target = Target::find($targetId);
+        $categoryName = $category ? $category->name : 'Bilinmeyen Kategori';
         $targetName = $target ? $target->name : 'Bilinmeyen Hedef';
 
-        // Statik veri - hedef adı ve meteorolojik duruma göre sonuçlar
+        //dd($categoryName);
+
+        // Statik veri - kategori, hedef adı ve meteorolojik duruma göre sonuçlar
         $staticData = [
-            'Pist' => [
-                'Açık' => [
-                    ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
-                    ['name' => 'GÖKDOĞAN', 'rank' => 2, 'cost' => '$300K', 'platform' => 'AKINCI'],
-                    ['name' => 'BOZDOĞAN', 'rank' => 3, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+            'Hava Hava' => [
+                'Pist' => [
+                    'Açık' => [
+                        ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                        ['name' => 'GÖKDOĞAN', 'rank' => 2, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                        ['name' => 'BOZDOĞAN', 'rank' => 3, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                        ['name' => 'AIM 120C', 'rank' => 2, 'cost' => '$600K', 'platform' => 'F-16'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                        ['name' => 'AIM 120B', 'rank' => 2, 'cost' => '$500K', 'platform' => 'F-16'],
+                    ],
                 ],
-                'Sisli' => [
-                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
-                    ['name' => 'AIM 120C', 'rank' => 2, 'cost' => '$600K', 'platform' => 'F-16'],
+                'Radar' => [
+                    'Açık' => [
+                        ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                        ['name' => 'GÖKDOĞAN', 'rank' => 2, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                        ['name' => 'AIM 120C', 'rank' => 2, 'cost' => '$600K', 'platform' => 'F-16'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                    ],
                 ],
-                'Yağmurlu' => [
-                    ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
-                    ['name' => 'AIM 120B', 'rank' => 2, 'cost' => '$500K', 'platform' => 'F-16'],
+                'Komuta Merkezi' => [
+                    'Açık' => [
+                        ['name' => 'AIM 120C', 'rank' => 1, 'cost' => '$600K', 'platform' => 'F-16'],
+                        ['name' => 'BOZDOĞAN', 'rank' => 2, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                    ],
+                ],
+                'Hangar' => [
+                    'Açık' => [
+                        ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                        ['name' => 'AIM 120B', 'rank' => 2, 'cost' => '$500K', 'platform' => 'F-16'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                        ['name' => 'BOZDOĞAN', 'rank' => 2, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'AIM 120C', 'rank' => 1, 'cost' => '$600K', 'platform' => 'F-16'],
+                    ],
                 ],
             ],
-            'Radar' => [
-                'Açık' => [
-                    ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
-                    ['name' => 'GÖKDOĞAN', 'rank' => 2, 'cost' => '$300K', 'platform' => 'AKINCI'],
+            'Hava Yer (Füze)' => [
+                'Pist' => [
+                    'Açık' => [
+                        ['name' => 'SOM-A', 'rank' => 1, 'cost' => '$800K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-B1', 'rank' => 2, 'cost' => '$750K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-J', 'rank' => 3, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'SOM-B1', 'rank' => 1, 'cost' => '$750K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-A', 'rank' => 2, 'cost' => '$800K', 'platform' => 'F-16'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'SOM-J', 'rank' => 1, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                        ['name' => 'SOM-A', 'rank' => 2, 'cost' => '$800K', 'platform' => 'F-16'],
+                    ],
                 ],
-                'Sisli' => [
-                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
-                    ['name' => 'AIM 120C', 'rank' => 2, 'cost' => '$600K', 'platform' => 'F-16'],
+                'Radar' => [
+                    'Açık' => [
+                        ['name' => 'SOM-A', 'rank' => 1, 'cost' => '$800K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-B1', 'rank' => 2, 'cost' => '$750K', 'platform' => 'F-16'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'SOM-B1', 'rank' => 1, 'cost' => '$750K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-J', 'rank' => 2, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'SOM-J', 'rank' => 1, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                    ],
                 ],
-                'Yağmurlu' => [
-                    ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+                'Komuta Merkezi' => [
+                    'Açık' => [
+                        ['name' => 'SOM-B1', 'rank' => 1, 'cost' => '$750K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-A', 'rank' => 2, 'cost' => '$800K', 'platform' => 'F-16'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'SOM-J', 'rank' => 1, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'SOM-A', 'rank' => 1, 'cost' => '$800K', 'platform' => 'F-16'],
+                    ],
+                ],
+                'Hangar' => [
+                    'Açık' => [
+                        ['name' => 'SOM-J', 'rank' => 1, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                        ['name' => 'SOM-A', 'rank' => 2, 'cost' => '$800K', 'platform' => 'F-16'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'SOM-B1', 'rank' => 1, 'cost' => '$750K', 'platform' => 'F-16'],
+                        ['name' => 'SOM-J', 'rank' => 2, 'cost' => '$700K', 'platform' => 'AKINCI'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'SOM-B1', 'rank' => 1, 'cost' => '$750K', 'platform' => 'F-16'],
+                    ],
                 ],
             ],
-            'Komuta Merkezi' => [
-                'Açık' => [
-                    ['name' => 'AIM 120C', 'rank' => 1, 'cost' => '$600K', 'platform' => 'F-16'],
-                    ['name' => 'BOZDOĞAN', 'rank' => 2, 'cost' => '$250K', 'platform' => 'HÜRJET'],
+            'Hava Yer (Bomba)' => [
+                'Pist' => [
+                    'Açık' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                        ['name' => 'ATMACA', 'rank' => 2, 'cost' => '$900K', 'platform' => 'Korvet'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'ATMACA', 'rank' => 1, 'cost' => '$900K', 'platform' => 'Korvet'],
+                        ['name' => 'AKYA', 'rank' => 2, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
                 ],
-                'Sisli' => [
-                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
+                'Radar' => [
+                    'Açık' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                        ['name' => 'ATMACA', 'rank' => 2, 'cost' => '$900K', 'platform' => 'Korvet'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'ATMACA', 'rank' => 1, 'cost' => '$900K', 'platform' => 'Korvet'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
                 ],
-                'Yağmurlu' => [
-                    ['name' => 'AIM 120B', 'rank' => 1, 'cost' => '$500K', 'platform' => 'F-16'],
+                'Komuta Merkezi' => [
+                    'Açık' => [
+                        ['name' => 'ATMACA', 'rank' => 1, 'cost' => '$900K', 'platform' => 'Korvet'],
+                        ['name' => 'AKYA', 'rank' => 2, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'ATMACA', 'rank' => 1, 'cost' => '$900K', 'platform' => 'Korvet'],
+                    ],
                 ],
-            ],
-            'Hangar' => [
-                'Açık' => [
-                    ['name' => 'BOZDOĞAN', 'rank' => 1, 'cost' => '$250K', 'platform' => 'HÜRJET'],
-                    ['name' => 'AIM 120B', 'rank' => 2, 'cost' => '$500K', 'platform' => 'F-16'],
-                ],
-                'Sisli' => [
-                    ['name' => 'GÖKDOĞAN', 'rank' => 1, 'cost' => '$300K', 'platform' => 'AKINCI'],
-                    ['name' => 'BOZDOĞAN', 'rank' => 2, 'cost' => '$250K', 'platform' => 'HÜRJET'],
-                ],
-                'Yağmurlu' => [
-                    ['name' => 'AIM 120C', 'rank' => 1, 'cost' => '$600K', 'platform' => 'F-16'],
+                'Hangar' => [
+                    'Açık' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                        ['name' => 'ATMACA', 'rank' => 2, 'cost' => '$900K', 'platform' => 'Korvet'],
+                    ],
+                    'Sisli' => [
+                        ['name' => 'ATMACA', 'rank' => 1, 'cost' => '$900K', 'platform' => 'Korvet'],
+                        ['name' => 'AKYA', 'rank' => 2, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
+                    'Yağmurlu' => [
+                        ['name' => 'AKYA', 'rank' => 1, 'cost' => '$1.2M', 'platform' => 'Denizaltı'],
+                    ],
                 ],
             ],
         ];
 
-        // Seçilen hedef adı ve meteorolojik duruma göre sonuçları al
-        $results = $staticData[$targetName][$weather] ?? [];
+        // Seçilen kategori, hedef adı ve meteorolojik duruma göre sonuçları al
+        $results = $staticData[$categoryName][$targetName][$weather] ?? [];
+
+        //dd($request);
 
         return view('Frontend.pages.results', array_merge(
             $this->getCommonViewData(),
-            compact('results', 'targetName', 'weather')
+            compact('results', 'categoryName', 'targetName', 'weather')
         ));
     }
 

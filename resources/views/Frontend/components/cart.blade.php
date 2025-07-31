@@ -28,6 +28,19 @@
                     </li>
                     -->
 
+                    <!-- Kategori -->
+                    <li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-txt p-t-8 w-full">
+                            <label class="header-cart-item-name m-b-18 hov-cl1 trans-04 d-block">Kategori:</label>
+                            <select name="category_id" class="form-control m-b-10">
+                                <option value="" disabled selected>Seçin</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </li>
+
                     <!-- Hedef -->
                     <li class="header-cart-item flex-w flex-t m-b-12">
                         <div class="header-cart-item-txt p-t-8 w-full">

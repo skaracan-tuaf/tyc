@@ -9,14 +9,15 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        Hedef: <strong>{{ $targetName }}</strong> | 
+                        Kategori: <strong>{{ $categoryName }}</strong> |
+                        Hedef: <strong>{{ $targetName }}</strong> |
                         Meteorolojik Durum: <strong>{{ $weather }}</strong>
                     </h3>
                 </div>
                 <div class="card-body">
                     @if(empty($results))
                         <div class="alert alert-warning">
-                            <strong>Uyarı!</strong> "{{ $targetName }}" hedefi için "{{ $weather }}" hava koşullarında uygun sonuç bulunamadı.
+                            <strong>Uyarı!</strong> "{{ $categoryName }}" kategorisinde "{{ $targetName }}" hedefi için "{{ $weather }}" hava koşullarında uygun sonuç bulunamadı.
                         </div>
                     @else
                         <div class="table-responsive">
@@ -41,7 +42,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="mt-3">
                             <a href="{{ route('AnaSayfa') }}" class="btn btn-primary">Ana Sayfaya Dön</a>
                             <a href="{{ route('Kiyasla') }}" class="btn btn-secondary">Yeni Karşılaştırma</a>
@@ -52,4 +53,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
