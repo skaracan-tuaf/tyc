@@ -26,11 +26,11 @@ class FrontendController extends Controller
     private function getCommonViewData(): array
     {
         return [
-            'categories' => Cache::remember('categories_all', 60 * 60, fn() => Category::all()),
-            'tags' => Cache::remember('tags_all', 60 * 60, fn() => Tag::all()),
-            'platforms' => Cache::remember('platforms_all', 60 * 60, fn() => Platform::all()),
-            'targets' => Cache::remember('targets_all', 60 * 60, fn() => Target::all()),
-            'targetTypes' => Cache::remember('munition_target_types', 60 * 60, fn() => Munition::distinct()->pluck('target_type')),
+            'categories' => Category::all(),
+            'tags' => Tag::all(),
+            'platforms' => Platform::all(),
+            'targets' => Target::all(),
+            'targetTypes' => Munition::distinct()->pluck('target_type'),
         ];
     }
 

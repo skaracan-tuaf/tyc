@@ -10,6 +10,22 @@ use Illuminate\Support\Str;
 class TargetController extends Controller
 {
     /**
+     * Hedef ve kategori yönetimi sayfasını gösterir.
+     */
+    public function management(Request $request)
+    {
+        $targets = Target::with(['category', 'subcategory'])->get();
+        $targetCategories = TargetCategory::with('parent')->get();
+
+        $editingCategory = null;
+        if ($request->has('edit_category')) {
+            $editingCategory = TargetCategory::find($request->edit_category);
+        }
+
+        return view('Backend.pages.target_management', compact('targets', 'targetCategories', 'editingCategory'));
+    }
+
+    /**
      * Hedef listesini gösterir.
      */
     public function index()
@@ -45,6 +61,12 @@ class TargetController extends Controller
 
         $target = Target::create($validatedData);
 
+        // Eğer target.management sayfasından geliyorsa veya return_to parametresi varsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management') ||
+            $request->has('return_to') && $request->return_to === 'management') {
+            return redirect()->route('target.management')->with('success', $target->name . ' başarıyla eklendi.');
+        }
+
         return redirect()->route('target.index')->with('success', $target->name . ' başarıyla eklendi.');
     }
 
@@ -75,6 +97,12 @@ class TargetController extends Controller
 
         $target->update($validatedData);
 
+        // Eğer target.management sayfasından geliyorsa veya return_to parametresi varsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management') ||
+            $request->has('return_to') && $request->return_to === 'management') {
+            return redirect()->route('target.management')->with('success', $target->name . ' başarıyla güncellendi.');
+        }
+
         return redirect()->route('target.index')->with('success', $target->name . ' başarıyla güncellendi.');
     }
 
@@ -85,6 +113,12 @@ class TargetController extends Controller
     {
         $target = Target::findOrFail($id);
         $target->update(['status' => !$target->status]);
+
+        // Eğer target.management sayfasından geliyorsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+            return redirect()->route('target.management')->with('success', $target->name . ' durumu değiştirildi.');
+        }
+
         return redirect()->route('target.index')->with('success', $target->name . ' durumu değiştirildi.');
     }
 
@@ -95,6 +129,12 @@ class TargetController extends Controller
     {
         $targetName = $target->name;
         $target->delete();
+
+        // Eğer target.management sayfasından geliyorsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+            return redirect()->route('target.management')->with('success', $targetName . ' silindi.');
+        }
+
         return redirect()->route('target.index')->with('success', $targetName . ' silindi.');
     }
 }

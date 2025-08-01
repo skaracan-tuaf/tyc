@@ -4,6 +4,20 @@
 
 @section('stylesheet')
     <link rel="stylesheet" href="{{ asset('backend_assets/extensions/sweetalert2/sweetalert2.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend_assets/static/js/cropper/cropper.min.css') }}">
+    <style>
+        #image {
+            max-width: 100%;
+            display: none;
+        }
+        .img-container {
+            max-width: 100%;
+            overflow: hidden;
+        }
+        .cropper-container {
+            max-width: 100%;
+        }
+    </style>
 @endsection
 
 @section('page-title', 'Platformlar')
@@ -107,7 +121,7 @@
                                                 </div>
                                             </div>
                                             <div id="resimEkleAlani">
-                                                <img id="image" src="" alt="" class="col-3">
+                                                <img id="image" src="" alt="" style="max-width: 100%;">
                                                 <input type="hidden" id="croppedImage" name="croppedImage"
                                                     {{ isset($platform) ? '' : 'required' }}>
                                                 @if (isset($platform) && !empty($platform->image))
@@ -118,7 +132,7 @@
                                                     </div>
                                                 @endif
                                                 <div class="img-container mt-3" id="previewContainer"
-                                                    style="display: flex; justify-content: center; align-items: center;">
+                                                    style="display: flex; justify-content: center; align-items: center; max-width: 100%;">
                                                 </div>
                                                 <input type="file" class="form-control" id="imageInput" name="platformImage"
                                                     accept="image/*" {{ isset($platform) ? '' : 'required' }}>
@@ -205,10 +219,18 @@
                         cropper = new Cropper(image, {
                             aspectRatio: parseInt(document.getElementById('input-width')
                                 .value) / parseInt(document.getElementById('input-length')
-                                .value), ///_aspectRatio,
+                                    .value),
                             viewMode: 1,
                             autoCropArea: 1,
-                            responsive: true
+                            responsive: true,
+                            dragMode: 'move',
+                            restore: false,
+                            guides: true,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false
                         });
                     };
 

@@ -53,7 +53,18 @@ class TargetCategoryController extends Controller
 
         if ($targetCategory->save()) {
             Cache::forget('target_categories_all');
+
+            // Eğer target.management sayfasından geliyorsa oraya yönlendir
+            if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+                return redirect()->route('target.management')->with('success', $targetCategory->name . ' başarıyla eklendi.');
+            }
+
             return redirect()->route('target-category.index')->with('success', $targetCategory->name . ' başarıyla eklendi.');
+        }
+
+        // Eğer target.management sayfasından geliyorsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+            return redirect()->route('target.management')->with('fail', $targetCategory->name . ' eklenirken bir hata oluştu.');
         }
 
         return redirect()->route('target-category.index')->with('fail', $targetCategory->name . ' eklenirken bir hata oluştu.');
@@ -87,6 +98,12 @@ class TargetCategoryController extends Controller
         $this->changeStatusRecursive($targetCategory, $targetCategory->status);
 
         Cache::forget('target_categories_all');
+
+        // Eğer target.management sayfasından geliyorsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+            return redirect()->route('target.management')->with('success', $targetCategory->name . ' durumu başarıyla değiştirildi.');
+        }
+
         return redirect()->route('target-category.index')->with('success', $targetCategory->name . ' durumu başarıyla değiştirildi.');
     }
 
@@ -135,7 +152,18 @@ class TargetCategoryController extends Controller
 
         if ($targetCategory->save()) {
             Cache::forget('target_categories_all');
+
+            // Eğer target.management sayfasından geliyorsa oraya yönlendir
+            if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+                return redirect()->route('target.management')->with('success', $targetCategory->name . ' başarıyla güncellendi.');
+            }
+
             return redirect()->route('target-category.index')->with('success', $targetCategory->name . ' başarıyla güncellendi.');
+        }
+
+        // Eğer target.management sayfasından geliyorsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+            return redirect()->route('target.management')->with('fail', $targetCategory->name . ' güncellenirken bir hata oluştu.');
         }
 
         return redirect()->route('target-category.edit', $id)->with('fail', $targetCategory->name . ' güncellenirken bir hata oluştu.');
@@ -155,7 +183,18 @@ class TargetCategoryController extends Controller
 
         if ($targetCategory->delete()) {
             Cache::forget('target_categories_all');
+
+            // Eğer target.management sayfasından geliyorsa oraya yönlendir
+            if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+                return redirect()->route('target.management')->with('success', $targetCategory->name . ' başarıyla silindi.');
+            }
+
             return redirect()->route('target-category.index')->with('success', $targetCategory->name . ' başarıyla silindi.');
+        }
+
+        // Eğer target.management sayfasından geliyorsa oraya yönlendir
+        if (request()->headers->get('referer') && str_contains(request()->headers->get('referer'), 'target-management')) {
+            return redirect()->route('target.management')->with('fail', $targetCategory->name . ' silinirken bir hata oluştu.');
         }
 
         return redirect()->route('target-category.index')->with('fail', $targetCategory->name . ' silinirken bir hata oluştu.');

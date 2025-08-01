@@ -99,6 +99,7 @@ class PlatformController extends Controller
     public function update(Request $request, $id)
     {
         $platform = Platform::findOrFail($id);
+        $oldImage = $platform->image; // Eski resmi sakla
 
         $data = [
             'name' => $request->input('name'),
@@ -124,6 +125,11 @@ class PlatformController extends Controller
 
             // Resim yükleme işlemi
             if ($request->hasFile('platformImage') || $request->input('croppedImage')) {
+                // Yeni resim yüklenecek, eski resmi sil
+                if ($oldImage && Storage::exists('public/' . $oldImage)) {
+                    Storage::delete('public/' . $oldImage);
+                }
+
                 $croppedImageData = $request->input('croppedImage');
                 if ($croppedImageData) {
                     $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImageData));
@@ -162,8 +168,13 @@ class PlatformController extends Controller
     public function destroy($id)
     {
         $platform = Platform::findOrFail($id);
+        $imagePath = $platform->image;
+
         if ($platform->delete()) {
-            Storage::delete('public/' . $platform->image);
+            // Resim varsa ve storage'da mevcutsa sil
+            if ($imagePath && Storage::exists('public/' . $imagePath)) {
+                Storage::delete('public/' . $imagePath);
+            }
             return redirect()->route('platform.index')->with('success', $platform->name . ' silindi.');
         } else {
             return redirect()->route('platform.index')->with('fail', 'Silinirken hata oluştu.');

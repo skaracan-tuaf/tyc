@@ -65,8 +65,8 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item{{ request()->routeIs('etiket.*') ? ' active' : '' }}">
-                    <a href="{{ route('etiket.index') }}" class='sidebar-link'>
+                <li class="sidebar-item{{ request()->routeIs('tag.management') ? ' active' : '' }}">
+                    <a href="{{ route('tag.management') }}" class='sidebar-link'>
                         <i class="bi bi-tags-fill"></i>
                         <span>Etiketler</span>
                     </a>
@@ -85,16 +85,10 @@
                         <span>Mühimmatlar</span>
                     </a>
                 </li>
-                <li class="sidebar-item{{ request()->routeIs('target.*') ? ' active' : '' }}">
-                    <a href="{{ route('target.index') }}" class='sidebar-link'>
+                <li class="sidebar-item{{ request()->routeIs('target.management') ? ' active' : '' }}">
+                    <a href="{{ route('target.management') }}" class='sidebar-link'>
                         <i class="bi bi-crosshair"></i>
-                        <span>Hedefler</span>
-                    </a>
-                </li>
-                <li class="sidebar-item{{ request()->routeIs('target-category.*') ? ' active' : '' }}">
-                    <a href="{{ route('target-category.index') }}" class='sidebar-link'>
-                        <i class="bi bi-crosshair"></i>
-                        <span>Hedef Kategorileri</span>
+                        <span>Hedef Yönetimi</span>
                     </a>
                 </li>
                 <li class="sidebar-item{{ request()->routeIs('makale.*') ? ' active' : '' }}  has-sub">

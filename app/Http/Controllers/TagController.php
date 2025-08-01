@@ -44,9 +44,9 @@ class TagController extends Controller
         $tag = Tag::create($validatedData);
 
         if ($tag) {
-            return redirect()->route('etiket.index')->with('success', $tag->name . ' başarıyla veritabanına eklendi.');
+            return redirect()->route('tag.management')->with('success', $tag->name . ' başarıyla veritabanına eklendi.');
         } else {
-            return redirect()->route('etiket.index')->with('fail', $tag->name . ' özelliği eklenirken bir hata oluştu.');
+            return redirect()->route('tag.management')->with('fail', $tag->name . ' özelliği eklenirken bir hata oluştu.');
         }
     }
 
@@ -74,7 +74,7 @@ class TagController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|unique:tags,name',
+            'name' => 'required|string|unique:tags,name,' . $id,
             'slug' => 'nullable|string',
             'status' => 'boolean'
         ]);
@@ -85,9 +85,9 @@ class TagController extends Controller
         $tag = Tag::findOrFail($id);
 
         if ($tag->update($validatedData)) {
-            return redirect()->route('etiket.index')->with('success', $tag->name . ' başarıyla veritabanında güncellendi.');
+            return redirect()->route('tag.management')->with('success', $tag->name . ' başarıyla veritabanında güncellendi.');
         } else {
-            return redirect()->route('etiket.index')->with('fail', $tag->name . ' veritabanında güncellenirken bir hata oluştu.');
+            return redirect()->route('tag.management')->with('fail', $tag->name . ' veritabanında güncellenirken bir hata oluştu.');
         }
     }
 
@@ -96,6 +96,19 @@ class TagController extends Controller
         $tag = Tag::findOrFail($id);
         $tag->update(['status' => !$tag->status]);
         return redirect()->route('etiket.index')->with('success', $tag->name . ' durumu başarıyla değiştirildi.');
+    }
+
+    /**
+     * Etiket yönetimi birleşik sayfa
+     */
+    public function management(Request $request)
+    {
+        $tags = Tag::all();
+        $editingTag = null;
+        if ($request->has('edit_tag')) {
+            $editingTag = Tag::find($request->edit_tag);
+        }
+        return view('Backend.pages.tag_management', compact('tags', 'editingTag'));
     }
 
     /**

@@ -30,6 +30,11 @@
                                 @method('PUT')
                             @endif
 
+                            {{-- Return to management page if coming from there --}}
+                            @if(request()->has('return_to') && request()->return_to === 'management')
+                                <input type="hidden" name="return_to" value="management">
+                            @endif
+
                             <div class="row">
                                 {{-- Hedef Adı --}}
                                 <div class="col-md-6">
@@ -111,7 +116,7 @@
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit"
                                     class="btn btn-primary">{{ isset($target) ? 'Güncelle' : 'Ekle' }}</button>
-                                <a href="{{ route('target.index') }}" class="btn btn-light-secondary ms-2">İptal</a>
+                                <a href="{{ request()->has('return_to') && request()->return_to === 'management' ? route('target.management') : route('target.index') }}" class="btn btn-light-secondary ms-2">İptal</a>
                             </div>
                         </form>
                     </div>

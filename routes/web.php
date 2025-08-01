@@ -45,12 +45,15 @@ Route::prefix('yonetim')->group(function () {
     Route::resource('ozellik', AttributeController::class);
     Route::resource('platform', PlatformController::class);
     Route::resource('target', TargetController::class);
+    Route::get('target-management', [TargetController::class, 'management'])->name('target.management');
+    Route::post('target/{id}/status', [TargetController::class, 'changeStatus'])->name('target.changeStatus');
 
     Route::resource('target-category', TargetCategoryController::class)->names('target-category');
     Route::post('target-category/{id}/status', [TargetCategoryController::class, 'changeStatus'])->name('target-category.changeStatus');
 
     Route::resource('makale', PostController::class);
     Route::resource('etiket', TagController::class);
+    Route::get('tag-management', [TagController::class, 'management'])->name('tag.management');
 
     Route::put('/kategori/{id}/durum-degistir', [CategoryController::class, 'changeStatus'])->name('kategoriDurumunuDegistir');
     Route::put('/ozellik/{id}/durum-degistir', [AttributeController::class, 'changeStatus'])->name('ozellikDurumunuDegistir');
