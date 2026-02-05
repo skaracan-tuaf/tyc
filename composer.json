@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "tyc/munition-comparison",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Mühimmat karşılaştırma ve yönetim sistemi",
+    "keywords": ["laravel", "munition", "comparison", "management"],
     "license": "MIT",
     "require": {
         "php": "^8.2",

@@ -16,23 +16,32 @@
                 </h3>
             </div>
             <div class="flex-w flex-sb-m p-b-52">
+                @php
+                    // Kategori sayfasındaysak mevcut kategorinin slug'ını al
+                    $currentCategorySlug = isset($category) ? $category->slug : null;
+                @endphp
                 <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+                    <button
+                        class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $currentCategorySlug === null ? 'how-active1' : '' }}"
+                        data-filter="*">
                         Tümü
                     </button>
-                    @foreach ($categories as $category)
-                        @if ($category->parent_id === null)
-                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                                data-filter=".{{ $category->slug }}">
-                                {{ $category->name }}
+                    @foreach ($categories as $cat)
+                        @if ($cat->parent_id === null)
+                            <button
+                                class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $currentCategorySlug === $cat->slug ? 'how-active1' : '' }}"
+                                data-filter=".{{ $cat->slug }}">
+                                {{ $cat->name }}
                             </button>
                         @endif
                     @endforeach
                 </div>
 
                 <div class="flex-w flex-c-m m-tb-10">
-                    <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4">
-                        Kıyasla
+                    <div id="compare-trigger"
+                        class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 bg0 p-lr-25">
+                        <i class="zmdi zmdi-compare m-r-8 fs-18"></i>
+                        Karşılaştır (<span class="compare-count">0</span>)
                     </div>
                     <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
                         <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
@@ -102,7 +111,8 @@
                                     </span>
                                 </div>
                                 <div class="block2-txt-child2 flex-r p-t-3">
-                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                                        data-munition-id="{{ $munition->id }}">
                                         <img class="icon-heart1 dis-block trans-04"
                                             src="{{ asset('frontend_assets/images/icons/icon-heart-01.png') }}"
                                             alt="ICON">
@@ -148,5 +158,71 @@
         </div>
     </section>
 
+    <script>
+        // Karşılaştırma listesi seçimi ve yönlendirme mantığı
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedIds = new Set();
+            const compareButton = document.getElementById('compare-trigger');
+
+            if (!compareButton) {
+                return;
+            }
+
+            function updateCompareButton() {
+                const countSpan = compareButton.querySelector('.compare-count');
+                if (countSpan) {
+                    countSpan.textContent = selectedIds.size.toString();
+                }
+
+                if (selectedIds.size > 0) {
+                    compareButton.classList.add('bg3', 'cl0');
+                    compareButton.classList.remove('bg0', 'cl6');
+                } else {
+                    compareButton.classList.add('bg0', 'cl6');
+                    compareButton.classList.remove('bg3', 'cl0');
+                }
+            }
+
+            // Kalp ikonuna tıklayınca mühimmatı karşılaştırma listesine ekle / çıkar
+            document.querySelectorAll('.js-addwish-b2').forEach(function(el) {
+                const id = el.getAttribute('data-munition-id');
+                if (!id) {
+                    return;
+                }
+
+                el.addEventListener('click', function() {
+                    if (selectedIds.has(id)) {
+                        selectedIds.delete(id);
+                        el.classList.remove('js-selected-compare');
+                    } else {
+                        selectedIds.add(id);
+                        el.classList.add('js-selected-compare');
+                    }
+
+                    updateCompareButton();
+                });
+            });
+
+            // Karşılaştır butonuna basınca seçilen mühimmatlarla kıyas sayfasına git
+            compareButton.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                if (selectedIds.size === 0) {
+                    return;
+                }
+
+                const query = Array.from(selectedIds)
+                    .map(function(id) {
+                        return 'ids[]=' + encodeURIComponent(id);
+                    })
+                    .join('&');
+
+                const url = '{{ route('Kiyasla') }}' + (query ? '?' + query : '');
+                window.location.href = url;
+            });
+
+            updateCompareButton();
+        });
+    </script>
 
 @endsection

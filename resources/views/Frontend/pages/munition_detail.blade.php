@@ -13,17 +13,18 @@
             </a>
 
             @php
-                $categories = []; // Mühimmata ait kategorileri saklamak için boş bir dizi oluştur
+                // Breadcrumb için sadece bu mühimmata ait kategori zincirini tutan ayrı bir dizi kullan
+                $breadcrumbCategories = [];
                 $topCategory = $munition->category; // Mühimmatın kategorisini al
 
                 // Mühimmatın kategorisi ve üst kategorilerini diziye ekle
                 while ($topCategory) {
-                    array_unshift($categories, $topCategory); // Diziye üst kategorileri ekleyerek son üst kategori en başa gelecek
+                    array_unshift($breadcrumbCategories, $topCategory); // Üst kategorileri başa ekle
                     $topCategory = $topCategory->parent; // Üst kategoriye geç
                 }
             @endphp
 
-            @foreach ($categories as $category)
+            @foreach ($breadcrumbCategories as $category)
                 <a href="{{ route('kategoriFiltresi', $category->slug) }}" class="stext-109 cl8 hov-cl1 trans-04">
                     {{ $category->name }}
                     <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
@@ -204,12 +205,14 @@
 
         <div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
             <span class="stext-107 cl6 p-lr-25">
-                SKU: A2G-01
+                <strong>Kategori:</strong> {{ $munition->category->name }}
             </span>
 
-            <span class="stext-107 cl6 p-lr-25">
-                Kategori: {{ $munition->category->name }}
-            </span>
+            @if (!empty($munition->origin))
+                <span class="stext-107 cl6 p-lr-25">
+                    <strong>Menşei:</strong> {{ $munition->origin }}
+                </span>
+            @endif
         </div>
     </section>
 

@@ -36,16 +36,22 @@
                                             <td>{{ $result['rank'] }}</td>
                                             <td>{{ $result['name'] }}</td>
                                             <td>{{ $result['cost'] }}</td>
-                                            <td>{{ $result['platform'] }}</td>
+                                            <td>{{ is_array($result['platform']) ? implode(', ', $result['platform']) : $result['platform'] }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="mt-3">
-                            <a href="{{ route('AnaSayfa') }}" class="btn btn-primary">Ana Sayfaya Dön</a>
-                            <a href="{{ route('Kiyasla') }}" class="btn btn-secondary">Yeni Karşılaştırma</a>
+                        <div class="mt-4 d-flex flex-wrap gap-2">
+                            <a href="{{ route('AnaSayfa') }}"
+                                class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-20 trans-04">
+                                Ana Sayfaya Dön
+                            </a>
+                            <a href="{{ route('Kiyasla') }}"
+                                class="flex-c-m stext-101 cl2 size-107 bg0 bor2 hov-btn3 p-lr-20 trans-04">
+                                Yeni Karşılaştırma
+                            </a>
                         </div>
                     @endif
                 </div>

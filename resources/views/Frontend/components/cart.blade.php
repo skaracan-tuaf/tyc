@@ -1,6 +1,6 @@
-<div class="wrap-header-cart js-panel-cart" style="width: 100%; max-width: 300px;">
+<div class="wrap-header-cart js-panel-cart">
     <div class="s-full js-hide-cart"></div>
-    <div class="header-cart flex-col-l p-l-65 p-r-25" style="width: 20%;">
+    <div class="header-cart flex-col-l p-t-22 p-b-25 p-l-65 p-r-25">
         <div class="header-cart-title flex-w flex-sb-m p-b-8">
             <span class="mtext-103 cl2">Filtrele</span>
             <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
@@ -8,8 +8,8 @@
             </div>
         </div>
 
-        <div class="header-cart-content flex-w js-pscroll" style="width: 100%;">
-            <form action="{{ route('sonuclariGoster') }}" method="POST" class="w-full" style="max-width: 300px; width: 100%;">
+        <div class="header-cart-content flex-w w-full js-pscroll">
+            <form action="{{ route('sonuclariGoster') }}" method="POST" class="w-full">
                 @csrf
                 <ul class="header-cart-wrapitem w-full">
 

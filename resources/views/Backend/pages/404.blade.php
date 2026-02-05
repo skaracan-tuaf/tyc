@@ -24,7 +24,7 @@
                         alt="Not Found">
                     <h1 class="error-title">OPSS!!</h1>
                     <p class='fs-5 text-gray-600'>Aradığınız sayfa bulunamadı.</p>
-                    <a href="{{ route('YoneticiAnaSayfa') }}" class="btn btn-lg btn-outline-primary mt-3">Ana Sayfa</a>
+                    <a href="javascript:history.back();" class="btn btn-lg btn-outline-primary mt-3">Geri Dön</a>
                 </div>
             </div>
         </div>

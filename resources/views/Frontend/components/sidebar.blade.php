@@ -110,12 +110,9 @@
                 <span class="mtext-101 cl5">
                     Hakkımızda
                 </span>
-
+                    
                 <p class="stext-108 cl6 p-t-27">
-                    Hava ve Uzay Gücü Komutanlığı, gökleri vatan bilerek Türkiye'nin güvenliğini ve bekasını korumak
-                    için var. Modern hava savunma sistemleri, güçlü muharip filoları ve uzay yetenekleriyle ülkemizin
-                    hava ve uzay hakimiyetini kararlılıkla savunuyoruz. Barışın teminatı, havacılığın öncüsü olarak
-                    geleceğe güvenle uçuyoruz.
+
                 </p>
             </div>
         </div>

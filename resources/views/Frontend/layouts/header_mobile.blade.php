@@ -37,7 +37,7 @@
                 <a href="{{ route('AnaSayfa') }}">Ana Sayfa</a>
             </li>
 
-            <li>
+            <li class="{{ request()->routeIs('kategoriFiltresi') ? ' active-menu' : '' }}">
                 <a href="#">Kategoriler</a>
                 <ul class="sub-menu">
                     @foreach ($categories as $category)

@@ -175,11 +175,11 @@
 
                                     <div class="size-215 flex-col-t p-t-8">
                                         <a href="#" class="stext-116 cl8 hov-cl1 trans-04">
-                                            White Shirt With Pleat Detail Back
+                                            -
                                         </a>
 
                                         <span class="stext-116 cl6 p-t-20">
-                                            $19.00
+                                            $
                                         </span>
                                     </div>
                                 </li>
@@ -191,11 +191,11 @@
 
                                     <div class="size-215 flex-col-t p-t-8">
                                         <a href="#" class="stext-116 cl8 hov-cl1 trans-04">
-                                            Converse All Star Hi Black Canvas
+                                            -
                                         </a>
 
                                         <span class="stext-116 cl6 p-t-20">
-                                            $39.00
+                                            $
                                         </span>
                                     </div>
                                 </li>
@@ -207,11 +207,11 @@
 
                                     <div class="size-215 flex-col-t p-t-8">
                                         <a href="#" class="stext-116 cl8 hov-cl1 trans-04">
-                                            Nixon Porter Leather Watch In Tan
+                                            -
                                         </a>
 
                                         <span class="stext-116 cl6 p-t-20">
-                                            $17.00
+                                            $
                                         </span>
                                     </div>
                                 </li>
@@ -227,11 +227,11 @@
                                 <li class="p-b-7">
                                     <a href="#" class="flex-w flex-sb-m stext-115 cl6 hov-cl1 trans-04 p-tb-2">
                                         <span>
-                                            July 2018
+                                            
                                         </span>
 
                                         <span>
-                                            (9)
+                                            
                                         </span>
                                     </a>
                                 </li>
